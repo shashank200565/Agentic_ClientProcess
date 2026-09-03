@@ -7,9 +7,6 @@ from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 
 
-# ---------------------------------------
-# 1. LOAD API KEY
-# ---------------------------------------
 
 load_dotenv()
 
@@ -18,9 +15,6 @@ client = InferenceClient(
 )
 
 
-# ---------------------------------------
-# 2. EXTRACT TEXT FROM PDF
-# ---------------------------------------
 
 def extract_text_from_pdf(pdf_path):
 
@@ -36,10 +30,6 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 
-# ---------------------------------------
-# 3. CLEAN TEXT
-# ---------------------------------------
-
 def clean_text(text):
 
     # Remove excessive spaces
@@ -51,10 +41,6 @@ def clean_text(text):
     return text.strip()
 
 
-# ---------------------------------------
-# 4. CHECK IF DOCUMENT HAS NUMBERED STEPS
-# ---------------------------------------
-
 def has_numbered_steps(text):
     pattern = r"(?m)^\s*(?:Step\s*)?\d+\s*[\.\):\-]"
     matches = re.findall(pattern, text)
@@ -64,9 +50,6 @@ def has_numbered_steps(text):
     return len(matches) >= 2
 
 
-# ---------------------------------------
-# 5. EXTRACT NUMBERED STEPS
-# ---------------------------------------
 
 def extract_numbered_steps(text):
 
@@ -93,10 +76,6 @@ def extract_numbered_steps(text):
 
     return steps
 
-
-# ---------------------------------------
-# 6. LLM EXTRACTION FOR REALISTIC SOPs
-# ---------------------------------------
 
 def extract_steps_with_llm(text):
 
@@ -209,9 +188,7 @@ DOCUMENT:
         output = output[:-3].strip()
 
     return json.loads(output)
-# ---------------------------------------
-# 7. MAIN PIPELINE
-# ---------------------------------------
+
 
 def process_workflow(pdf_path):
 
@@ -241,9 +218,6 @@ def process_workflow(pdf_path):
 
     return workflow
 
-# ---------------------------------------
-# 8. RUN PIPELINE ON ALL TEST PDFs
-# ---------------------------------------
 
 if __name__ == "__main__":
 
