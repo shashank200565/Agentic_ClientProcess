@@ -11,12 +11,12 @@
 
 ## Phase 1 — Backend Foundation
 
-- [ ] Define all Pydantic schemas in `backend/pipeline/schemas.py` (Workflow, WorkflowStep, StepScore, RedesignProposal)
-- [ ] Set up FastAPI app skeleton (`backend/api/main.py`) with health check route
-- [ ] Set up SQLite schema (`backend/db/schema.sql`) matching the Pydantic models
-- [ ] Build `backend/pipeline/llm_client.py` — single wrapper for OpenCode Go calls, configurable model per call
-- [ ] Implement `backend/pipeline/extraction.py` — document/text → `WorkflowStep[]`
-- [ ] Wire `/analyze/extract` route
+- [x] Define all Pydantic schemas in `backend/pipeline/schemas.py` (Workflow, WorkflowStep, StepScore, RedesignProposal)
+- [x] Set up FastAPI app skeleton (`backend/api/main.py`) with health check route
+- [x] Set up SQLite schema (`backend/db/schema.sql`) matching the Pydantic models
+- [x] Build `backend/pipeline/llm_client.py` — single wrapper for OpenCode Go calls, configurable model per call
+- [x] Implement `backend/pipeline/extraction.py` — document/text → `WorkflowStep[]`
+- [x] Wire `/analyze/extract` route
 - [ ] Test extraction against 3-4 of the labeled workflows — do the step boundaries look right?
 
 ## Phase 2 — Decision Engine (core IP — most human review, least agent delegation)
