@@ -9,3 +9,5 @@ __pycache__/
 !.env.example
 *.sqlite3
 *.db
+frontend/node_modules/
+frontend/dist/

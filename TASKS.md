@@ -1,6 +1,6 @@
 # Tasks
 
-## Current Phase: Phase 0 — Eval Foundation (do this before any pipeline code)
+## Current Phase: Phase 0 — Eval Foundation
 
 ### Phase 0 — Ground Truth
 - [x] Draft scoring rubric (`eval/rubric.md`) — anchored 1-5 definitions for repetitiveness, judgment need, compliance sensitivity, AI-suitability
@@ -17,7 +17,7 @@
 - [x] Build `backend/pipeline/llm_client.py` — single wrapper for OpenCode Go calls, configurable model per call
 - [x] Implement `backend/pipeline/extraction.py` — document/text → `WorkflowStep[]`
 - [x] Wire `/analyze/extract` route
-- [ ] Test extraction against 3-4 of the labeled workflows — do the step boundaries look right?
+- [x] Test extraction against 3-4 of the labeled workflows — verified against all 5 available real PDF workflows; step boundaries and structured outputs were sensible.
 
 ## Phase 2 — Decision Engine (core IP — most human review, least agent delegation)
 
@@ -28,28 +28,41 @@
 - [ ] Iterate prompt, rerun eval, until agreement is acceptable (define target with mentor if possible)
 - [ ] Document final verdict-decision logic (explicit rule combining 4 scores → verdict) in `DECISIONS.md`
 
-## Phase 3 — Redesign Generator
+## Phase 3 — Redesign & Automation Generators
 
-- [ ] Implement `backend/pipeline/redesign.py` — `WorkflowStep` + `StepScore` (verdict=redesign) → `RedesignProposal`
-- [ ] Wire `/analyze/redesign` route
+- [ ] Implement `backend/pipeline/automation_blueprint.py` as a standalone function — `WorkflowStep` + `StepScore` (verdict=automate) → structured `AutomationBlueprint` using constrained templates for mechanism type (rules engine / RPA / scheduled job), trigger condition, rationale, and static visual workflow structure
+- [ ] Wire `/analyze/automation-blueprint` route and test the standalone generator independently
+- [ ] Sanity check: automation blueprints should be simpler, more templated, and conventional rather than another agentic/creative redesign
+- [ ] Implement `backend/pipeline/redesign.py` as a standalone function — `WorkflowStep` + `StepScore` (verdict=redesign) → `RedesignProposal` with static visual workflow structure
+- [ ] Wire `/analyze/redesign` route and test the standalone generator independently
 - [ ] Sanity check: do generated redesigns look plausible for the investment management steps, not generic boilerplate?
 
-## Phase 4 — Frontend (parallelizable with Phase 2/3)
+## Phase 4 — Orchestration & Observability
 
-- [ ] Scaffold React + Vite + Tailwind app
-- [ ] Upload page → calls `/analyze/extract`
-- [ ] Step review page → shows extracted steps, triggers `/analyze/score`, displays scores/reasoning/verdict color-coded
-- [ ] Redesign view → shows `RedesignProposal` for flagged steps
-- [ ] Portfolio Dashboard (Recharts) → complexity/exception grid across all analyzed workflows
+- [ ] Set up LangGraph as the pipeline coordinator with conditional edges based on each step's verdict: `leave_as_is` → terminal, `automate` → existing Automation Blueprint Generator, `redesign` → existing Redesign Generator
+- [ ] Define the LangGraph state model for current workflow stage, per-step verdicts, generated automation blueprints, generated redesigns, and static visual workflow structures
+- [ ] Set up LangSmith tracing for all existing LLM calls in extraction and the Decision Engine as the first integration test
+- [ ] Extend LangSmith tracing to the Automation Blueprint Generator and Redesign Generator, recording prompt, response, latency, model, and cost where available
+- [ ] Add `WorkflowSession` persistence and API support for resuming the user's last incomplete workflow at the latest completed graph stage
+
+## Phase 5 — Frontend (parallelizable with Phase 2/3/4)
+
+- [x] Scaffold React + Vite + Tailwind app
+- [x] Upload page → calls `/analyze/extract`
+- [x] Step review page → shows extracted steps, with placeholder scores/reasoning/verdicts color-coded until `/analyze/score` exists
+- [x] Automation Blueprint view shell → placeholder until the Automation Blueprint Generator and route exist
+- [x] Redesign view shell → placeholder until the Redesign Generator and route exist
+- [x] Session-resume UI shell → placeholder until `WorkflowSession` persistence and API support exist
+- [x] Portfolio Dashboard shell → placeholder until analyzed workflow aggregation exists
 - [ ] Wire all pages to real backend API (no mock data once backend routes exist)
 
-## Phase 5 — Executive Report
+## Phase 6 — Executive Report
 
 - [ ] Design report template (consulting-style summary format)
 - [ ] Implement report generation endpoint — templated from stored data, not a fresh open-ended LLM pass
 - [ ] Export as PDF or formatted view
 
-## Phase 6 — Integration, Polish, Demo Prep
+## Phase 7 — Integration, Polish, Demo Prep
 
 - [ ] End-to-end test: upload → extract → score → redesign → dashboard → report, no manual intervention
 - [ ] Deploy (or confirm local-demo fallback)
@@ -60,3 +73,11 @@
 1. Chat Assistant (never started unless everything above is done)
 2. Live deployment (fall back to local demo)
 3. PDF export polish on Executive Report (plain formatted view is acceptable)
+
+## Deferred / Not In Scope
+
+- Live conversational editing of generated redesign and automation output
+- Master routing agent for open-ended Q&A
+
+These are future extensions, not rejected product ideas. This submission demonstrates
+static generated output only.

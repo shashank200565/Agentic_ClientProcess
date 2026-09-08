@@ -60,6 +60,58 @@ Reason: Protects the core pipeline and demo reliability over feature breadth giv
 
 Status: Accepted
 
+---
+
+## Orchestration Framework
+
+Decision: Use LangGraph for verdict-conditional pipeline routing, replacing plain
+function-call branching.
+
+Reason: Mentor guidance on orchestration. The generators must exist and be independently
+verified before they are wrapped into a LangGraph-coordinated flow. LangGraph also
+provides the state tracking needed for workflow session resume as a side benefit.
+
+Status: Accepted
+
+---
+
+## Observability Tooling
+
+Decision: Use LangSmith for LLM call tracing across all pipeline stages instead of
+building a custom logging table.
+
+Reason: Mentor guidance on observability. LangSmith avoids building and maintaining
+logging infrastructure in-house given the timeline.
+
+Status: Accepted
+
+---
+
+## Automate vs. Redesign Output Distinction
+
+Decision: `automate` and `redesign` verdicts produce different downstream outputs:
+a templated Automation Blueprint versus an agentic Redesign Proposal. Both include
+a static visual workflow diagram, but the generation approach is not shared.
+
+Reason: Preserves the platform's ability to demonstrate that not every verdict
+requires agentic generation.
+
+Status: Accepted
+
+---
+
+## Live Editing Deferred
+
+Decision: Chat-based conversational editing of generated redesigns or automation
+blueprints, and a master routing agent for open-ended Q&A, are out of scope for this
+submission.
+
+Reason: Timeline risk. These are separate, harder systems layered on top of the core
+pipeline. Static generated output is demonstrated instead, with live editing and
+open-ended Q&A noted as future extensions.
+
+Status: Accepted
+
 Python 3.14 is fine as-is, no downgrade needed
 Use raw sqlite3, not SQLModel
 Frontend dev server proxies /api to localhost:8000 (no extra tooling)

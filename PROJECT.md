@@ -18,10 +18,11 @@ Transformation/consulting teams assessing which of a client's workflows are wort
 ## Core Features (in priority order — do not reorder without updating this file)
 1. Extraction Agent — raw document/transcript → structured step list
 2. Analysis & Decision Engine — per-step scoring (repetitiveness, judgment need, compliance sensitivity, AI-suitability) + reasoning + verdict
-3. Redesign Generator — agent-first redesign proposal for "redesign" verdict steps
-4. Portfolio Dashboard — complexity/exception grid across all analyzed workflows
-5. Executive Report — auto-generated consulting-style summary
-6. Chat Assistant (STRETCH — build only if 1-5 are done and stable)
+3. Automation Blueprint Generator — templated conventional automation proposal for "automate" verdict steps
+4. Redesign Generator — agent-first redesign proposal for "redesign" verdict steps
+5. Portfolio Dashboard — complexity/exception grid across all analyzed workflows
+6. Executive Report — auto-generated consulting-style summary
+7. Chat Assistant (STRETCH — build only if 1-6 are done and stable; open-ended master routing/Q&A remains deferred)
 
 ## Non-Goals (v1)
 - No live enterprise system integration (no ERP/CRM connectors)
@@ -29,6 +30,8 @@ Transformation/consulting teams assessing which of a client's workflows are wort
 - No multi-tenant auth/user management — single demo user is fine
 - No node-based visual workflow builder in the UI
 - No support for industries beyond investment management in the demo set
+- No live conversational workflow editing of generated automation or redesign output in v1; this is a deferred future extension, not a rejected idea.
+- No master routing agent for open-ended Q&A in v1; this is a deferred future extension, not a rejected idea.
 
 ## Constraints
 - Must be a real web application (not a no-code platform)

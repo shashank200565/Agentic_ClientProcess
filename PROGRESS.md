@@ -19,14 +19,17 @@ successfully extracted through a live OpenCode Go call.
 - [x] OpenCode Go client with structured JSON mode and model overrides (`backend/pipeline/llm_client.py`)
 - [x] Structured extraction pipeline and `/analyze/extract` text/PDF route
 - [x] Local-only initial Git commit (`a86f143`)
+- [x] Documentation scope updated for LangGraph orchestration, LangSmith observability, automation blueprints, static diagrams, and resumable workflow sessions
+- [x] Frontend scaffold with real upload flow, placeholder step review scoring, and routed placeholder shells
 
 ## Currently Working On
-Phase 0 team scoring/reconciliation and broader extraction validation against 3-4
-labeled workflows
+Phase 0 team scoring/reconciliation and frontend integration beyond the implemented
+`/analyze/extract` route
 
 ## Blocked
 None. The API key is configured locally in `backend/.env` and is ignored by Git.
 
 ## Last OpenCode Report
 Phase 1 backend foundation implemented through extraction; first live extraction
-verified for `trade_confirmation_matching`. No Decision Engine code was added.
+verified for `trade_confirmation_matching`. Phase 5 frontend scaffolding started;
+no Decision Engine code was added.
