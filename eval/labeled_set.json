@@ -33,8 +33,7 @@
         {"step_id": "3", "name": "Mandate limit lookup", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
         {"step_id": "4", "name": "Threshold comparison", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
         {"step_id": "5", "name": "Exception record creation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "6", "name": "Handoff to investigation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"},
-        {"step_id": "7", "name": "Review and escalation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"}
+        {"step_id": "6", "name": "Handoff to investigation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"}
       ]
     },
     {
