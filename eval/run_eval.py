@@ -4,10 +4,9 @@ Usage:
     python eval/run_eval.py --predictions path/to/predictions.json
 
 Predictions may be a list of workflow objects or an object containing a
-``workflows`` list. Each predicted step must contain ``workflow_id``,
-``step_id``, and either a ``scores`` object or the four score fields directly.
-The optional ``verdict`` or ``expected_verdict`` field is evaluated as the
-predicted verdict; the labeled set's verdict is never inferred from scores.
+``workflows`` list. Each predicted step should contain ``workflow_id``,
+``step_id``, the four flat score fields, and ``verdict``. The previous nested
+``scores``/``expected_verdict`` shape is accepted as a migration fallback.
 """
 
 from __future__ import annotations
@@ -15,17 +14,23 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 
 DIMENSIONS = (
     "repetitiveness",
-    "judgment_need",
+    "judgment",
     "compliance_sensitivity",
     "ai_suitability",
 )
+
+LEGACY_DIMENSIONS = {
+    "repetitiveness": "repetitiveness",
+    "judgment": "judgment_need",
+    "compliance_sensitivity": "compliance_sensitivity",
+    "ai_suitability": "ai_suitability",
+}
 
 
 def load_json(path: Path) -> Any:
@@ -58,11 +63,22 @@ def step_index(workflows: list[dict[str, Any]], label_name: str) -> dict[tuple[s
     return index
 
 
-def predicted_scores(step: dict[str, Any]) -> dict[str, Any]:
-    scores = step.get("scores", step)
-    if not isinstance(scores, dict):
+def step_scores(step: dict[str, Any]) -> dict[str, Any]:
+    """Read flat scores, with a temporary fallback for the old nested shape."""
+
+    if all(dimension in step for dimension in DIMENSIONS):
+        return {dimension: step.get(dimension) for dimension in DIMENSIONS}
+    nested_scores = step.get("scores", {})
+    if not isinstance(nested_scores, dict):
         return {}
-    return {dimension: scores.get(dimension) for dimension in DIMENSIONS}
+    return {
+        dimension: nested_scores.get(LEGACY_DIMENSIONS[dimension])
+        for dimension in DIMENSIONS
+    }
+
+
+def step_verdict(step: dict[str, Any]) -> Any:
+    return step.get("verdict", step.get("expected_verdict"))
 
 
 def main() -> int:
@@ -82,14 +98,10 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        labels = step_index(
-            workflows_from(load_json(args.labeled_set), args.labeled_set),
-            "labeled set",
-        )
-        predictions = step_index(
-            workflows_from(load_json(args.predictions), args.predictions),
-            "predictions",
-        )
+        labeled_workflows = workflows_from(load_json(args.labeled_set), args.labeled_set)
+        predicted_workflows = workflows_from(load_json(args.predictions), args.predictions)
+        labels = step_index(labeled_workflows, "labeled set")
+        predictions = step_index(predicted_workflows, "predictions")
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
@@ -97,6 +109,9 @@ def main() -> int:
     missing = sorted(set(labels) - set(predictions))
     unexpected = sorted(set(predictions) - set(labels))
     comparable = sorted(set(labels) & set(predictions))
+    labeled_workflow_ids = {workflow["workflow_id"] for workflow in labeled_workflows}
+    predicted_workflow_ids = {workflow["workflow_id"] for workflow in predicted_workflows}
+    comparable_workflows = labeled_workflow_ids & predicted_workflow_ids
     counts = {dimension: {"exact": 0, "within_1": 0} for dimension in DIMENSIONS}
     absolute_errors = {dimension: 0 for dimension in DIMENSIONS}
     score_counts = {dimension: 0 for dimension in DIMENSIONS}
@@ -108,8 +123,8 @@ def main() -> int:
     for key in comparable:
         label = labels[key]
         prediction = predictions[key]
-        label_scores = label.get("scores", {})
-        predicted = predicted_scores(prediction)
+        label_scores = step_scores(label)
+        predicted = step_scores(prediction)
         label_name = f"{key[0]}/{key[1]}"
         for dimension in DIMENSIONS:
             actual = label_scores.get(dimension)
@@ -123,15 +138,19 @@ def main() -> int:
             counts[dimension]["exact"] += error == 0
             counts[dimension]["within_1"] += error <= 1
 
-        predicted_verdict = prediction.get("verdict", prediction.get("expected_verdict"))
+        actual_verdict = step_verdict(label)
+        predicted_verdict = step_verdict(prediction)
         if predicted_verdict is not None:
             verdict_count += 1
-            if predicted_verdict == label.get("expected_verdict"):
+            if predicted_verdict == actual_verdict:
                 verdict_exact += 1
             elif predicted_verdict not in {"leave_as_is", "automate", "redesign"}:
                 invalid_verdicts.append(label_name)
 
     report: dict[str, Any] = {
+        "labeled_workflows": len(labeled_workflows),
+        "predicted_workflows": len(predicted_workflows),
+        "comparable_workflows": len(comparable_workflows),
         "labeled_steps": len(labels),
         "predicted_steps": len(predictions),
         "comparable_steps": len(comparable),

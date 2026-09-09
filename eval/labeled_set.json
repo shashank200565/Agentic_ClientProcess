@@ -1,178 +1,92 @@
 {
-  "schema_version": "phase-0-v1",
-  "label_status": "draft_pending_team_reconciliation",
-  "domain": "investment_management",
-  "description": "Initial investment-management workflow set for independent team scoring and reconciliation.",
-  "score_dimensions": [
-    "repetitiveness",
-    "judgment_need",
-    "compliance_sensitivity",
-    "ai_suitability"
-  ],
+  "meta": {
+    "source": "pdf_sop",
+    "scoring_method": "AI-drafted (initial pass + reasoning-checked revision), team-reviewed and validated",
+    "rubric_version": "eval/rubric.md",
+    "dimensions": ["repetitiveness", "judgment", "compliance_sensitivity", "ai_suitability"],
+    "scale": "1-5, 5 = high",
+    "verdict_values": ["leave_as_is", "automate", "redesign"],
+    "status": "pending_team_readthrough"
+  },
   "workflows": [
     {
       "workflow_id": "trade_confirmation_matching",
-      "name": "Trade confirmation matching",
-      "source_type": "initial_domain_draft",
+      "name": "Trade Confirmation Matching",
+      "source_file": "01_trade_confirmation_matching.pdf",
       "steps": [
-        {"step_id": "tcm-01", "name": "Collect trade records", "description": "Collect executed trade records from the order management system and broker confirmations.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "High-volume structured retrieval with stable source fields."},
-        {"step_id": "tcm-02", "name": "Match trade fields", "description": "Compare security, side, quantity, price, currency, trade date, settlement date, and account across the two records.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Deterministic field comparison is auditable and exception-friendly."},
-        {"step_id": "tcm-03", "name": "Investigate unmatched trade", "description": "Review an unmatched or partially matched trade, contact the broker or trader, and determine the cause of the discrepancy.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 4, "ai_suitability": 3}, "expected_verdict": "redesign", "evidence": "Repeated exceptions need better data and escalation design before automation."},
-        {"step_id": "tcm-04", "name": "Release settlement exception", "description": "Approve or reject the proposed correction and record the evidence before settlement instructions proceed.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "High-control approval depends on accountable operations judgment."}
+        {"step_id": "1", "name": "Receive & validate confirmation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Identify internal record", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "3", "name": "Field-level reconciliation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "4", "name": "Update status on match", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "5", "name": "Record mismatch, route to queue", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "6", "name": "Operational review of exceptions", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 3, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "7", "name": "Escalate unresolved", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"}
       ]
     },
     {
-      "workflow_id": "exposure_limit_check",
-      "name": "Exposure limit check",
-      "source_type": "initial_domain_draft",
+      "workflow_id": "passive_exposure_limit_check",
+      "name": "Passive Exposure Limit Check",
+      "source_file": "02_passive_exposure_limit_check.pdf",
       "steps": [
-        {"step_id": "elc-01", "name": "Load positions and limits", "description": "Load end-of-day positions, look-through exposures, and approved mandate limits for each portfolio.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Scheduled structured data collection with repeatable controls."},
-        {"step_id": "elc-02", "name": "Calculate exposures", "description": "Calculate issuer, sector, country, currency, and asset-class exposures against the configured limits.", "scores": {"repetitiveness": 5, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Rule-based computation is highly suitable if limit configuration is governed."},
-        {"step_id": "elc-03", "name": "Classify breach", "description": "Determine whether an exception is a genuine breach, a data-timing issue, or an approved temporary tolerance.", "scores": {"repetitiveness": 4, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "redesign", "evidence": "Exception taxonomy and data lineage should be standardized before agentic handling."},
-        {"step_id": "elc-04", "name": "Escalate confirmed breach", "description": "Notify the portfolio manager and compliance officer, document the breach, and track remediation to closure.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 3}, "expected_verdict": "leave_as_is", "evidence": "Escalation accountability and materiality decisions remain human-led."}
+        {"step_id": "1", "name": "Portfolio snapshot load", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Exposure % calculation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "3", "name": "Mandate limit lookup", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "4", "name": "Threshold comparison", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "5", "name": "Exception record creation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "6", "name": "Handoff to investigation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"},
+        {"step_id": "7", "name": "Review and escalation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"}
       ]
     },
     {
       "workflow_id": "mandate_breach_investigation",
-      "name": "Mandate breach investigation",
-      "source_type": "initial_domain_draft",
+      "name": "Mandate Breach Root-Cause Investigation",
+      "source_file": "03_mandate_breach_root_cause_investigation.pdf",
       "steps": [
-        {"step_id": "mbi-01", "name": "Receive breach alert", "description": "Receive an alert identifying a possible investment guideline or client mandate breach.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Alert intake and routing are structured and time-sensitive."},
-        {"step_id": "mbi-02", "name": "Reconstruct portfolio state", "description": "Reconstruct holdings, transactions, prices, cash, and applicable mandate rules at the time of the suspected breach.", "scores": {"repetitiveness": 3, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "redesign", "evidence": "Data lineage and time-versioned rules must be improved before reliable automation."},
-        {"step_id": "mbi-03", "name": "Assess cause and materiality", "description": "Determine whether the event was caused by trading, market movement, data error, or client instruction and assess materiality.", "scores": {"repetitiveness": 2, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Contextual fiduciary and compliance judgment is central."},
-        {"step_id": "mbi-04", "name": "Prepare breach report", "description": "Prepare the documented breach analysis, corrective action, client communication recommendation, and approval record.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 3}, "expected_verdict": "redesign", "evidence": "Drafting can be assisted, but approval and workflow controls need redesign."}
+        {"step_id": "1", "name": "Case initiation", "repetitiveness": 3, "judgment": 2, "compliance_sensitivity": 3, "ai_suitability": 3, "verdict": "automate"},
+        {"step_id": "2", "name": "Mandate retrieval", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "3", "name": "Position evidence gathering", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 4, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "4", "name": "Transaction history review", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 4, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "5", "name": "Exception/waiver search", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "6", "name": "Corporate action / passive movement check", "repetitiveness": 1, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "7", "name": "Root-cause assessment (synthesis)", "repetitiveness": 1, "judgment": 5, "compliance_sensitivity": 5, "ai_suitability": 5, "verdict": "redesign"},
+        {"step_id": "8", "name": "Genuine breach vs false positive", "repetitiveness": 1, "judgment": 5, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "9", "name": "Compliance write-up", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "10", "name": "Escalation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 5, "ai_suitability": 2, "verdict": "leave_as_is"}
       ]
     },
     {
       "workflow_id": "client_onboarding_suitability_review",
-      "name": "Client onboarding suitability review",
-      "source_type": "initial_domain_draft",
+      "name": "New Client Onboarding — Suitability Review",
+      "source_file": "04_new_client_onboarding_suitability_review.pdf",
       "steps": [
-        {"step_id": "cos-01", "name": "Collect client information", "description": "Collect identity, financial circumstances, investment objectives, experience, restrictions, and risk information from the client.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Structured intake and completeness checks can be automated with consent controls."},
-        {"step_id": "cos-02", "name": "Validate evidence", "description": "Validate identity, source documents, financial evidence, and required disclosures for completeness and consistency.", "scores": {"repetitiveness": 4, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "redesign", "evidence": "Document and exception handling should be standardized before automation."},
-        {"step_id": "cos-03", "name": "Assess suitability", "description": "Assess whether the proposed investment approach is suitable for the client's objectives, capacity for loss, and constraints.", "scores": {"repetitiveness": 3, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Client-specific judgment and duty of care cannot be delegated to a black box."},
-        {"step_id": "cos-04", "name": "Approve onboarding", "description": "Review the suitability rationale and approve the client relationship or request clarification and remediation.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Accountable approval should remain with an appropriately authorized professional."}
+        {"step_id": "1", "name": "Client submission intake", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Completeness review", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 2, "verdict": "automate"},
+        {"step_id": "3", "name": "Investment objective assessment", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 4, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "4", "name": "Risk tolerance assessment", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "5", "name": "Regulatory/internal constraints check", "repetitiveness": 3, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "6", "name": "Inconsistency identification", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "7", "name": "Clarification & evidence gathering", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 4, "ai_suitability": 3, "verdict": "leave_as_is"},
+        {"step_id": "8", "name": "Suitability determination", "repetitiveness": 1, "judgment": 5, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "9", "name": "Determination memo", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "10", "name": "Approval & record retention", "repetitiveness": 3, "judgment": 1, "compliance_sensitivity": 5, "ai_suitability": 1, "verdict": "leave_as_is"}
       ]
     },
     {
-      "workflow_id": "quarterly_performance_reporting",
-      "name": "Quarterly performance reporting",
-      "source_type": "initial_domain_draft",
+      "workflow_id": "quarterly_performance_report_generation",
+      "name": "Quarterly Performance Report Generation",
+      "source_file": "05_quarterly_performance_report_generation.pdf",
       "steps": [
-        {"step_id": "qpr-01", "name": "Collect performance inputs", "description": "Collect portfolio returns, benchmark data, holdings, cash flows, fees, and commentary inputs for the reporting period.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Recurring structured data assembly with clear period boundaries."},
-        {"step_id": "qpr-02", "name": "Calculate and reconcile returns", "description": "Calculate time-weighted and money-weighted returns where applicable and reconcile them to the performance system.", "scores": {"repetitiveness": 5, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Calculation and reconciliation rules are repeatable and testable."},
-        {"step_id": "qpr-03", "name": "Investigate performance variance", "description": "Investigate material differences from benchmark or prior period and determine the investment and data drivers.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 3, "ai_suitability": 3}, "expected_verdict": "redesign", "evidence": "Variance analysis needs a better evidence and narrative workflow before automation."},
-        {"step_id": "qpr-04", "name": "Review client report", "description": "Review the draft report for accuracy, fair presentation, client context, and appropriate commentary before release.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 4, "ai_suitability": 3}, "expected_verdict": "leave_as_is", "evidence": "Final communication judgment and accountability remain human responsibilities."}
-      ]
-    },
-    {
-      "workflow_id": "cash_reconciliation",
-      "name": "Cash reconciliation",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "car-01", "name": "Import cash records", "description": "Import bank, custodian, and internal ledger cash balances for each account and currency.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "High-volume structured ingestion with predictable inputs."},
-        {"step_id": "car-02", "name": "Match balances and movements", "description": "Match balances and cash movements across bank, custodian, and internal records and identify breaks.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Deterministic matching is auditable and suitable for exception queues."},
-        {"step_id": "car-03", "name": "Investigate reconciliation break", "description": "Trace an unexplained difference to a settlement, fee, FX, timing, or booking issue and gather supporting evidence.", "scores": {"repetitiveness": 3, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 4}, "expected_verdict": "redesign", "evidence": "Exception categories and source ownership should be standardized first."},
-        {"step_id": "car-04", "name": "Approve adjustment", "description": "Approve a correcting journal or escalation after reviewing evidence and segregation-of-duty requirements.", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Financial control approval requires accountable human review."}
-      ]
-    },
-    {
-      "workflow_id": "corporate_action_election",
-      "name": "Corporate action election",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "cae-01", "name": "Capture event notice", "description": "Capture a corporate action notice, key dates, eligible holdings, and available election options from the custodian.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 4}, "expected_verdict": "redesign", "evidence": "Notice normalization and deadline controls vary by issuer and need stronger process design."},
-        {"step_id": "cae-02", "name": "Determine portfolio eligibility", "description": "Determine affected portfolios and positions using record-date holdings and account restrictions.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Eligibility is structured when holdings and terms are reliable."},
-        {"step_id": "cae-03", "name": "Choose election", "description": "Choose among cash, stock, tender, or other options based on mandate, portfolio strategy, tax, and client instructions.", "scores": {"repetitiveness": 2, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 1}, "expected_verdict": "leave_as_is", "evidence": "The election is a material investment and client-specific decision."},
-        {"step_id": "cae-04", "name": "Submit and confirm election", "description": "Submit the approved election before the deadline and confirm acceptance and settlement with the custodian.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Controlled submission and confirmation are repeatable after approval."}
-      ]
-    },
-    {
-      "workflow_id": "investment_guideline_coding",
-      "name": "Investment guideline coding",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "igc-01", "name": "Read mandate language", "description": "Review the signed investment management agreement and identify restrictions, thresholds, exceptions, and effective dates.", "scores": {"repetitiveness": 2, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Legal and client-specific interpretation is highly contextual."},
-        {"step_id": "igc-02", "name": "Translate restriction to rule", "description": "Translate mandate language into a proposed machine-checkable rule with data requirements and tolerance handling.", "scores": {"repetitiveness": 2, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "redesign", "evidence": "The process needs joint legal, investment, and data design rather than direct automation."},
-        {"step_id": "igc-03", "name": "Test rule against history", "description": "Run the proposed rule against representative historical positions and investigate false positives and false negatives.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 3}, "expected_verdict": "redesign", "evidence": "Testing is repeatable but requires redesigned evidence and exception governance."},
-        {"step_id": "igc-04", "name": "Approve rule deployment", "description": "Approve the coded restriction, version it, assign an owner, and release it into production monitoring.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Control ownership and authorization must remain explicit and human."}
-      ]
-    },
-    {
-      "workflow_id": "performance_fee_calculation",
-      "name": "Performance fee calculation",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "pfc-01", "name": "Load fee terms", "description": "Load the applicable fee schedule, hurdle, high-water mark, crystallization date, and client-specific terms.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "redesign", "evidence": "Terms and effective-date data need stronger governance before automation."},
-        {"step_id": "pfc-02", "name": "Calculate provisional fee", "description": "Calculate the provisional performance fee using approved valuation, return, benchmark, and high-water-mark inputs.", "scores": {"repetitiveness": 5, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Once terms are controlled, the calculation is repeatable and testable."},
-        {"step_id": "pfc-03", "name": "Review unusual result", "description": "Investigate an unexpected fee result caused by flows, series, side pockets, valuation changes, or amended terms.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 3}, "expected_verdict": "redesign", "evidence": "Exception handling and valuation evidence need a consistent workflow."},
-        {"step_id": "pfc-04", "name": "Approve fee invoice", "description": "Review the final fee calculation and approve the invoice or client statement for release.", "scores": {"repetitiveness": 3, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 3}, "expected_verdict": "leave_as_is", "evidence": "Financial and client-impacting approval requires human accountability."}
-      ]
-    },
-    {
-      "workflow_id": "aml_kyc_periodic_review",
-      "name": "AML and KYC periodic review",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "akr-01", "name": "Identify reviews due", "description": "Identify clients whose periodic AML, KYC, sanctions, or beneficial-ownership review is due.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 5, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Due-date identification is structured and should be consistently monitored."},
-        {"step_id": "akr-02", "name": "Request updated documents", "description": "Request current identity, ownership, source-of-wealth, and tax-residency documentation from the client or intermediary.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Standardized outreach and completeness tracking are suitable for controlled automation."},
-        {"step_id": "akr-03", "name": "Assess risk and discrepancies", "description": "Assess updated information, investigate discrepancies, and determine whether enhanced due diligence is required.", "scores": {"repetitiveness": 3, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Regulated risk judgment and escalation should remain with compliance professionals."},
-        {"step_id": "akr-04", "name": "Record review outcome", "description": "Record the review outcome, evidence, risk rating, restrictions, and next-review date in the client record.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Structured record updates are repeatable with authorization and audit logging."}
-      ]
-    },
-    {
-      "workflow_id": "portfolio_rebalancing_proposal",
-      "name": "Portfolio rebalancing proposal",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "prp-01", "name": "Detect drift", "description": "Compare current portfolio weights with targets, bands, cash needs, and approved investment restrictions.", "scores": {"repetitiveness": 5, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Drift detection is structured and can produce a transparent exception list."},
-        {"step_id": "prp-02", "name": "Generate trade proposal", "description": "Generate candidate trades that address drift while considering liquidity, tax, transaction costs, and restrictions.", "scores": {"repetitiveness": 4, "judgment_need": 4, "compliance_sensitivity": 4, "ai_suitability": 3}, "expected_verdict": "redesign", "evidence": "Optimization inputs and approval boundaries need redesign before agentic proposals."},
-        {"step_id": "prp-03", "name": "Review investment rationale", "description": "Review the candidate trades and decide whether they fit the portfolio objective, market view, client context, and current risks.", "scores": {"repetitiveness": 3, "judgment_need": 5, "compliance_sensitivity": 4, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Investment judgment and client context remain central."},
-        {"step_id": "prp-04", "name": "Approve rebalance", "description": "Approve the final rebalance, document rationale, and release authorized orders for execution.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Material trading authorization requires accountable human approval."}
-      ]
-    },
-    {
-      "workflow_id": "liquidity_stress_test",
-      "name": "Liquidity stress test",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "lst-01", "name": "Load liquidity data", "description": "Load positions, market volumes, redemption assumptions, cash balances, and security liquidity classifications.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Recurring structured data assembly is suitable with data-quality checks."},
-        {"step_id": "lst-02", "name": "Run stress scenarios", "description": "Run approved redemption, market-volume, spread, and settlement scenarios across portfolios and funds.", "scores": {"repetitiveness": 4, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Scenario execution is repeatable when assumptions are versioned."},
-        {"step_id": "lst-03", "name": "Interpret liquidity result", "description": "Interpret stressed cash needs, gates, liquidation horizons, and investor impacts under the scenario results.", "scores": {"repetitiveness": 3, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Forward-looking risk interpretation requires senior judgment."},
-        {"step_id": "lst-04", "name": "Recommend mitigation", "description": "Recommend cash buffers, dealing restrictions, asset sales, or client communication based on the stress findings.", "scores": {"repetitiveness": 2, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Mitigation choices are consequential and context-dependent."}
-      ]
-    },
-    {
-      "workflow_id": "client_reporting_data_validation",
-      "name": "Client reporting data validation",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "crv-01", "name": "Load report data", "description": "Load positions, returns, benchmarks, fees, exposures, and client metadata into the reporting dataset.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Scheduled structured ingestion is highly repeatable."},
-        {"step_id": "crv-02", "name": "Run validation rules", "description": "Run completeness, reconciliation, period, sign, decimal, and benchmark validation rules against the report dataset.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Rule-based validation is transparent and auditable."},
-        {"step_id": "crv-03", "name": "Resolve data exception", "description": "Investigate a validation exception with the data owner and determine whether to correct, suppress, or escalate it.", "scores": {"repetitiveness": 3, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 4}, "expected_verdict": "redesign", "evidence": "Ownership and exception policy should be standardized before automation."},
-        {"step_id": "crv-04", "name": "Certify report data", "description": "Certify that report data is complete and accurate enough for client distribution and retain the evidence.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Certification is an accountable control decision."}
-      ]
-    },
-    {
-      "workflow_id": "nav_oversight_exception_review",
-      "name": "NAV oversight exception review",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "nor-01", "name": "Receive NAV package", "description": "Receive the administrator's NAV package, valuation files, holdings, cash, and exception reports.", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Package intake and completeness checks are structured."},
-        {"step_id": "nor-02", "name": "Compare valuation movements", "description": "Compare valuation movements, prices, FX, corporate actions, expenses, and unit changes against expected tolerances.", "scores": {"repetitiveness": 5, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Repeatable tolerances can identify a transparent exception queue."},
-        {"step_id": "nor-03", "name": "Assess materiality", "description": "Assess whether a NAV exception is material, requires correction, affects investors, or can be accepted with documentation.", "scores": {"repetitiveness": 3, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Materiality and investor impact require accountable judgment."},
-        {"step_id": "nor-04", "name": "Approve NAV release", "description": "Approve release of the NAV or require correction and investor-impact analysis before publication.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Final release is a high-consequence control decision."}
-      ]
-    },
-    {
-      "workflow_id": "best_execution_surveillance",
-      "name": "Best execution surveillance",
-      "source_type": "initial_domain_draft",
-      "steps": [
-        {"step_id": "bes-01", "name": "Collect execution data", "description": "Collect orders, fills, venues, timestamps, prices, benchmarks, liquidity, and broker information for the review period.", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 5, "ai_suitability": 5}, "expected_verdict": "automate", "evidence": "Structured high-volume data collection is suitable with lineage controls."},
-        {"step_id": "bes-02", "name": "Run execution analytics", "description": "Run transaction-cost, price, venue, timing, and outlier analytics against approved best-execution benchmarks.", "scores": {"repetitiveness": 4, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 4}, "expected_verdict": "automate", "evidence": "Analytics are repeatable when benchmarks and data definitions are governed."},
-        {"step_id": "bes-03", "name": "Investigate outlier", "description": "Investigate an execution outlier using market conditions, order instructions, liquidity, broker rationale, and client restrictions.", "scores": {"repetitiveness": 3, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 3}, "expected_verdict": "redesign", "evidence": "Evidence assembly and investigation workflow need stronger standardization."},
-        {"step_id": "bes-04", "name": "Conclude surveillance review", "description": "Conclude whether execution quality and broker arrangements remain appropriate and record any escalation or remediation.", "scores": {"repetitiveness": 2, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 2}, "expected_verdict": "leave_as_is", "evidence": "Regulatory conclusion and remediation judgment should remain human-led."}
+        {"step_id": "1", "name": "Data source identification", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Data availability check", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 2, "verdict": "automate"},
+        {"step_id": "3", "name": "Performance calculation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "4", "name": "Data review / anomaly check", "repetitiveness": 3, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 3, "verdict": "automate"},
+        {"step_id": "5", "name": "Controlled disclosure insertion", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 5, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "6", "name": "Portfolio activity review", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 3, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "7", "name": "Narrative commentary", "repetitiveness": 1, "judgment": 4, "compliance_sensitivity": 4, "ai_suitability": 5, "verdict": "redesign"},
+        {"step_id": "8", "name": "Report assembly", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 2, "verdict": "automate"},
+        {"step_id": "9", "name": "Quality review", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
+        {"step_id": "10", "name": "PM sign-off", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 1, "verdict": "leave_as_is"},
+        {"step_id": "11", "name": "Distribution & record", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"}
       ]
     }
   ]
