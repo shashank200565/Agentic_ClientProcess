@@ -1,0 +1,172 @@
+{
+  "workflows": [
+    {
+      "workflow_id": "trade_confirmation_matching",
+      "name": "01_trade_confirmation_matching",
+      "steps": [
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "1",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "reasoning": "Electronic broker confirmations arrive throughout the trading day with transaction identifiers and agreed economic terms, making intake highly repetitive and deterministic; however, reliable receipt and workflow placement support an auditable trade-control process, while AI adds little beyond existing automated ingestion.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "2",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "reasoning": "This is a high-volume, repeatable completeness check on broker confirmations using required-field and technical-format rules before field-level reconciliation; malformed records remain in the exception process, so expert interpretation is minimal and deterministic automation offers little incremental value beyond existing validation rules.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "3",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly searches structured internal order and trade records using identifiers, applies deterministic correspondence rules, and avoids subjective selection by routing multiple candidates to operational review; errors could affect trade-confirmation reconciliation controls, but AI adds limited value beyond reliable rules-based matching.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "4",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "reasoning": "This reconciliation repeats across candidate matches using fixed fields—ticker, quantity, price, and settlement date—with exact configured rules and no economic-meaning interpretation. Because it supports trade confirmation control and settlement accuracy, errors have significant financial, audit, and operational consequences. A deterministic rules engine is more reliable and efficient than incremental AI reasoning for these exact comparisons.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "5",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "reasoning": "This is a highly repetitive, deterministic status update triggered after configured field-level matching succeeds. It requires little judgment, but reconciliation status controls settlement progression and auditability, making errors operationally and compliance sensitive. AI adds minimal value beyond existing rules-based workflow automation.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "6",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly applies a fixed rule to quantity, price, settlement date, or other required-value mismatches, recording and routing trades without causal interpretation. Because it controls whether trades enter settlement and preserves an operational exception trail, errors could create financial, audit, and settlement-risk consequences. AI adds little beyond deterministic comparison, status prevention, mismatch recording, and queue placement.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "7",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "Exception review recurs within trade confirmation matching, but each case may require different order-history analysis, team contact, or corrected confirmation. Resolving discrepancies and selecting the established correction path requires specialist judgment, while inaccurate processing can affect trade records, auditability, and client or regulatory obligations. AI could assist with evidence synthesis, exception prioritization, and drafting, but variable facts and control sensitivity require mandatory human review.",
+          "verdict": "redesign"
+        }
+      ]
+    },
+    {
+      "workflow_id": "passive_exposure_limit_check",
+      "name": "02_passive_exposure_limit_check",
+      "steps": [
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "1",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeats each monitoring cycle with the latest NAV and holdings snapshot, applies defined completeness checks, and routes unavailable values through an existing process without estimation. It feeds the subsequent exposure and mandate-limit controls, so input errors could materially affect compliance, but the loading and validation activities are largely deterministic and offer limited incremental value from AI beyond rules-based automation.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "2",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This is a high-volume, repeatable calculation across holdings or issuer groupings using consistent market values and portfolio NAV. Configured methodology may require limited interpretation, but the percentage calculation is largely deterministic. Because it feeds passive exposure and mandate-limit checks, errors could create material compliance, fiduciary, audit, or client-impacting consequences. AI adds little beyond reliable rules-based calculation, validation, and exception handling.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "3",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "reasoning": "Applying configured mandate thresholds to each calculated exposure is highly repeatable and deterministic, with little judgment once numeric limits such as the five-percent NAV restriction are maintained. Errors can breach client investment mandates and require strong controls, but AI adds little beyond reliable rules-based lookup and comparison.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "4",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This portfolio-wide step repeatedly compares each calculated exposure with its applicable mandate threshold using a clear rule; exceeding the limit creates an exception without commercial interpretation. Because it is a mandate-control activity, errors may have significant compliance, fiduciary, and audit consequences, while AI adds little beyond a reliable rules engine.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "5",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeats a standardized record-creation process for each exceeded threshold, using defined fields such as portfolio, holding or issuer, measured exposure, permitted limit, and variance. Judgment is minimal because the preceding threshold comparison determines whether an exception exists. Compliance sensitivity is high because inaccurate records could impair monitoring, auditability, or escalation of mandate breaches. AI adds limited incremental value beyond deterministic record creation and reporting controls.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "6",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 3
+          },
+          "reasoning": "Exceptions recur through the monitoring workflow, but investigations vary by position and require additional information beyond numerical checks. Determining root cause and whether an exception is reportable requires specialist judgment, while misclassification could create serious regulatory, mandate, fiduciary, and reputational consequences. AI could assist with evidence gathering, case summarization, and preliminary reasoning, but controlled scope and mandatory human review are necessary.",
+          "verdict": "leave_as_is"
+        }
+      ]
+    }
+  ]
+}

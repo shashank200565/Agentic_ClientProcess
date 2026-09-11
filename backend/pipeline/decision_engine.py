@@ -67,6 +67,26 @@ explainability, error tolerance, and human oversight.
 High AI suitability does not mean full autonomy; a step can be highly AI-suitable
 and still require human approval.
 
+Calibration: score AI suitability by the incremental value of AI reasoning beyond
+what deterministic rules already achieve, not by whether an LLM is technically
+capable of performing the task. Use these anchors:
+- Exact field-matching against structured data, such as matching a broker
+  confirmation to an internal trade record, is usually 1-2 when there is no
+  interpretation of ambiguous or incomplete information; a rules engine already
+  performs it reliably and more cheaply.
+- Loading a portfolio snapshot, looking up a mandate limit, calculating an
+  exposure percentage, comparing a threshold, or creating a fixed exception record
+  is usually 1-2 when the operation is a deterministic lookup, calculation, or
+  status write with no material interpretation.
+- Reviewing variable transaction history, weighing evidence to determine root
+  cause, or drafting a conclusion from conflicting facts can be 3-4 because AI
+  reasoning may add value beyond deterministic automation, but controls and human
+  review remain necessary.
+Do not award a 4 or 5 merely because the step runs at high volume or an LLM could
+technically execute its instructions. Reserve 5 for cases where AI reasoning adds
+substantial value beyond a reliable rules engine through auditable interpretation,
+exception reasoning, or evidence synthesis.
+
 The reasoning must be at least 20 words and reference specific facts from the step
 description and workflow context. Avoid generic statements.
 """
