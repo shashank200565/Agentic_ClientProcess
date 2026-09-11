@@ -20,7 +20,11 @@
   "total_estimated_cost_usd": 0.0222,
   "gpt_reasoning_5h_request_quota_share": 0.022,
   "gpt_reasoning_monthly_request_quota_share": 0.0044,
-  "unexpected_generated_steps": ["quarterly_performance_report_generation/12"],
+  "unexpected_generated_steps": [
+    "quarterly_performance_report_generation/12"
+  ],
   "cost_estimate_method": "Provider-published GPT 5.6 Luna estimate: 1000 input tokens and 220 output tokens per request at $0.20/$1.20 per million; GLM-5.3-Flash estimate: 1000 input and 200 output at $0.15/$0.50 per million. Actual token usage and cached-token billing were not exposed by the route.",
-  "note": "Duration includes 5 extraction requests and 45 GPT 5.6 Luna scoring requests; evaluator metrics use the 44 labeled/comparable steps."
+  "note": "Duration includes 5 extraction requests and 45 GPT 5.6 Luna scoring requests; evaluator metrics use the 44 labeled/comparable steps.",
+  "extraction_granularity_corrected": true,
+  "correction_note": "quarterly_performance_report_generation: extracted steps 1-2 (establish reporting period + retrieve portfolio/benchmark data) merged into one step matching labeled step 1 scope. Extracted steps 3-12 renumbered to 2-11. Previously extracted step 12 (Distribute report and retain records) aligns to labeled step 11. Extraction step count corrected from 12 to 11."
 }

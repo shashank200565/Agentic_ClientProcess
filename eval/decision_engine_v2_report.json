@@ -3,130 +3,85 @@
   "predicted_workflows": 5,
   "comparable_workflows": 5,
   "labeled_steps": 44,
-  "predicted_steps": 45,
+  "predicted_steps": 44,
   "comparable_steps": 44,
   "missing_predictions": [],
-  "unexpected_predictions": [
-    "quarterly_performance_report_generation/12"
-  ],
+  "unexpected_predictions": [],
   "dimensions": {
     "repetitiveness": {
       "count": 44,
-      "exact": 15,
-      "exact_rate": 0.3409090909090909,
-      "within_1": 33,
-      "within_1_rate": 0.75,
-      "mean_absolute_error": 0.9318181818181818
+      "exact": 16,
+      "exact_rate": 0.36363636363636365,
+      "within_1": 36,
+      "within_1_rate": 0.8181818181818182
     },
     "judgment_need": {
       "count": 44,
       "exact": 21,
       "exact_rate": 0.4772727272727273,
-      "within_1": 36,
-      "within_1_rate": 0.8181818181818182,
-      "mean_absolute_error": 0.7954545454545454
+      "within_1": 40,
+      "within_1_rate": 0.9090909090909091
     },
     "compliance_sensitivity": {
       "count": 44,
       "exact": 20,
       "exact_rate": 0.45454545454545453,
-      "within_1": 38,
-      "within_1_rate": 0.8636363636363636,
-      "mean_absolute_error": 0.6818181818181818
+      "within_1": 39,
+      "within_1_rate": 0.8863636363636364
     },
     "ai_suitability": {
       "count": 44,
-      "exact": 8,
-      "exact_rate": 0.18181818181818182,
-      "within_1": 36,
-      "within_1_rate": 0.8181818181818182,
-      "mean_absolute_error": 1.0
+      "exact": 9,
+      "exact_rate": 0.20454545454545456,
+      "within_1": 41,
+      "within_1_rate": 0.9318181818181818
     }
   },
   "verdict": {
     "predicted_count": 44,
-    "exact": 32,
-    "exact_rate": 0.7272727272727273
+    "exact": 37,
+    "exact_rate": 0.8409090909090909
   },
   "invalid_scores": [],
   "invalid_verdicts": [],
   "workflow_breakdown": {
-    "client_onboarding_suitability_review": {
-      "labeled_steps": 10,
-      "comparable_steps": 10,
+    "trade_confirmation_matching": {
+      "labeled_steps": 7,
+      "comparable_steps": 7,
       "dimensions": {
         "repetitiveness": {
-          "count": 10,
-          "exact": 3,
-          "exact_rate": 0.3,
-          "within_1": 8,
-          "within_1_rate": 0.8
-        },
-        "judgment_need": {
-          "count": 10,
-          "exact": 5,
-          "exact_rate": 0.5,
-          "within_1": 9,
-          "within_1_rate": 0.9
-        },
-        "compliance_sensitivity": {
-          "count": 10,
-          "exact": 7,
-          "exact_rate": 0.7,
-          "within_1": 10,
+          "count": 7,
+          "exact": 4,
+          "exact_rate": 0.5714285714285714,
+          "within_1": 7,
           "within_1_rate": 1.0
         },
-        "ai_suitability": {
-          "count": 10,
+        "judgment_need": {
+          "count": 7,
+          "exact": 6,
+          "exact_rate": 0.8571428571428571,
+          "within_1": 7,
+          "within_1_rate": 1.0
+        },
+        "compliance_sensitivity": {
+          "count": 7,
           "exact": 1,
-          "exact_rate": 0.1,
-          "within_1": 10,
+          "exact_rate": 0.14285714285714285,
+          "within_1": 5,
+          "within_1_rate": 0.7142857142857143
+        },
+        "ai_suitability": {
+          "count": 7,
+          "exact": 4,
+          "exact_rate": 0.5714285714285714,
+          "within_1": 7,
           "within_1_rate": 1.0
         }
       },
       "verdict": {
-        "predicted_count": 10,
-        "exact": 8,
-        "exact_rate": 0.8
-      }
-    },
-    "mandate_breach_investigation": {
-      "labeled_steps": 10,
-      "comparable_steps": 10,
-      "dimensions": {
-        "repetitiveness": {
-          "count": 10,
-          "exact": 1,
-          "exact_rate": 0.1,
-          "within_1": 6,
-          "within_1_rate": 0.6
-        },
-        "judgment_need": {
-          "count": 10,
-          "exact": 6,
-          "exact_rate": 0.6,
-          "within_1": 9,
-          "within_1_rate": 0.9
-        },
-        "compliance_sensitivity": {
-          "count": 10,
-          "exact": 6,
-          "exact_rate": 0.6,
-          "within_1": 10,
-          "within_1_rate": 1.0
-        },
-        "ai_suitability": {
-          "count": 10,
-          "exact": 1,
-          "exact_rate": 0.1,
-          "within_1": 8,
-          "within_1_rate": 0.8
-        }
-      },
-      "verdict": {
-        "predicted_count": 10,
-        "exact": 8,
-        "exact_rate": 0.8
+        "predicted_count": 7,
+        "exact": 7,
+        "exact_rate": 1.0
       }
     },
     "passive_exposure_limit_check": {
@@ -168,82 +123,121 @@
         "exact_rate": 1.0
       }
     },
+    "mandate_breach_investigation": {
+      "labeled_steps": 10,
+      "comparable_steps": 10,
+      "dimensions": {
+        "repetitiveness": {
+          "count": 10,
+          "exact": 1,
+          "exact_rate": 0.1,
+          "within_1": 6,
+          "within_1_rate": 0.6
+        },
+        "judgment_need": {
+          "count": 10,
+          "exact": 6,
+          "exact_rate": 0.6,
+          "within_1": 9,
+          "within_1_rate": 0.9
+        },
+        "compliance_sensitivity": {
+          "count": 10,
+          "exact": 6,
+          "exact_rate": 0.6,
+          "within_1": 10,
+          "within_1_rate": 1.0
+        },
+        "ai_suitability": {
+          "count": 10,
+          "exact": 1,
+          "exact_rate": 0.1,
+          "within_1": 8,
+          "within_1_rate": 0.8
+        }
+      },
+      "verdict": {
+        "predicted_count": 10,
+        "exact": 8,
+        "exact_rate": 0.8
+      }
+    },
+    "client_onboarding_suitability_review": {
+      "labeled_steps": 10,
+      "comparable_steps": 10,
+      "dimensions": {
+        "repetitiveness": {
+          "count": 10,
+          "exact": 3,
+          "exact_rate": 0.3,
+          "within_1": 8,
+          "within_1_rate": 0.8
+        },
+        "judgment_need": {
+          "count": 10,
+          "exact": 5,
+          "exact_rate": 0.5,
+          "within_1": 9,
+          "within_1_rate": 0.9
+        },
+        "compliance_sensitivity": {
+          "count": 10,
+          "exact": 7,
+          "exact_rate": 0.7,
+          "within_1": 10,
+          "within_1_rate": 1.0
+        },
+        "ai_suitability": {
+          "count": 10,
+          "exact": 1,
+          "exact_rate": 0.1,
+          "within_1": 10,
+          "within_1_rate": 1.0
+        }
+      },
+      "verdict": {
+        "predicted_count": 10,
+        "exact": 8,
+        "exact_rate": 0.8
+      }
+    },
     "quarterly_performance_report_generation": {
       "labeled_steps": 11,
       "comparable_steps": 11,
       "dimensions": {
         "repetitiveness": {
           "count": 11,
-          "exact": 3,
-          "exact_rate": 0.2727272727272727,
-          "within_1": 6,
-          "within_1_rate": 0.5454545454545454
+          "exact": 4,
+          "exact_rate": 0.36363636363636365,
+          "within_1": 9,
+          "within_1_rate": 0.8181818181818182
         },
         "judgment_need": {
           "count": 11,
           "exact": 2,
           "exact_rate": 0.18181818181818182,
-          "within_1": 6,
-          "within_1_rate": 0.5454545454545454
+          "within_1": 10,
+          "within_1_rate": 0.9090909090909091
         },
         "compliance_sensitivity": {
           "count": 11,
           "exact": 2,
           "exact_rate": 0.18181818181818182,
-          "within_1": 8,
-          "within_1_rate": 0.7272727272727273
+          "within_1": 9,
+          "within_1_rate": 0.8181818181818182
         },
         "ai_suitability": {
           "count": 11,
-          "exact": 1,
-          "exact_rate": 0.09090909090909091,
-          "within_1": 5,
-          "within_1_rate": 0.45454545454545453
+          "exact": 2,
+          "exact_rate": 0.18181818181818182,
+          "within_1": 10,
+          "within_1_rate": 0.9090909090909091
         }
       },
       "verdict": {
         "predicted_count": 11,
-        "exact": 3,
-        "exact_rate": 0.2727272727272727
-      }
-    },
-    "trade_confirmation_matching": {
-      "labeled_steps": 7,
-      "comparable_steps": 7,
-      "dimensions": {
-        "repetitiveness": {
-          "count": 7,
-          "exact": 4,
-          "exact_rate": 0.5714285714285714,
-          "within_1": 7,
-          "within_1_rate": 1.0
-        },
-        "judgment_need": {
-          "count": 7,
-          "exact": 6,
-          "exact_rate": 0.8571428571428571,
-          "within_1": 7,
-          "within_1_rate": 1.0
-        },
-        "compliance_sensitivity": {
-          "count": 7,
-          "exact": 1,
-          "exact_rate": 0.14285714285714285,
-          "within_1": 5,
-          "within_1_rate": 0.7142857142857143
-        },
-        "ai_suitability": {
-          "count": 7,
-          "exact": 4,
-          "exact_rate": 0.5714285714285714,
-          "within_1": 7,
-          "within_1_rate": 1.0
-        }
-      },
-      "verdict": {
-        "predicted_count": 7,
-        "exact": 7,
-        "exact_rate": 1.0
+        "exact": 8,
+        "exact_rate": 0.7272727272727273
       }
     }
   }

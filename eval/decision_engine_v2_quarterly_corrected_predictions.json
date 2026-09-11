@@ -1,0 +1,149 @@
+{
+  "workflow_id": "quarterly_performance_report_generation",
+  "workflow_name": "05_quarterly_performance_report_generation",
+  "steps": [
+    {
+      "step_id": "1",
+      "name": "Data source identification",
+      "description": "At the close of each reporting quarter, the reporting team establishes the applicable reporting period, retrieves portfolio returns and benchmark information from the custodian or designated performance system, and identifies the approved data sources for the quarterly report.",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 2,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "This repeats each quarter using established reporting periods, custodial or designated performance systems, and approved-source controls. Judgment is limited but relevant when resolving applicable periods or source ambiguity. Errors could affect client-facing performance reports, benchmark comparisons, auditability, and PM approval. AI may assist retrieval and source validation, but deterministic controls generally provide greater reliability.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "2",
+      "name": "Perform data availability check",
+      "description": "The reporting analyst verifies that the required portfolio and benchmark information is available. Missing or inconsistent records are investigated using the established data-quality process, and the report is not finalized using unverified values merely because a deadline is approaching.",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 3,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 3
+      },
+      "reasoning": "This check recurs each quarterly client-reporting cycle and follows a consistent required-data pattern, but investigating inconsistent portfolio or benchmark records requires contextual judgment. Using unverified values could compromise client-facing performance disclosures, auditability, and PM sign-off, making compliance sensitivity significant. AI could assist with completeness checks, anomaly identification, and data-quality investigation, but controlled rules, evidence capture, and analyst review remain necessary.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "3",
+      "name": "Calculate performance and benchmark comparison",
+      "description": "Portfolio performance is calculated using the firm's established reporting methodology, and the resulting return is compared with the applicable benchmark return for the same period. Additional standard metrics required by the reporting template are calculated using the approved methodology and stored with the reporting data.",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 2,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "This is a recurring quarterly reporting calculation using an established methodology, same-period benchmark data, and approved standard metrics. Judgment is limited, but errors could affect client-facing performance disclosures, auditability, and PM sign-off. Deterministic calculation rules are likely more reliable and cheaper than AI, though AI could assist with controlled validation or exception detection.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "4",
+      "name": "Review calculated figures",
+      "description": "The calculated figures are reviewed for unexpected changes, missing values, or inconsistencies with the source data. Any issue identified is resolved before the figures are incorporated into the final client report, ensuring numerical information is traceable to the approved source.",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 3,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 3
+      },
+      "reasoning": "This review repeats each quarter across client-facing reports, but identifying unexpected changes, missing values, and source inconsistencies requires contextual judgment. Traceability to approved source data and resolution before PM sign-off create significant audit, client, and reporting-control sensitivity. AI can assist with anomaly detection, reconciliation, and exception explanations, but mandatory human review is appropriate because figures affect final disclosed performance information.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "5",
+      "name": "Insert controlled disclosure language",
+      "description": "The reporting team retrieves the current controlled version of the relevant template or disclosure library and inserts the approved risk disclosures and boilerplate wording into the appropriate sections without discretionary rewriting, since changes to controlled language may require separate review and approval.",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 1,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "This quarterly client-reporting step repeatedly retrieves approved disclosure language and inserts it into defined sections, with little interpretation; however, version control and unchanged wording are compliance-sensitive, while deterministic rules can perform retrieval and insertion more reliably than AI.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "6",
+      "name": "Review portfolio activity",
+      "description": "The reporting analyst or portfolio manager reviews material portfolio activity during the quarter, considering relevant purchases, sales, allocation changes, other events, and significant market developments that affected results, in order to identify factors genuinely useful for explaining the quarter to the client.",
+      "scores": {
+        "repetitiveness": 3,
+        "judgment_need": 4,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 3
+      },
+      "reasoning": "This recurs quarterly, but the relevant purchases, sales, allocation changes, market developments, and causal explanations vary materially by portfolio. It requires specialist judgment to distinguish genuinely client-useful drivers from incidental activity, while supporting client-facing disclosures subject to quality review and PM sign-off. AI could assist with activity retrieval, impact analysis, and evidence synthesis, but conflicting or material interpretations require controlled scope and human approval.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "7",
+      "name": "Prepare narrative performance commentary",
+      "description": "A written narrative is prepared to explain the principal drivers of performance in plain language, connecting multiple sources of information, distinguishing material drivers from incidental events, and presenting the explanation appropriately for the client. The reviewer checks that the narrative is consistent with the reported figures and portfolio activity.",
+      "scores": {
+        "repetitiveness": 3,
+        "judgment_need": 4,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 3
+      },
+      "reasoning": "Although prepared every quarter, the commentary requires variable interpretation of portfolio performance, benchmark comparisons, and activity to distinguish material drivers from incidental events. Client-appropriate framing and consistency checks against reported figures create substantial judgment and compliance exposure, while AI can assist with evidence synthesis and drafting only under mandatory reviewer and PM oversight.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "8",
+      "name": "Assemble report",
+      "description": "The calculated performance figures, benchmark comparison, approved disclosure language, and narrative commentary are placed into the appropriate sections of the standard client-facing template. Formatting checks are performed before the document is converted to its final PDF form.",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 2,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "This quarterly client-facing reporting step repeatedly places calculated performance, benchmark comparisons, approved disclosures, and commentary into a standard template. Formatting and PDF conversion are largely deterministic, but errors could affect disclosures, reported results, auditability, and PM sign-off, so controlled review remains important.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "9",
+      "name": "Conduct quality review",
+      "description": "The completed report is reviewed for numerical consistency, correct benchmark information, completeness of disclosures, and consistency between the narrative and the underlying portfolio activity. Errors identified are corrected before the report proceeds to final approval.",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 4,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 3
+      },
+      "reasoning": "The review repeats each quarter using a defined checklist, but requires expert comparison of narrative commentary with portfolio activity and interpretation of disclosure completeness. Numerical and benchmark checks are structured, while client-facing reporting, controlled language, PM approval, and distribution create significant audit, mandate, and reputational sensitivity. AI can assist with reconciliations, benchmark validation, disclosure checks, and evidence-based narrative comparison, but mandatory human review remains necessary for ambiguous discrepancies and final approval.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "10",
+      "name": "Obtain portfolio manager sign-off",
+      "description": "The final report is submitted to the portfolio manager for review and sign-off, covering overall presentation, performance commentary, and material client-facing statements. If changes are requested, the report is returned to the reporting team for revision and another review cycle.",
+      "scores": {
+        "repetitiveness": 3,
+        "judgment_need": 4,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "The sign-off recurs quarterly, but each review requires portfolio-manager judgment on presentation, performance commentary, and material client-facing statements. Because approval governs controlled disclosures before distribution, errors create significant client, fiduciary, audit, and reputational consequences. AI could support checklists, issue detection, and revision summaries, but reliable final approval requires accountable human review and contextual interpretation.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "11",
+      "name": "Distribute report and retain records",
+      "description": "After approval, the report is released through the established client distribution process. The approved version is retained with the relevant reporting records, and the reporting team maintains the source information and final report so client-facing figures and commentary can be traced to the reporting period and underlying evidence.",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 2,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "This step repeats every quarter through an established client distribution process, with limited judgment after PM approval; however, retaining the approved report, source information, figures, commentary, and reporting-period evidence is audit- and client-sensitive. AI could assist with routing or record checks, but deterministic workflow controls are generally more reliable and cheaper.",
+      "verdict": "leave_as_is"
+    }
+  ]
+}
