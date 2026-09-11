@@ -16,6 +16,13 @@ DEFAULT_BASE_URL = "https://opencode.ai/zen/go/v1"
 DEFAULT_EXTRACTION_MODEL = "GLM-5.3-Flash"
 DEFAULT_REASONING_MODEL = "GPT 5.6 Luna"
 
+# OpenCode Go exposes different wire protocols by model family. Keep this
+# mapping here so pipeline stages only provide a model name.
+MODEL_PROTOCOL_PREFIXES = {
+    "responses": ("gpt-", "grok-"),
+    "chat_completions": ("glm-", "deepseek-"),
+}
+
 
 class LLMClientError(RuntimeError):
     """Raised when the OpenCode Go request or structured response fails."""
@@ -54,8 +61,56 @@ def _provider_model(model: str) -> str:
     known_model_ids = {
         "glm-5.3-flash": "glm-5.3-flash",
         "glm 5.3 flash": "glm-5.3-flash",
+        "gpt 5.6 luna": "gpt-5.6-luna",
+        "gpt-5.6 luna": "gpt-5.6-luna",
     }
     return known_model_ids.get(model.strip().lower(), model)
+
+
+def _protocol_for_model(model: str) -> str:
+    normalized_model = model.strip().lower()
+    for protocol, prefixes in MODEL_PROTOCOL_PREFIXES.items():
+        if normalized_model.startswith(prefixes):
+            return protocol
+    return "chat_completions"
+
+
+def _decode_structured_response(envelope: dict[str, Any], protocol: str) -> Any:
+    def parse_json_text(text: str) -> Any:
+        normalized = text.strip()
+        if normalized.startswith("```"):
+            normalized = normalized.split("\n", 1)[1]
+            if normalized.rstrip().endswith("```"):
+                normalized = normalized.rstrip()[:-3].rstrip()
+        return json.loads(normalized)
+
+    try:
+        if protocol == "responses":
+            output_text = envelope.get("output_text")
+            if not isinstance(output_text, str):
+                text_parts = [
+                    part["text"]
+                    for item in envelope["output"]
+                    for part in item.get("content", [])
+                    if isinstance(part.get("text"), str)
+                ]
+                output_text = "".join(text_parts)
+            if not output_text:
+                raise KeyError("output[].content[].text")
+            return parse_json_text(output_text)
+
+        content = envelope["choices"][0]["message"]["content"]
+        if isinstance(content, list):
+            content = "".join(
+                part["text"]
+                for part in content
+                if isinstance(part, dict) and isinstance(part.get("text"), str)
+            )
+        return parse_json_text(content) if isinstance(content, str) else content
+    except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
+        raise LLMClientError(
+            f"OpenCode Go returned an invalid structured {protocol} response"
+        ) from exc
 
 
 def call_llm(
@@ -85,22 +140,27 @@ def call_llm(
     # routing a Go credential to the wrong gateway.
     if base_url == "https://opencode.ai/zen/v1":
         base_url = DEFAULT_BASE_URL
-    endpoint = (
-        base_url
-        if base_url.endswith("/chat/completions")
-        else f"{base_url}/chat/completions"
-    )
     selected_model = _provider_model(model or get_extraction_model())
+    protocol = _protocol_for_model(selected_model)
+    endpoint_suffix = "/responses" if protocol == "responses" else "/chat/completions"
+    endpoint = base_url if base_url.endswith(endpoint_suffix) else f"{base_url}{endpoint_suffix}"
     messages: list[dict[str, str]] = []
     if system_prompt:
         messages.append({"role": "system", "content": system_prompt})
     messages.append({"role": "user", "content": prompt})
-    payload = {
-        "model": selected_model,
-        "messages": messages,
-        "temperature": temperature,
-        "response_format": {"type": "json_object"},
-    }
+    if protocol == "responses":
+        payload = {
+            "model": selected_model,
+            "input": messages,
+            "text": {"format": {"type": "json_object"}},
+        }
+    else:
+        payload = {
+            "model": selected_model,
+            "messages": messages,
+            "temperature": temperature,
+            "response_format": {"type": "json_object"},
+        }
     http_request = request.Request(
         endpoint,
         data=json.dumps(payload).encode("utf-8"),
@@ -128,10 +188,9 @@ def call_llm(
 
     try:
         envelope = json.loads(response_body)
-        content = envelope["choices"][0]["message"]["content"]
-        decoded = json.loads(content) if isinstance(content, str) else content
-    except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
-        raise LLMClientError("OpenCode Go returned an invalid JSON response") from exc
+        decoded = _decode_structured_response(envelope, protocol)
+    except json.JSONDecodeError as exc:
+        raise LLMClientError("OpenCode Go returned an invalid JSON envelope") from exc
 
     if response_schema is None:
         if not isinstance(decoded, dict):

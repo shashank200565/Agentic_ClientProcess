@@ -44,11 +44,22 @@ Status: Accepted
 
 ## Verdict Logic
 
-Decision: [TO BE FILLED once Phase 2 is underway] — the rule combining the four dimension scores (repetitiveness, judgment, compliance, AI-suitability) into a final leave-as-is/automate/redesign verdict should be an explicit, inspectable rule — not a second LLM call.
+Decision: Apply this explicit post-processing rule to the four dimension scores;
+the model does not choose the final verdict. Governance-action handling is checked
+first so a high AI-suitability score cannot override a human control gate:
+
+1. If `judgment_need <= 2`, `compliance_sensitivity >= 4`, and the step describes
+   a sign-off, approval, escalation, or record-retention action, return `leave_as_is`.
+2. Otherwise, if `repetitiveness >= 4` and `judgment_need <= 2`, return
+   `leave_as_is` when `ai_suitability <= 2`, otherwise `automate`.
+3. Otherwise, if `judgment_need >= 3` and `ai_suitability >= 3`, return `redesign`.
+4. Otherwise, return `automate` when `ai_suitability <= 2`, otherwise `redesign`.
+
+This is an explicit, inspectable rule and not a second LLM call.
 
 Reason: Keeps the triage decision transparent and explainable in Q&A ("why did this get 'redesign'" should have a rule-based answer, not "the model said so").
 
-Status: Pending — finalize during Phase 2 and update this entry.
+Status: Accepted
 
 ---
 

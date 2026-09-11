@@ -10,13 +10,15 @@ from pydantic import BaseModel, Field, ValidationError
 from pypdf import PdfReader
 
 try:
-    from backend.db.db import save_workflow
+    from backend.db.db import get_workflow, save_workflow
     from backend.pipeline.extraction import extract_steps
+    from backend.pipeline.decision_engine import score_step
     from backend.pipeline.llm_client import LLMClientError
     from backend.pipeline.schemas import Workflow
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
-    from db.db import save_workflow
+    from db.db import get_workflow, save_workflow
     from pipeline.extraction import extract_steps
+    from pipeline.decision_engine import score_step
     from pipeline.llm_client import LLMClientError
     from pipeline.schemas import Workflow
 
@@ -28,6 +30,10 @@ class TextExtractionRequest(BaseModel):
     text: str = Field(min_length=1)
     workflow_id: str | None = None
     name: str | None = None
+
+
+class ScoreWorkflowRequest(BaseModel):
+    workflow_id: str = Field(min_length=1)
 
 
 def _safe_name(value: str) -> str:
@@ -103,3 +109,31 @@ async def extract_workflow(request: Request) -> Workflow:
     )
     save_workflow(workflow)
     return workflow
+
+
+@router.post("/score", response_model=Workflow)
+def score_workflow(payload: ScoreWorkflowRequest) -> Workflow:
+    workflow = get_workflow(payload.workflow_id)
+    if workflow is None:
+        raise HTTPException(status_code=404, detail="Workflow not found")
+    if not workflow.steps:
+        raise HTTPException(status_code=422, detail="Workflow has no extracted steps")
+
+    sibling_names = ", ".join(step.name for step in workflow.steps)
+    try:
+        scores = [
+            score_step(
+                step,
+                (
+                    f"workflow_id={workflow.workflow_id} workflow_name={workflow.name!r} "
+                    f"step_position={position} of {len(workflow.steps)} "
+                    f"sibling_steps=[{sibling_names}]"
+                ),
+            )
+            for position, step in enumerate(workflow.steps, start=1)
+        ]
+    except LLMClientError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    analyzed_workflow = workflow.model_copy(update={"scores": scores, "status": "analyzed"})
+    save_workflow(analyzed_workflow)
+    return analyzed_workflow

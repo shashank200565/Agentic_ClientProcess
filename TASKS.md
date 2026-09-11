@@ -21,9 +21,9 @@
 
 ## Phase 2 — Decision Engine (core IP — most human review, least agent delegation)
 
-- [ ] Write first version of Decision Engine prompt against the rubric
-- [ ] Implement `backend/pipeline/decision_engine.py` — `WorkflowStep` → `StepScore`
-- [ ] Wire `/analyze/score` route
+- [x] Write first version of Decision Engine prompt against the rubric
+- [x] Implement `backend/pipeline/decision_engine.py` — `WorkflowStep` → `StepScore`
+- [x] Wire `/analyze/score` route
 - [ ] Run `eval/run_eval.py` against labeled set — record baseline agreement %
 - [ ] Iterate prompt, rerun eval, until agreement is acceptable (define target with mentor if possible)
 - [ ] Document final verdict-decision logic (explicit rule combining 4 scores → verdict) in `DECISIONS.md`

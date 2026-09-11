@@ -164,6 +164,53 @@ def main() -> int:
             "mean_absolute_error": absolute_errors[dimension] / count if count else None,
         }
 
+    workflow_breakdown: dict[str, Any] = {}
+    for workflow_id in sorted(labeled_workflow_ids):
+        workflow_keys = [key for key in comparable if key[0] == workflow_id]
+        workflow_report: dict[str, Any] = {
+            "labeled_steps": len([key for key in labels if key[0] == workflow_id]),
+            "comparable_steps": len(workflow_keys),
+            "dimensions": {},
+        }
+        workflow_verdict_count = 0
+        workflow_verdict_exact = 0
+        for key in workflow_keys:
+            label = labels[key]
+            prediction = predictions[key]
+            if step_verdict(prediction) is not None:
+                workflow_verdict_count += 1
+                workflow_verdict_exact += step_verdict(label) == step_verdict(prediction)
+        workflow_report["verdict"] = {
+            "predicted_count": workflow_verdict_count,
+            "exact": workflow_verdict_exact,
+            "exact_rate": (
+                workflow_verdict_exact / workflow_verdict_count
+                if workflow_verdict_count
+                else None
+            ),
+        }
+        for dimension in DIMENSIONS:
+            exact = 0
+            within_1 = 0
+            count = 0
+            for key in workflow_keys:
+                actual = step_scores(labels[key]).get(dimension)
+                guess = step_scores(predictions[key]).get(dimension)
+                if isinstance(actual, int) and isinstance(guess, int) and 1 <= guess <= 5:
+                    error = abs(guess - actual)
+                    count += 1
+                    exact += error == 0
+                    within_1 += error <= 1
+            workflow_report["dimensions"][dimension] = {
+                "count": count,
+                "exact": exact,
+                "exact_rate": exact / count if count else None,
+                "within_1": within_1,
+                "within_1_rate": within_1 / count if count else None,
+            }
+        workflow_breakdown[workflow_id] = workflow_report
+    report["workflow_breakdown"] = workflow_breakdown
+
     print(json.dumps(report, indent=2))
     return 0
 
