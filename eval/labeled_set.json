@@ -3,7 +3,7 @@
     "source": "pdf_sop",
     "scoring_method": "AI-drafted (initial pass + reasoning-checked revision), team-reviewed and validated",
     "rubric_version": "eval/rubric.md",
-    "dimensions": ["repetitiveness", "judgment", "compliance_sensitivity", "ai_suitability"],
+    "dimensions": ["repetitiveness", "judgment_need", "compliance_sensitivity", "ai_suitability"],
     "scale": "1-5, 5 = high",
     "verdict_values": ["leave_as_is", "automate", "redesign"],
     "status": "finalized"
@@ -14,13 +14,13 @@
       "name": "Trade Confirmation Matching",
       "source_file": "01_trade_confirmation_matching.pdf",
       "steps": [
-        {"step_id": "1", "name": "Receive & validate confirmation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Identify internal record", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "3", "name": "Field-level reconciliation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "4", "name": "Update status on match", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "5", "name": "Record mismatch, route to queue", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "6", "name": "Operational review of exceptions", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 3, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "7", "name": "Escalate unresolved", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"}
+        {"step_id": "1", "name": "Receive & validate confirmation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Identify internal record", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "3", "name": "Field-level reconciliation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "4", "name": "Update status on match", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "5", "name": "Record mismatch, route to queue", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "6", "name": "Operational review of exceptions", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 3, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "7", "name": "Escalate unresolved", "scores": {"repetitiveness": 2, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 2}, "verdict": "leave_as_is"}
       ]
     },
     {
@@ -28,12 +28,12 @@
       "name": "Passive Exposure Limit Check",
       "source_file": "02_passive_exposure_limit_check.pdf",
       "steps": [
-        {"step_id": "1", "name": "Portfolio snapshot load", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Exposure % calculation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "3", "name": "Mandate limit lookup", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "4", "name": "Threshold comparison", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "5", "name": "Exception record creation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 4, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "6", "name": "Handoff to investigation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 2, "verdict": "leave_as_is"}
+        {"step_id": "1", "name": "Portfolio snapshot load", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Exposure % calculation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "3", "name": "Mandate limit lookup", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "4", "name": "Threshold comparison", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "5", "name": "Exception record creation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "6", "name": "Handoff to investigation", "scores": {"repetitiveness": 2, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 2}, "verdict": "leave_as_is"}
       ]
     },
     {
@@ -41,16 +41,16 @@
       "name": "Mandate Breach Root-Cause Investigation",
       "source_file": "03_mandate_breach_root_cause_investigation.pdf",
       "steps": [
-        {"step_id": "1", "name": "Case initiation", "repetitiveness": 3, "judgment": 2, "compliance_sensitivity": 3, "ai_suitability": 3, "verdict": "automate"},
-        {"step_id": "2", "name": "Mandate retrieval", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "3", "name": "Position evidence gathering", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 4, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "4", "name": "Transaction history review", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 4, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "5", "name": "Exception/waiver search", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "6", "name": "Corporate action / passive movement check", "repetitiveness": 1, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "7", "name": "Root-cause assessment (synthesis)", "repetitiveness": 1, "judgment": 5, "compliance_sensitivity": 5, "ai_suitability": 5, "verdict": "redesign"},
-        {"step_id": "8", "name": "Genuine breach vs false positive", "repetitiveness": 1, "judgment": 5, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "9", "name": "Compliance write-up", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "10", "name": "Escalation", "repetitiveness": 2, "judgment": 2, "compliance_sensitivity": 5, "ai_suitability": 2, "verdict": "leave_as_is"}
+        {"step_id": "1", "name": "Case initiation", "scores": {"repetitiveness": 3, "judgment_need": 2, "compliance_sensitivity": 3, "ai_suitability": 3}, "verdict": "automate"},
+        {"step_id": "2", "name": "Mandate retrieval", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "3", "name": "Position evidence gathering", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "4", "name": "Transaction history review", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "5", "name": "Exception/waiver search", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "6", "name": "Corporate action / passive movement check", "scores": {"repetitiveness": 1, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "7", "name": "Root-cause assessment (synthesis)", "scores": {"repetitiveness": 1, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 5}, "verdict": "redesign"},
+        {"step_id": "8", "name": "Genuine breach vs false positive", "scores": {"repetitiveness": 1, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "9", "name": "Compliance write-up", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "10", "name": "Escalation", "scores": {"repetitiveness": 2, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 2}, "verdict": "leave_as_is"}
       ]
     },
     {
@@ -58,16 +58,16 @@
       "name": "New Client Onboarding — Suitability Review",
       "source_file": "04_new_client_onboarding_suitability_review.pdf",
       "steps": [
-        {"step_id": "1", "name": "Client submission intake", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Completeness review", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 2, "verdict": "automate"},
-        {"step_id": "3", "name": "Investment objective assessment", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 4, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "4", "name": "Risk tolerance assessment", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "5", "name": "Regulatory/internal constraints check", "repetitiveness": 3, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "6", "name": "Inconsistency identification", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "7", "name": "Clarification & evidence gathering", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 4, "ai_suitability": 3, "verdict": "leave_as_is"},
-        {"step_id": "8", "name": "Suitability determination", "repetitiveness": 1, "judgment": 5, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "9", "name": "Determination memo", "repetitiveness": 2, "judgment": 4, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "10", "name": "Approval & record retention", "repetitiveness": 3, "judgment": 1, "compliance_sensitivity": 5, "ai_suitability": 1, "verdict": "leave_as_is"}
+        {"step_id": "1", "name": "Client submission intake", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Completeness review", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 2}, "verdict": "automate"},
+        {"step_id": "3", "name": "Investment objective assessment", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 4, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "4", "name": "Risk tolerance assessment", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "5", "name": "Regulatory/internal constraints check", "scores": {"repetitiveness": 3, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "6", "name": "Inconsistency identification", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "7", "name": "Clarification & evidence gathering", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 3}, "verdict": "leave_as_is"},
+        {"step_id": "8", "name": "Suitability determination", "scores": {"repetitiveness": 1, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "9", "name": "Determination memo", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "10", "name": "Approval & record retention", "scores": {"repetitiveness": 3, "judgment_need": 1, "compliance_sensitivity": 5, "ai_suitability": 1}, "verdict": "leave_as_is"}
       ]
     },
     {
@@ -75,17 +75,17 @@
       "name": "Quarterly Performance Report Generation",
       "source_file": "05_quarterly_performance_report_generation.pdf",
       "steps": [
-        {"step_id": "1", "name": "Data source identification", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Data availability check", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 2, "verdict": "automate"},
-        {"step_id": "3", "name": "Performance calculation", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "4", "name": "Data review / anomaly check", "repetitiveness": 3, "judgment": 2, "compliance_sensitivity": 4, "ai_suitability": 3, "verdict": "automate"},
-        {"step_id": "5", "name": "Controlled disclosure insertion", "repetitiveness": 5, "judgment": 1, "compliance_sensitivity": 5, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "6", "name": "Portfolio activity review", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 3, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "7", "name": "Narrative commentary", "repetitiveness": 1, "judgment": 4, "compliance_sensitivity": 4, "ai_suitability": 5, "verdict": "redesign"},
-        {"step_id": "8", "name": "Report assembly", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 2, "ai_suitability": 2, "verdict": "automate"},
-        {"step_id": "9", "name": "Quality review", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 4, "verdict": "redesign"},
-        {"step_id": "10", "name": "PM sign-off", "repetitiveness": 2, "judgment": 3, "compliance_sensitivity": 5, "ai_suitability": 1, "verdict": "leave_as_is"},
-        {"step_id": "11", "name": "Distribution & record", "repetitiveness": 4, "judgment": 1, "compliance_sensitivity": 3, "ai_suitability": 1, "verdict": "leave_as_is"}
+        {"step_id": "1", "name": "Data source identification", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "2", "name": "Data availability check", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 2}, "verdict": "automate"},
+        {"step_id": "3", "name": "Performance calculation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "4", "name": "Data review / anomaly check", "scores": {"repetitiveness": 3, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 3}, "verdict": "automate"},
+        {"step_id": "5", "name": "Controlled disclosure insertion", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 5, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "6", "name": "Portfolio activity review", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 3, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "7", "name": "Narrative commentary", "scores": {"repetitiveness": 1, "judgment_need": 4, "compliance_sensitivity": 4, "ai_suitability": 5}, "verdict": "redesign"},
+        {"step_id": "8", "name": "Report assembly", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 2}, "verdict": "automate"},
+        {"step_id": "9", "name": "Quality review", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
+        {"step_id": "10", "name": "PM sign-off", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 1}, "verdict": "leave_as_is"},
+        {"step_id": "11", "name": "Distribution & record", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"}
       ]
     }
   ]

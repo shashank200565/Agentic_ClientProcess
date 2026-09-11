@@ -3,10 +3,9 @@
 Usage:
     python eval/run_eval.py --predictions path/to/predictions.json
 
-Predictions may be a list of workflow objects or an object containing a
-``workflows`` list. Each predicted step should contain ``workflow_id``,
-``step_id``, the four flat score fields, and ``verdict``. The previous nested
-``scores``/``expected_verdict`` shape is accepted as a migration fallback.
+Predictions may be a list of workflow objects, a list of StepScore objects, or
+an object containing a ``workflows`` list. Each step must contain ``workflow_id``,
+``step_id``, a nested ``scores`` object matching StepScores, and ``verdict``.
 """
 
 from __future__ import annotations
@@ -20,17 +19,10 @@ from typing import Any
 
 DIMENSIONS = (
     "repetitiveness",
-    "judgment",
+    "judgment_need",
     "compliance_sensitivity",
     "ai_suitability",
 )
-
-LEGACY_DIMENSIONS = {
-    "repetitiveness": "repetitiveness",
-    "judgment": "judgment_need",
-    "compliance_sensitivity": "compliance_sensitivity",
-    "ai_suitability": "ai_suitability",
-}
 
 
 def load_json(path: Path) -> Any:
@@ -52,7 +44,8 @@ def step_index(workflows: list[dict[str, Any]], label_name: str) -> dict[tuple[s
     index: dict[tuple[str, str], dict[str, Any]] = {}
     for workflow in workflows:
         workflow_id = workflow.get("workflow_id")
-        for step in workflow.get("steps", []):
+        steps = workflow.get("steps", [workflow])
+        for step in steps:
             step_id = step.get("step_id")
             if not workflow_id or not step_id:
                 raise ValueError(f"Every workflow and step in {label_name} needs an id")
@@ -64,21 +57,16 @@ def step_index(workflows: list[dict[str, Any]], label_name: str) -> dict[tuple[s
 
 
 def step_scores(step: dict[str, Any]) -> dict[str, Any]:
-    """Read flat scores, with a temporary fallback for the old nested shape."""
+    """Read the nested StepScores shape used by the Pydantic models."""
 
-    if all(dimension in step for dimension in DIMENSIONS):
-        return {dimension: step.get(dimension) for dimension in DIMENSIONS}
-    nested_scores = step.get("scores", {})
+    nested_scores = step.get("scores")
     if not isinstance(nested_scores, dict):
         return {}
-    return {
-        dimension: nested_scores.get(LEGACY_DIMENSIONS[dimension])
-        for dimension in DIMENSIONS
-    }
+    return {dimension: nested_scores.get(dimension) for dimension in DIMENSIONS}
 
 
 def step_verdict(step: dict[str, Any]) -> Any:
-    return step.get("verdict", step.get("expected_verdict"))
+    return step.get("verdict")
 
 
 def main() -> int:
