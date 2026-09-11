@@ -6,7 +6,7 @@
     "dimensions": ["repetitiveness", "judgment", "compliance_sensitivity", "ai_suitability"],
     "scale": "1-5, 5 = high",
     "verdict_values": ["leave_as_is", "automate", "redesign"],
-    "status": "pending_team_readthrough"
+    "status": "finalized"
   },
   "workflows": [
     {
