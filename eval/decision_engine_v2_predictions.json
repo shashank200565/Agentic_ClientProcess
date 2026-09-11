@@ -1,0 +1,574 @@
+{
+  "workflows": [
+    {
+      "workflow_id": "trade_confirmation_matching",
+      "name": "01_trade_confirmation_matching",
+      "steps": [
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "1",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "reasoning": "Electronic broker confirmations arrive throughout the trading day and undergo consistent required-field and technical-format checks. The validation is deterministic, while retaining incomplete records in the exception process supports auditability and trade reconciliation controls; however, AI adds little beyond reliable rules-based validation.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "2",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "reasoning": "This step repeatedly searches structured internal order and trade records using identifiers, with no subjective selection because multiple candidates remain unresolved. It is a material reconciliation control affecting trade records and auditability, but deterministic matching rules are more reliable and efficient than AI reasoning.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "3",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "reasoning": "This step repeatedly compares four specified fields—ticker, quantity, price, and settlement date—using exact configured rules, requiring minimal judgment. It is compliance-sensitive because inaccurate reconciliation can misstate trade records, impair auditability, or create settlement and client-control issues. AI adds little beyond a deterministic rules engine for these structured exact-match comparisons.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "4",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "reasoning": "This is a high-volume, repeatable status write triggered when configured matching criteria are satisfied; judgment is minimal, but settlement progression and audit-trail traceability make errors materially compliance-sensitive, while deterministic automation already performs it reliably.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "5",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly applies defined mismatch handling for quantity, price, settlement date, or other required fields. It records the discrepancy and queues an exception without inferring cause, making judgment minimal. However, trade settlement status, auditability, and unresolved discrepancies create significant control and financial consequences. AI adds little beyond deterministic comparison, status recording, and queue placement, though it could assist with monitoring or exception prioritization.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "6",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "Exception review recurs within trade confirmation matching, but each item may require different comparison of broker confirmations and order history, team outreach, or obtaining corrected records. Resolving discrepancies and applying established correction and reconciliation procedures requires substantial operational judgment and audit-sensitive control, while AI could assist with evidence synthesis, case classification, and procedural recommendations under mandatory human oversight.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "trade_confirmation_matching",
+          "step_id": "7",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This step applies repeatedly to unresolved trade-confirmation exceptions, but each case may involve different missing or conflicting trade records. Existing settlement procedures constrain routing, while determining escalation context and urgency requires operational judgment. Errors can affect settlement, auditability, and regulatory obligations, so sensitivity is high. AI could summarize evidence, identify procedural routes, and draft escalation packages, but human review remains necessary for unresolved cases.",
+          "verdict": "leave_as_is"
+        }
+      ]
+    },
+    {
+      "workflow_id": "passive_exposure_limit_check",
+      "name": "02_passive_exposure_limit_check",
+      "steps": [
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "1",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly loads NAV and holdings snapshots and performs defined completeness checks, but valuation-point differences and unavailable source values require limited exception handling. It is compliance-sensitive because inaccurate inputs could distort passive exposure-limit testing, while AI adds little beyond reliable data-loading and validation rules.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "2",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly calculates each holding or issuer grouping's weight against portfolio NAV using a configured methodology, requiring no subjective assessment. Because the result feeds passive exposure limit checks and mandate comparisons, calculation errors are audit- and compliance-sensitive. However, the work is a deterministic percentage calculation, so reliable rules-based automation offers little incremental value from AI reasoning beyond validation and exception handling.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "3",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly retrieves configured numerical mandate controls, such as the five-percent single-issuer NAV limit, with limited interpretation beyond identifying the applicable mandate. Errors could cause mandate or fiduciary breaches, but deterministic configuration lookup is generally better handled by rules-based automation than AI reasoning.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "4",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "reasoning": "This step repeatedly compares each calculated portfolio exposure with a configured mandate threshold and flags only above-limit holdings, requiring no analyst interpretation. Because it supports passive exposure-limit compliance and exception creation, errors may affect mandate adherence and auditability, but deterministic rules already perform the comparison reliably, leaving little incremental value for AI reasoning.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "5",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "The step repeats a structured process for each exceeded threshold, populating portfolio, holding or issuer, measured exposure, permitted limit, and variance. Judgment is limited because upstream comparisons identify exceptions, but accurate reporting and distribution to monitoring or compliance teams are mandate- and audit-sensitive. AI adds limited value beyond deterministic record creation and established workflow routing.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "passive_exposure_limit_check",
+          "step_id": "6",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "Each flagged position follows a breach-investigation procedure, but determining root cause and reportability requires reviewing variable information outside numerical monitoring. Specialist judgment and evidence weighing are central, with significant mandate, regulatory, audit, and reputational consequences. AI could organize external evidence and draft investigation summaries, but constrained scope, explainability, and mandatory human escalation are necessary.",
+          "verdict": "leave_as_is"
+        }
+      ]
+    },
+    {
+      "workflow_id": "mandate_breach_investigation",
+      "name": "03_mandate_breach_root_cause_investigation",
+      "steps": [
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "1",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "Case initiation repeats a consistent intake pattern for each exposure exception, recording portfolio, security or issuer, exposure, threshold, and alert time. Judgment is limited because the alert triggers investigation rather than determining breach. Compliance sensitivity is high because accurate, auditable capture supports mandate-breach review, but AI adds limited value beyond structured intake rules and validation.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "2",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 3
+          },
+          "reasoning": "Mandate Retrieval recurs for each alert, but the analyst must locate and interpret variable narrative provisions, schedules, definitions, and supporting documents in context. Misreading a qualification could incorrectly characterize a mandate breach, creating significant fiduciary, regulatory, client, and audit consequences. AI can assist with document retrieval, clause extraction, and contextual comparison, but ambiguous language requires controlled review and human approval.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "3",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "The step repeatedly retrieves holdings snapshots, but intraday timing and relevant exposure points vary by reported breach. Establishing whether the alert accurately reflects positions requires interpreting timestamps and discrepancies. Because evidence supports a mandate-breach investigation, errors can affect client mandates, auditability, and escalation decisions. AI can assist with retrieval and comparison, but deterministic systems generally handle snapshot matching and exposure verification more reliably.",
+          "verdict": "automate"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "4",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "The step recurs within mandate-breach investigations, but transaction histories and causal explanations vary materially across purchases, sales, transfers, and other activity. Determining whether exposure changed because of an active portfolio decision requires interpreting timestamps and potentially incomplete evidence. Errors can affect mandate compliance, fiduciary conclusions, auditability, and escalation, while AI can assist with timeline synthesis and anomaly identification under mandatory human review.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "5",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This step recurs for each mandate-breach investigation, but exception records may reside across documents and case-management systems. Determining whether an approval applied to the alert requires interpreting scope, validity, and effective dates. Errors could misclassify a genuine breach, so auditability and human review are important; AI can assist with retrieval and evidence comparison but should not decide conclusively.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "6",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "Within mandate breach root-cause investigations, this step recurs but requires case-specific comparison of corporate actions, market movements, exposure changes, and transaction evidence. Determining whether a threshold breach arose passively rather than from an active investment decision involves specialist interpretation, and an incorrect conclusion could affect mandate compliance, auditability, and escalation. AI can help synthesize available evidence and identify plausible passive movements, but controlled data access, explainable analysis, and human review remain necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "7",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "Root-cause assessment recurs across mandate-breach cases, but evidence varies materially; determining whether an exception reflects investment action, market drift, corporate action, or operational error requires weighing conflicting facts, documenting uncertainty, and following escalation procedures because mandate and audit consequences are significant. AI can assist with evidence synthesis and candidate-cause analysis, but constrained use and mandatory human review are necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "8",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 3
+          },
+          "reasoning": "The classification recurs for each mandate-breach alert, but evidence varies across mandate language, position data, transaction history, approvals, allowable circumstances, and data issues. Determining whether a restriction was actually violated requires specialist interpretation and weighing conflicting evidence, with significant fiduciary, regulatory, audit, and client consequences. AI could assist by synthesizing evidence and identifying apparent false-positive conditions, but constrained rules, traceable rationale, and mandatory human review are necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "9",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 3
+          },
+          "reasoning": "The write-up recurs for each mandate-breach investigation and follows a common structure, but evidence, root cause, exceptions, classification, and recommended action vary materially. It requires expert synthesis and defensible framing of mandate provisions and approvals, while errors could undermine auditability, client protection, or regulatory response. AI can organize evidence and draft a summary, but variable source facts and the high-stakes final classification require mandatory human review.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "mandate_breach_investigation",
+          "step_id": "10",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 5,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 2
+          },
+          "reasoning": "This final step occurs within every mandate-breach investigation but escalation depends on materiality, uncertainty, incomplete evidence, and the appropriate compliance or investment oversight recipient. It requires highly contextual judgment under governance controls, because authorized personnel approve sensitive regulatory or compliance conclusions; AI can support triage and evidence summaries, but reliable autonomous execution is unsuitable.",
+          "verdict": "leave_as_is"
+        }
+      ]
+    },
+    {
+      "workflow_id": "client_onboarding_suitability_review",
+      "name": "04_new_client_onboarding_suitability_review",
+      "steps": [
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "1",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step recurs for each new-client onboarding and follows a consistent submission-and-record-association pattern, although questionnaire explanations vary. Judgment is minimal because clients provide the information and staff primarily link it to the correct record and make it accessible. Accuracy matters for suitability review, auditability, and client-data integrity, but later steps perform the substantive assessment. AI adds limited value beyond deterministic intake, validation, and record matching.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "2",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "Completeness Review recurs for every new-client suitability case and follows a consistent checklist, but reviewers must interpret unclear answers and determine whether supporting documents are adequate. Missing information can compromise the later risk, objective, constraints, and suitability determinations, making the step regulatory and audit sensitive. AI can flag missing fields, identify ambiguous responses, and draft clarification requests, but human review remains necessary for exceptions and client-specific context.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "3",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "The reviewer repeatedly assesses onboarding materials, but client objectives, requested strategies, and circumstances vary materially. Combining these facts requires specialist interpretation, and errors could undermine suitability obligations. AI can synthesize stated objectives and flag apparent mismatches, but contextual judgment and human review remain necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "4",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 3
+          },
+          "reasoning": "This recurs for each new client and follows a consistent comparison, but reviewers must interpret client responses against varied products, strategies, leverage, and exposure. Determining whether a conservative profile with substantial leverage requires investigation involves material contextual judgment. Errors could breach suitability and client-protection obligations, while AI can identify mismatches and summarize evidence under mandatory human review, but should not independently approve or reject ambiguous cases.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "5",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 3
+          },
+          "reasoning": "The check occurs for each onboarding case, but applicable investor classification, accreditation, product rules, and internal procedures vary. Reviewers must identify and interpret provisions across policy documents, making judgment material. Eligibility errors can create regulatory, mandate, client-protection, and audit consequences. AI could retrieve relevant rules and synthesize applicability, but controlled scope, current sources, traceability, and mandatory human review are necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "6",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This step occurs regularly in the ten-step client onboarding suitability review, but each case requires variable interpretation of contradictions among risk tolerance, leverage, objectives, products, and supporting documentation. Identifying whether differences are meaningful and require clarification involves specialist judgment, while missed inconsistencies could undermine suitability, fiduciary, regulatory, and audit controls. AI could assist by detecting patterns and synthesizing conflicting evidence, but constrained scope, explainability, and mandatory reviewer evaluation are necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "7",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "Clarification is a recurring part of suitability reviews but only arises for ambiguous or contradictory cases, with highly variable evidence and client responses. The reviewer must assess what clarification or supporting evidence is relevant, distinguish client-supplied facts from review conclusions, and incorporate new information into the onboarding record. Because these records support regulated suitability determinations and auditability, errors have significant compliance consequences. AI could identify inconsistencies, suggest targeted questions, organize evidence, and draft record updates, but human review is needed to interpret responses and confirm factual versus analytical content.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "8",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 3
+          },
+          "reasoning": "Suitability Determination recurs for each new-client case, but the reviewer must interpret available evidence against firm policies and applicable requirements. It requires specialist judgment, especially when information is incomplete or outside standard guidance, and errors could create serious regulatory, fiduciary, or client-protection consequences. AI could support evidence synthesis and policy comparison, but supervisory or compliance review remains necessary for escalated cases and final determinations.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "9",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "The memo follows a recurring structure, but each case requires synthesizing objectives, risk information, requested strategy, constraints, inconsistencies, and obtained evidence. It demands specialist judgment to explain the suitability conclusion, is audit- and regulatory-sensitive, and AI can assist with evidence synthesis and drafting only under mandatory reviewer validation.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "client_onboarding_suitability_review",
+          "step_id": "10",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 2
+          },
+          "reasoning": "As the final step in client onboarding suitability review, submitting for required sign-off and retaining the determination follows a recurring pattern, but approval requirements may vary. Record-management obligations, suitability evidence, and triggering future reviews for material client changes create significant regulatory, audit, and client-protection sensitivity. AI can assist with routing, completeness checks, retention indexing, and review reminders, but approval and retention controls are largely deterministic and require human oversight.",
+          "verdict": "leave_as_is"
+        }
+      ]
+    },
+    {
+      "workflow_id": "quarterly_performance_report_generation",
+      "name": "05_quarterly_performance_report_generation",
+      "steps": [
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "1",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step recurs at the close of every quarterly performance-reporting cycle and follows a largely standardized process, with limited judgment needed to resolve applicable dates or approved-source exceptions. However, incorrect period selection or use of unapproved data could affect benchmark comparisons, disclosures, auditability, and the final report, making compliance sensitivity significant. AI could assist with calendar and source validation, but these deterministic checks are better handled by controlled rules than incremental AI reasoning.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "2",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This quarterly reporting step repeatedly retrieves portfolio returns and benchmark data for the same reporting period, with limited interpretation when confirming the portfolio’s applicable benchmark. Errors could materially distort performance comparisons and client-facing reports, making the activity audit- and mandate-sensitive, but structured retrieval and matching are better handled by deterministic systems than AI reasoning.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "3",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This check recurs for each quarterly report and follows a consistent verification pattern, but investigating missing or inconsistent portfolio and benchmark records requires contextual judgment. Using unverified values could undermine report accuracy, auditability, and client confidence; AI could flag anomalies and guide evidence review, but established rules and analyst approval remain necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "4",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly applies the firm's established reporting methodology to portfolio and benchmark data, calculates standard template metrics, and stores results; judgment is limited, but errors could materially affect quarterly client reporting, auditability, and methodology compliance. AI adds little beyond reliable deterministic calculation and validation rules.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "5",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This quarterly reporting step repeats a consistent review of calculated performance figures, but interpreting unexpected changes and resolving missing or inconsistent values varies by portfolio and source data. Traceability to approved sources and correction before client report incorporation create significant audit, accuracy, and client-impact consequences. AI can assist with anomaly detection, completeness checks, and source reconciliation, but ambiguous discrepancies require documented human review.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "6",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This step repeatedly retrieves controlled templates or disclosure-library text and inserts approved wording without rewriting. Judgment is minimal because the language is predetermined, but compliance sensitivity is high because unauthorized changes could bypass required review and approval. AI adds limited value beyond version-controlled retrieval and deterministic insertion, although it may assist with locating the correct sections under human oversight.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "7",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This quarterly reporting step recurs, but the relevant purchases, sales, allocation changes, market developments, and causal explanations differ by portfolio and quarter. It requires specialist judgment to determine which activity genuinely explains results for the client, making errors material to performance communication, disclosures, auditability, and portfolio-manager sign-off. AI can help retrieve and synthesize activity and market evidence, but conflicting or immaterial factors require controlled human review.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "8",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This quarterly step recurs within performance report generation, but each narrative requires interpreting portfolio activity and multiple information sources, distinguishing material from incidental drivers, and tailoring plain-language explanations to the client. It is judgment-intensive and client-reporting sensitive because inconsistencies with calculated figures or portfolio activity could mislead recipients. AI can assist with evidence synthesis and drafting, but controlled inputs, consistency checks, and reviewer oversight remain necessary.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "9",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "Assemble report follows a recurring quarterly template process, placing calculated figures, benchmark comparisons, approved disclosures, and narrative commentary into defined sections. Judgment is limited because content is already prepared, but formatting and section placement require minor interpretation. Compliance sensitivity is high because the output is client-facing and includes controlled disclosure language, while AI adds limited value beyond reliable template automation and PDF generation.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "10",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "reasoning": "This review recurs for every quarterly performance report and follows defined checks, but requires expert interpretation of numerical inconsistencies, benchmark accuracy, disclosure completeness, and whether narrative claims match portfolio activity. Errors can affect client reporting, mandated disclosures, auditability, and final approval, making compliance sensitivity significant. AI can compare figures, flag omissions, and trace narrative statements to activity, but ambiguous discrepancies and disclosure judgments require controlled human review.",
+          "verdict": "redesign"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "11",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 5,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 2
+          },
+          "reasoning": "The sign-off occurs for each quarterly report, but the portfolio manager must interpret overall presentation, performance commentary, and material client-facing statements, with revisions driven by case-specific concerns. Because this is the final accountable approval before distribution, errors could create client, fiduciary, regulatory, and reputational consequences. AI can identify inconsistencies or suggest review points, but reliable autonomous approval is unsuitable and human sign-off remains essential.",
+          "verdict": "leave_as_is"
+        },
+        {
+          "workflow_id": "quarterly_performance_report_generation",
+          "step_id": "12",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "reasoning": "This final step repeats for every quarterly performance report through an established distribution process, with limited discretion after portfolio manager approval. Retaining the approved version, source information, reporting period, client-facing figures, and commentary is audit- and traceability-sensitive, but distribution and record preservation are largely deterministic operations where rules-based workflow automation generally adds more value than AI reasoning.",
+          "verdict": "leave_as_is"
+        }
+      ]
+    }
+  ]
+}

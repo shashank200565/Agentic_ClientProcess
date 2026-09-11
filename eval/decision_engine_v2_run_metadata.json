@@ -1,0 +1,26 @@
+{
+  "reasoning_model": "GPT 5.6 Luna",
+  "extraction_model": "GLM-5.3-Flash",
+  "workflow_count": 5,
+  "generated_scored_step_count": 45.0,
+  "evaluated_comparable_step_count": 44,
+  "extraction_step_counts": {
+    "mandate_breach_investigation": 10,
+    "passive_exposure_limit_check": 6,
+    "quarterly_performance_report_generation": 12,
+    "client_onboarding_suitability_review": 10,
+    "trade_confirmation_matching": 7
+  },
+  "extraction_requests": 5,
+  "scoring_requests": 45,
+  "total_llm_requests": 50,
+  "elapsed_seconds": 295.56,
+  "gpt_reasoning_estimated_cost_usd": 0.0209,
+  "extraction_estimated_cost_usd": 0.0013,
+  "total_estimated_cost_usd": 0.0222,
+  "gpt_reasoning_5h_request_quota_share": 0.022,
+  "gpt_reasoning_monthly_request_quota_share": 0.0044,
+  "unexpected_generated_steps": ["quarterly_performance_report_generation/12"],
+  "cost_estimate_method": "Provider-published GPT 5.6 Luna estimate: 1000 input tokens and 220 output tokens per request at $0.20/$1.20 per million; GLM-5.3-Flash estimate: 1000 input and 200 output at $0.15/$0.50 per million. Actual token usage and cached-token billing were not exposed by the route.",
+  "note": "Duration includes 5 extraction requests and 45 GPT 5.6 Luna scoring requests; evaluator metrics use the 44 labeled/comparable steps."
+}
