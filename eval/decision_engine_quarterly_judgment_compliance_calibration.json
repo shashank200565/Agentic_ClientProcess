@@ -1,0 +1,152 @@
+{
+  "workflow_id": "quarterly_performance_report_generation",
+  "prompt_calibration": "judgment_need_compliance_sensitivity_contrastive",
+  "elapsed_seconds": 53.80943480000133,
+  "steps": [
+    {
+      "step_id": "1",
+      "name": "Data source identification",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 1,
+        "compliance_sensitivity": 2,
+        "ai_suitability": 2
+      },
+      "reasoning": "This recurs every quarter using largely consistent period, custodian, benchmark, and designated-system retrieval procedures. Establishing dates and approved sources is mainly rule-based, with limited judgment; errors affect report controls but are generally detectable and correctable. AI adds little beyond reliable system queries and validation rules, though it could assist with retrieval checks.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "2",
+      "name": "Perform data availability check",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 1,
+        "compliance_sensitivity": 2,
+        "ai_suitability": 2
+      },
+      "reasoning": "This check recurs each quarter using defined portfolio and benchmark requirements, with established handling for missing or inconsistent records. It is largely procedural rather than interpretive: the analyst verifies availability and prevents unverified values from entering client-facing reports. Deterministic data checks and workflow routing would likely outperform AI, although AI could assist with identifying inconsistencies.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "3",
+      "name": "Calculate performance and benchmark comparison",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 1,
+        "compliance_sensitivity": 2,
+        "ai_suitability": 2
+      },
+      "reasoning": "The step repeatedly applies an established methodology to portfolio and benchmark returns, calculates standard template metrics, and stores structured results. It requires little interpretive judgment, while client-report accuracy creates moderate control sensitivity; deterministic calculation provides limited incremental value from AI beyond reliable rules-based automation.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "4",
+      "name": "Review calculated figures",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 2,
+        "compliance_sensitivity": 3,
+        "ai_suitability": 2
+      },
+      "reasoning": "This quarterly review follows a recurring process of checking calculated performance figures for missing values, unexpected changes, and source-data inconsistencies. Most checks are rule-based and traceability can be supported by deterministic reconciliation, so judgment and incremental AI value are limited. However, errors could affect client-facing reports and require documented resolution before PM sign-off, creating material control sensitivity.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "5",
+      "name": "Insert controlled disclosure language",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 1,
+        "compliance_sensitivity": 2,
+        "ai_suitability": 2
+      },
+      "reasoning": "This quarterly client-reporting step repeatedly retrieves approved disclosure language and inserts it into defined sections without rewriting. The controlled library and approval constraints make the work highly procedural, with low judgment and moderate sensitivity because incorrect wording could affect client-facing reports. AI adds limited value beyond deterministic version-controlled retrieval and template insertion.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "6",
+      "name": "Review portfolio activity",
+      "scores": {
+        "repetitiveness": 3,
+        "judgment_need": 4,
+        "compliance_sensitivity": 3,
+        "ai_suitability": 3
+      },
+      "reasoning": "This quarterly review recurs for every client report, but the relevant purchases, sales, allocation changes, portfolio events, and market developments differ materially each period. Identifying which factors genuinely explain results requires weighing evidence and contextual market knowledge, creating substantial professional judgment. Because the findings support client-facing performance commentary and PM sign-off, errors could mislead clients, although this step does not itself determine a regulatory breach. AI could assist with activity retrieval, event correlation, and evidence synthesis, but variable facts, explainability, and mandatory human review limit suitability to a controlled, conditional level.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "7",
+      "name": "Prepare narrative performance commentary",
+      "scores": {
+        "repetitiveness": 3,
+        "judgment_need": 4,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 3
+      },
+      "reasoning": "The commentary is prepared every quarter, but the interpretive work varies with each portfolio’s performance drivers, activity, materiality, and client context. It requires connecting multiple sources, distinguishing significant from incidental events, and explaining conclusions in plain language while checking consistency with reported figures. Because the narrative is client-facing and subject to PM sign-off, inaccurate explanations could create disclosure, fiduciary, audit, or reputational risks. AI could assist with evidence synthesis and drafting, but controlled data access, traceability, and mandatory human review are necessary.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "8",
+      "name": "Assemble report",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 1,
+        "compliance_sensitivity": 2,
+        "ai_suitability": 2
+      },
+      "reasoning": "This step repeatedly places calculated performance figures, benchmark comparisons, approved disclosure language, and narrative commentary into a standard client-facing template, then performs formatting checks and PDF conversion. The assembly is procedural with minimal interpretation, while client-facing distribution creates modest control sensitivity; deterministic document automation likely adds more value than AI reasoning.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "9",
+      "name": "Conduct quality review",
+      "scores": {
+        "repetitiveness": 4,
+        "judgment_need": 3,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 3
+      },
+      "reasoning": "The review recurs every quarter using a consistent checklist, but must reconcile variable portfolio activity with narrative commentary, verify benchmark information, and assess disclosure completeness. Errors affect client-facing reports and controlled disclosures before PM sign-off, creating significant compliance and reputational sensitivity. AI can assist with numerical cross-checks, benchmark validation, and narrative-to-activity comparisons, but ambiguous discrepancies require documented human review.",
+      "verdict": "redesign"
+    },
+    {
+      "step_id": "10",
+      "name": "Obtain portfolio manager sign-off",
+      "scores": {
+        "repetitiveness": 3,
+        "judgment_need": 4,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "The sign-off occurs every quarter, but the portfolio manager must assess varying performance commentary, overall presentation, and material client-facing statements. It requires specialist contextual judgment and carries significant compliance, fiduciary, and reputational sensitivity because approval precedes controlled distribution. AI could support issue detection or revision suggestions, but final approval and requested-change decisions require accountable human review.",
+      "verdict": "leave_as_is"
+    },
+    {
+      "step_id": "11",
+      "name": "Distribute report and retain records",
+      "scores": {
+        "repetitiveness": 5,
+        "judgment_need": 1,
+        "compliance_sensitivity": 4,
+        "ai_suitability": 2
+      },
+      "reasoning": "This repeats every quarter through an established distribution process using an already approved report. The work is largely procedural, but accurate client release and retention of source information, final figures, commentary, and reporting-period evidence are audit- and client-control sensitive; deterministic workflow automation is more suitable than incremental AI reasoning.",
+      "verdict": "leave_as_is"
+    }
+  ],
+  "verdict_exact": 8,
+  "dimension_exact": {
+    "repetitiveness": 4,
+    "judgment_need": 9,
+    "compliance_sensitivity": 4,
+    "ai_suitability": 2
+  },
+  "dimension_within_1": {
+    "repetitiveness": 9,
+    "judgment_need": 11,
+    "compliance_sensitivity": 10,
+    "ai_suitability": 10
+  }
+}

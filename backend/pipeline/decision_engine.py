@@ -56,6 +56,28 @@ and financial or reputational harm.
 4 = regulatory, mandate, fiduciary, or audit-sensitive activity with significant consequences.
 5 = critical compliance or client-protection decision where an error could cause serious breach, loss, or enforcement action.
 
+Judgment/compliance calibration: score the work performed by this step, not the
+importance of later steps that consume its output. Use these contrastive anchors:
+- Checking whether required portfolio or benchmark data is available and routing
+  missing data through a defined gate is usually judgment_need 1 and
+  compliance_sensitivity 1-2. The check is procedural even if bad inputs could
+  affect a later client or compliance report.
+- Comparing a value with a stated threshold and flagging an anomaly is usually
+  judgment_need 1-2 and compliance_sensitivity 1-2 when the step does not decide
+  cause, materiality, breach status, or escalation. A fixed threshold check is not
+  high-sensitivity merely because an exception may matter downstream.
+- Placing pre-calculated figures and approved language into a standard template,
+  including formatting or PDF conversion, is usually judgment_need 1-2 and
+  compliance_sensitivity 1-2. The assembly is procedural; do not inherit the
+  sensitivity of the underlying figures or disclosures unless this step interprets
+  or changes them.
+- By contrast, weighing conflicting records to determine root cause, deciding
+  whether an exception is a genuine breach, or selecting a conclusion for human
+  approval generally warrants judgment_need 3-5 and compliance_sensitivity 3-5
+  because the step itself interprets ambiguous evidence or makes a control decision.
+Do not raise judgment_need or compliance_sensitivity solely because the output is
+used in a regulated, client-facing, audited, or mandate-related downstream process.
+
 AI suitability: how much AI or agentic reasoning could materially improve the step
 beyond deterministic automation, considering data availability, repeatability,
 explainability, error tolerance, and human oversight.
