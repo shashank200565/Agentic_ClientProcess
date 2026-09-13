@@ -22,9 +22,13 @@ successfully extracted through a live OpenCode Go call.
 - [x] Local-only initial Git commit (`a86f143`)
 - [x] Documentation scope updated for LangGraph orchestration, LangSmith observability, automation blueprints, static diagrams, and resumable workflow sessions
 - [x] Frontend scaffold with real upload flow, placeholder step review scoring, and routed placeholder shells
+- [x] Phase 3 automation blueprint and redesign generators with standalone routes, persisted structured outputs, and static diagrams
+- [x] Phase 3 frontend integration with live scoring, generator actions, result views, and read-only diagrams
+- [x] Phase 6 executive report endpoint and formatted frontend view with print-to-PDF support
+- [x] Phase 4 LangGraph orchestration, LangSmith tracing hooks, and resumable WorkflowSession API
 
 ## Currently Working On
-Decision Engine review against the finalized ground truth; configured GPT 5.6 Luna
+Phase 3 generator review is complete; configured GPT 5.6 Luna
 provider calls currently return an upstream internal error, so the first route test
 used a temporary supported `glm-5.3` override
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 
 Verdict = Literal["leave_as_is", "automate", "redesign"]
@@ -55,6 +55,29 @@ class StepScore(BaseModel):
     verdict: Verdict
 
 
+class DiagramNode(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    id: str = Field(min_length=1)
+    label: str = Field(min_length=1)
+    node_type: str = Field(min_length=1)
+
+
+class DiagramEdge(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    source: str = Field(min_length=1, validation_alias=AliasChoices("source", "from"))
+    target: str = Field(min_length=1, validation_alias=AliasChoices("target", "to"))
+    label: str | None = None
+
+
+class StaticWorkflowDiagram(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    nodes: list[DiagramNode] = Field(min_length=1)
+    edges: list[DiagramEdge] = Field(min_length=1)
+
+
 class Workflow(BaseModel):
     """A workflow and its progressively populated analysis data."""
 
@@ -67,6 +90,22 @@ class Workflow(BaseModel):
     raw_text: str | None = None
     steps: list[WorkflowStep] = Field(default_factory=list)
     scores: list[StepScore] = Field(default_factory=list)
+    automation_blueprints: list["AutomationBlueprint"] = Field(default_factory=list)
+    redesign_proposals: list["RedesignProposal"] = Field(default_factory=list)
+
+
+class AutomationBlueprint(BaseModel):
+    """Constrained conventional automation proposal for an automate step."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    workflow_id: str = Field(min_length=1)
+    step_id: str = Field(min_length=1)
+    current_step: WorkflowStep
+    mechanism_type: Literal["rules_engine", "rpa", "scheduled_job", "existing_stp_extension"]
+    trigger_condition: str = Field(min_length=1)
+    rationale: str = Field(min_length=1)
+    diagram: StaticWorkflowDiagram
 
 
 class RedesignProposal(BaseModel):
@@ -82,3 +121,38 @@ class RedesignProposal(BaseModel):
     agent_responsibilities: list[str] = Field(min_length=1)
     human_controls: list[str] = Field(min_length=1)
     expected_benefits: list[str] = Field(min_length=1)
+    diagram: StaticWorkflowDiagram
+
+
+class ReportMetrics(BaseModel):
+    total_steps: int = Field(ge=0)
+    leave_as_is: int = Field(ge=0)
+    automate: int = Field(ge=0)
+    redesign: int = Field(ge=0)
+    average_ai_suitability: float = Field(ge=0, le=5)
+    average_compliance_sensitivity: float = Field(ge=0, le=5)
+
+
+class ReportStepSummary(BaseModel):
+    step: WorkflowStep
+    score: StepScore
+    automation_blueprint: AutomationBlueprint | None = None
+    redesign_proposal: RedesignProposal | None = None
+
+
+class ExecutiveReport(BaseModel):
+    workflow_id: str = Field(min_length=1)
+    workflow_name: str = Field(min_length=1)
+    executive_summary: str = Field(min_length=1)
+    headline_verdict: str = Field(min_length=1)
+    metrics: ReportMetrics
+    key_recommendations: list[str] = Field(min_length=1)
+    step_summaries: list[ReportStepSummary] = Field(min_length=1)
+
+
+class WorkflowSession(BaseModel):
+    session_id: str = Field(min_length=1)
+    workflow_id: str = Field(min_length=1)
+    current_stage: str = Field(min_length=1)
+    completed_step_ids: list[str] = Field(default_factory=list)
+    workflow: Workflow

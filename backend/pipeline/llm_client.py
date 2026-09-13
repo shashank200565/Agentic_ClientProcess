@@ -9,6 +9,14 @@ from urllib import error, request
 
 from pydantic import BaseModel, ValidationError
 
+try:
+    from langsmith import traceable
+except ImportError:  # Keeps the client usable in minimal local environments.
+    def traceable(**_kwargs):
+        def decorator(function):
+            return function
+        return decorator
+
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 
@@ -32,7 +40,11 @@ def _load_dotenv() -> None:
     """Load simple KEY=VALUE entries without overriding process environment."""
 
     project_root = Path(__file__).resolve().parents[2]
-    candidates = (project_root / ".env", project_root / "backend" / ".env")
+    candidates = (
+        project_root / ".env",
+        project_root / "backend" / ".env",
+        project_root / "backend" / "pipeline" / ".env",
+    )
     for dotenv_path in candidates:
         if not dotenv_path.is_file():
             continue
@@ -113,6 +125,7 @@ def _decode_structured_response(envelope: dict[str, Any], protocol: str) -> Any:
         ) from exc
 
 
+@traceable(name="opencode-go-structured-call", run_type="llm")
 def call_llm(
     prompt: str,
     model: str | None = None,

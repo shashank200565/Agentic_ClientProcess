@@ -42,7 +42,26 @@ CREATE TABLE IF NOT EXISTS redesign_proposals (
     agent_responsibilities_json TEXT NOT NULL,
     human_controls_json TEXT NOT NULL,
     expected_benefits_json TEXT NOT NULL,
+    diagram_json TEXT NOT NULL,
     PRIMARY KEY (workflow_id, step_id),
     FOREIGN KEY (workflow_id, step_id)
         REFERENCES workflow_steps(workflow_id, step_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS automation_blueprints (
+    workflow_id TEXT NOT NULL,
+    step_id TEXT NOT NULL,
+    blueprint_json TEXT NOT NULL,
+    PRIMARY KEY (workflow_id, step_id),
+    FOREIGN KEY (workflow_id, step_id)
+        REFERENCES workflow_steps(workflow_id, step_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS workflow_sessions (
+    session_id TEXT PRIMARY KEY,
+    workflow_id TEXT NOT NULL,
+    current_stage TEXT NOT NULL,
+    completed_step_ids_json TEXT NOT NULL,
+    workflow_json TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

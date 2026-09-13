@@ -7,9 +7,17 @@ from pathlib import Path
 from typing import Iterator
 
 try:
-    from backend.pipeline.schemas import StepScore, Workflow, WorkflowStep
+    from backend.pipeline.schemas import (
+        AutomationBlueprint,
+        RedesignProposal,
+        StaticWorkflowDiagram,
+        StepScore,
+        WorkflowSession,
+        Workflow,
+        WorkflowStep,
+    )
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
-    from pipeline.schemas import StepScore, Workflow, WorkflowStep
+    from pipeline.schemas import AutomationBlueprint, RedesignProposal, StaticWorkflowDiagram, StepScore, Workflow, WorkflowSession, WorkflowStep
 
 
 DEFAULT_DATABASE_PATH = Path(__file__).resolve().parent.parent / "data" / "app.db"
@@ -32,6 +40,13 @@ def get_connection(database_path: str | Path | None = None) -> sqlite3.Connectio
 
 def initialize_database(connection: sqlite3.Connection) -> None:
     connection.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+    try:
+        connection.execute(
+            "ALTER TABLE redesign_proposals ADD COLUMN diagram_json TEXT NOT NULL DEFAULT '{\"nodes\": [], \"edges\": []}'"
+        )
+    except sqlite3.OperationalError as exc:
+        if "duplicate column name" not in str(exc):
+            raise
     connection.commit()
 
 
@@ -102,6 +117,36 @@ def save_workflow(
                 for score in workflow.scores
             ],
         )
+        connection.executemany(
+            "INSERT OR REPLACE INTO automation_blueprints (workflow_id, step_id, blueprint_json) VALUES (?, ?, ?)",
+            [
+                (item.workflow_id, item.step_id, item.model_dump_json())
+                for item in workflow.automation_blueprints
+            ],
+        )
+        connection.executemany(
+            """
+            INSERT OR REPLACE INTO redesign_proposals (
+                workflow_id, step_id, current_step_json, problem_statement,
+                proposed_design, agent_responsibilities_json, human_controls_json,
+                expected_benefits_json, diagram_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    item.workflow_id,
+                    item.step_id,
+                    item.current_step.model_dump_json(),
+                    item.problem_statement,
+                    item.proposed_design,
+                    json.dumps(item.agent_responsibilities),
+                    json.dumps(item.human_controls),
+                    json.dumps(item.expected_benefits),
+                    item.diagram.model_dump_json(),
+                )
+                for item in workflow.redesign_proposals
+            ],
+        )
         connection.commit()
     except Exception:
         connection.rollback()
@@ -159,6 +204,32 @@ def get_workflow(
             )
             for row in score_rows
         ]
+        blueprint_models = [
+            AutomationBlueprint.model_validate(json.loads(row["blueprint_json"]))
+            for row in connection.execute(
+                "SELECT blueprint_json FROM automation_blueprints WHERE workflow_id = ?",
+                (workflow_id,),
+            ).fetchall()
+        ]
+        redesign_models = [
+            RedesignProposal(
+                workflow_id=row["workflow_id"],
+                step_id=row["step_id"],
+                current_step=WorkflowStep(**json.loads(row["current_step_json"])),
+                problem_statement=row["problem_statement"],
+                proposed_design=row["proposed_design"],
+                agent_responsibilities=json.loads(row["agent_responsibilities_json"]),
+                human_controls=json.loads(row["human_controls_json"]),
+                expected_benefits=json.loads(row["expected_benefits_json"]),
+                diagram=StaticWorkflowDiagram.model_validate(json.loads(row["diagram_json"]))
+                if "diagram_json" in row.keys()
+                else {"nodes": [], "edges": []},
+            )
+            for row in connection.execute(
+                "SELECT * FROM redesign_proposals WHERE workflow_id = ?",
+                (workflow_id,),
+            ).fetchall()
+        ]
         return Workflow(
             workflow_id=workflow_row["workflow_id"],
             name=workflow_row["name"],
@@ -167,7 +238,42 @@ def get_workflow(
             raw_text=workflow_row["raw_text"],
             steps=[WorkflowStep(**dict(row)) for row in step_rows],
             scores=score_models,
+            automation_blueprints=blueprint_models,
+            redesign_proposals=redesign_models,
         )
     finally:
         if owns_connection:
             connection.close()
+
+
+def save_session(session: WorkflowSession) -> None:
+    connection = get_connection()
+    try:
+        initialize_database(connection)
+        connection.execute(
+            """INSERT OR REPLACE INTO workflow_sessions
+            (session_id, workflow_id, current_stage, completed_step_ids_json, workflow_json)
+            VALUES (?, ?, ?, ?, ?)""",
+            (session.session_id, session.workflow_id, session.current_stage, json.dumps(session.completed_step_ids), session.workflow.model_dump_json()),
+        )
+        connection.commit()
+    finally:
+        connection.close()
+
+
+def get_session(session_id: str) -> WorkflowSession | None:
+    connection = get_connection()
+    try:
+        initialize_database(connection)
+        row = connection.execute("SELECT * FROM workflow_sessions WHERE session_id = ?", (session_id,)).fetchone()
+        if row is None:
+            return None
+        return WorkflowSession(
+            session_id=row["session_id"],
+            workflow_id=row["workflow_id"],
+            current_stage=row["current_stage"],
+            completed_step_ids=json.loads(row["completed_step_ids_json"]),
+            workflow=json.loads(row["workflow_json"]),
+        )
+    finally:
+        connection.close()

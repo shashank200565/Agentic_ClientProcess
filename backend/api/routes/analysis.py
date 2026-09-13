@@ -13,14 +13,20 @@ try:
     from backend.db.db import get_workflow, save_workflow
     from backend.pipeline.extraction import extract_steps
     from backend.pipeline.decision_engine import score_step
+    from backend.pipeline.automation_blueprint import generate_automation_blueprint
+    from backend.pipeline.redesign import generate_redesign
+    from backend.pipeline.orchestration import run_orchestration
     from backend.pipeline.llm_client import LLMClientError
-    from backend.pipeline.schemas import Workflow
+    from backend.pipeline.schemas import AutomationBlueprint, RedesignProposal, Workflow
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
     from db.db import get_workflow, save_workflow
     from pipeline.extraction import extract_steps
     from pipeline.decision_engine import score_step
+    from pipeline.automation_blueprint import generate_automation_blueprint
+    from pipeline.redesign import generate_redesign
+    from pipeline.orchestration import run_orchestration
     from pipeline.llm_client import LLMClientError
-    from pipeline.schemas import Workflow
+    from pipeline.schemas import AutomationBlueprint, RedesignProposal, Workflow
 
 
 router = APIRouter(prefix="/analyze", tags=["analysis"])
@@ -33,6 +39,15 @@ class TextExtractionRequest(BaseModel):
 
 
 class ScoreWorkflowRequest(BaseModel):
+    workflow_id: str = Field(min_length=1)
+
+
+class GeneratorRequest(BaseModel):
+    workflow_id: str = Field(min_length=1)
+    step_id: str = Field(min_length=1)
+
+
+class OrchestrationRequest(BaseModel):
     workflow_id: str = Field(min_length=1)
 
 
@@ -137,3 +152,68 @@ def score_workflow(payload: ScoreWorkflowRequest) -> Workflow:
     analyzed_workflow = workflow.model_copy(update={"scores": scores, "status": "analyzed"})
     save_workflow(analyzed_workflow)
     return analyzed_workflow
+
+
+def _generator_inputs(payload: GeneratorRequest, expected_verdict: str):
+    workflow = get_workflow(payload.workflow_id)
+    if workflow is None:
+        raise HTTPException(status_code=404, detail="Workflow not found")
+    step = next((item for item in workflow.steps if item.step_id == payload.step_id), None)
+    score = next((item for item in workflow.scores if item.step_id == payload.step_id), None)
+    if step is None or score is None:
+        raise HTTPException(status_code=404, detail="Step or score not found")
+    if score.verdict != expected_verdict:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Step verdict must be '{expected_verdict}'",
+        )
+    return workflow, step, score
+
+
+@router.post("/automation-blueprint", response_model=AutomationBlueprint)
+def create_automation_blueprint(payload: GeneratorRequest) -> AutomationBlueprint:
+    workflow, step, score = _generator_inputs(payload, "automate")
+    try:
+        blueprint = generate_automation_blueprint(step, score)
+    except (LLMClientError, ValueError) as exc:
+        raise HTTPException(status_code=502 if isinstance(exc, LLMClientError) else 422, detail=str(exc)) from exc
+    updated = workflow.model_copy(update={
+        "automation_blueprints": [
+            item for item in workflow.automation_blueprints
+            if item.step_id != payload.step_id
+        ] + [blueprint]
+    })
+    save_workflow(updated)
+    return blueprint
+
+
+@router.post("/redesign", response_model=RedesignProposal)
+def create_redesign(payload: GeneratorRequest) -> RedesignProposal:
+    workflow, step, score = _generator_inputs(payload, "redesign")
+    try:
+        proposal = generate_redesign(step, score)
+    except (LLMClientError, ValueError) as exc:
+        raise HTTPException(status_code=502 if isinstance(exc, LLMClientError) else 422, detail=str(exc)) from exc
+    updated = workflow.model_copy(update={
+        "redesign_proposals": [
+            item for item in workflow.redesign_proposals
+            if item.step_id != payload.step_id
+        ] + [proposal]
+    })
+    save_workflow(updated)
+    return proposal
+
+
+@router.post("/orchestrate", response_model=Workflow)
+def orchestrate_workflow(payload: OrchestrationRequest) -> Workflow:
+    workflow = get_workflow(payload.workflow_id)
+    if workflow is None:
+        raise HTTPException(status_code=404, detail="Workflow not found")
+    if not workflow.scores:
+        raise HTTPException(status_code=422, detail="Workflow must be scored before orchestration")
+    try:
+        completed = run_orchestration(workflow)
+    except (LLMClientError, ValueError) as exc:
+        raise HTTPException(status_code=502 if isinstance(exc, LLMClientError) else 422, detail=str(exc)) from exc
+    save_workflow(completed)
+    return completed

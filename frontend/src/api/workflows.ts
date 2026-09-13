@@ -1,4 +1,4 @@
-import type { Workflow } from "../types/workflow";
+import type { AutomationBlueprint, ExecutiveReport, RedesignProposal, Workflow } from "../types/workflow";
 
 interface TextExtractionInput {
   text: string;
@@ -30,4 +30,44 @@ export async function extractWorkflow(
     throw new Error(detail || `Extraction failed with status ${response.status}`);
   }
   return response.json() as Promise<Workflow>;
+}
+
+async function postJson<T>(path: string, body: unknown): Promise<T> {
+  const response = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || `Request failed with status ${response.status}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+export function scoreWorkflow(workflowId: string): Promise<Workflow> {
+  return postJson<Workflow>("/analyze/score", { workflow_id: workflowId });
+}
+
+export function getAutomationBlueprint(workflowId: string, stepId: string): Promise<AutomationBlueprint> {
+  return postJson<AutomationBlueprint>("/analyze/automation-blueprint", {
+    workflow_id: workflowId,
+    step_id: stepId,
+  });
+}
+
+export function getRedesignProposal(workflowId: string, stepId: string): Promise<RedesignProposal> {
+  return postJson<RedesignProposal>("/analyze/redesign", {
+    workflow_id: workflowId,
+    step_id: stepId,
+  });
+}
+
+export async function getExecutiveReport(workflowId: string): Promise<ExecutiveReport> {
+  const response = await fetch(`/reports/${workflowId}`);
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || `Report failed with status ${response.status}`);
+  }
+  return response.json() as Promise<ExecutiveReport>;
 }

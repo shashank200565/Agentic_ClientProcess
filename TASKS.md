@@ -30,20 +30,20 @@
 
 ## Phase 3 — Redesign & Automation Generators
 
-- [ ] Implement `backend/pipeline/automation_blueprint.py` as a standalone function — `WorkflowStep` + `StepScore` (verdict=automate) → structured `AutomationBlueprint` using constrained templates for mechanism type (rules engine / RPA / scheduled job), trigger condition, rationale, and static visual workflow structure
-- [ ] Wire `/analyze/automation-blueprint` route and test the standalone generator independently
-- [ ] Sanity check: automation blueprints should be simpler, more templated, and conventional rather than another agentic/creative redesign
-- [ ] Implement `backend/pipeline/redesign.py` as a standalone function — `WorkflowStep` + `StepScore` (verdict=redesign) → `RedesignProposal` with static visual workflow structure
-- [ ] Wire `/analyze/redesign` route and test the standalone generator independently
-- [ ] Sanity check: do generated redesigns look plausible for the investment management steps, not generic boilerplate?
+- [x] Implement `backend/pipeline/automation_blueprint.py` as a standalone function — `WorkflowStep` + `StepScore` (verdict=automate) → structured `AutomationBlueprint` using constrained templates for mechanism type (rules engine / RPA / scheduled job), trigger condition, rationale, and static visual workflow structure
+- [x] Wire `/analyze/automation-blueprint` route and test the standalone generator independently
+- [x] Sanity check: automation blueprints should be simpler, more templated, and conventional rather than another agentic/creative redesign
+- [x] Implement `backend/pipeline/redesign.py` as a standalone function — `WorkflowStep` + `StepScore` (verdict=redesign) → `RedesignProposal` with static visual workflow structure
+- [x] Wire `/analyze/redesign` route and test the standalone generator independently
+- [x] Sanity check: do generated redesigns look plausible for the investment management steps, not generic boilerplate?
 
 ## Phase 4 — Orchestration & Observability
 
-- [ ] Set up LangGraph as the pipeline coordinator with conditional edges based on each step's verdict: `leave_as_is` → terminal, `automate` → existing Automation Blueprint Generator, `redesign` → existing Redesign Generator
-- [ ] Define the LangGraph state model for current workflow stage, per-step verdicts, generated automation blueprints, generated redesigns, and static visual workflow structures
-- [ ] Set up LangSmith tracing for all existing LLM calls in extraction and the Decision Engine as the first integration test
-- [ ] Extend LangSmith tracing to the Automation Blueprint Generator and Redesign Generator, recording prompt, response, latency, model, and cost where available
-- [ ] Add `WorkflowSession` persistence and API support for resuming the user's last incomplete workflow at the latest completed graph stage
+- [x] Set up LangGraph as the pipeline coordinator with conditional edges based on each step's verdict: `leave_as_is` → terminal, `automate` → existing Automation Blueprint Generator, `redesign` → existing Redesign Generator
+- [x] Define the LangGraph state model for current workflow stage, per-step verdicts, generated automation blueprints, generated redesigns, and static visual workflow structures
+- [x] Set up LangSmith tracing for all existing LLM calls in extraction and the Decision Engine as the first integration test
+- [x] Extend LangSmith tracing to the Automation Blueprint Generator and Redesign Generator, recording prompt, response, latency, model, and cost where available
+- [x] Add `WorkflowSession` persistence and API support for resuming the user's last incomplete workflow at the latest completed graph stage
 
 ## Phase 5 — Frontend (parallelizable with Phase 2/3/4)
 
@@ -58,9 +58,9 @@
 
 ## Phase 6 — Executive Report
 
-- [ ] Design report template (consulting-style summary format)
-- [ ] Implement report generation endpoint — templated from stored data, not a fresh open-ended LLM pass
-- [ ] Export as PDF or formatted view
+- [x] Design report template (consulting-style summary format)
+- [x] Implement report generation endpoint — templated from stored data, not a fresh open-ended LLM pass
+- [x] Export as PDF or formatted view
 
 ## Phase 7 — Integration, Polish, Demo Prep
 

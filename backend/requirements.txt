@@ -4,3 +4,5 @@ uvicorn[standard]>=0.34,<1
 pypdf>=5,<7
 pdfplumber>=0.11,<1
 python-multipart>=0.0.20,<1
+langgraph>=0.2,<1
+langsmith>=0.1,<1
