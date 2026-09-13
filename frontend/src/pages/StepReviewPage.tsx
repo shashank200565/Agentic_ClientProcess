@@ -3,8 +3,9 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { scoreWorkflow } from "../api/workflows";
 import { VerdictBadge } from "../components/VerdictBadge";
 import { WorkflowDiagram } from "../components/WorkflowDiagram";
+import { ScreenChat } from "../components/ScreenChat";
 import type { StepScore, Workflow } from "../types/workflow";
-import { riskExplanation, riskLabel, riskScore, textBullets } from "../utils/workflow";
+import { riskExplanation, riskLabel, riskScore, screenContext, textBullets } from "../utils/workflow";
 
 export function StepReviewPage() {
   const { workflowId } = useParams();
@@ -32,8 +33,8 @@ export function StepReviewPage() {
     {error && <p className="mb-5 rounded-lg bg-red-50 px-3 py-2 text-xs leading-5 text-red-700">{error}</p>}
      <div className="space-y-4">{workflow.steps.map((step) => { const score = workflow.scores.find((item) => item.step_id === step.step_id); return <StepCard key={step.step_id} step={step} score={score} onGenerate={() => score?.verdict === "automate" ? navigate(`/automation/${workflow.workflow_id}/${step.step_id}`) : navigate(`/redesign/${workflow.workflow_id}/${step.step_id}`)} />; })}</div>
      <div className="mt-10"><div className="mb-4"><h2 className="font-display text-2xl font-semibold text-[#102a2c]">Workflow map</h2><p className="mt-1 text-sm text-slate-500">Pan and zoom the fixed step sequence. Select a node to inspect scores or regenerate its generated output.</p></div><WorkflowDiagram workflow={workflow} onWorkflowChange={(updated) => { setWorkflow(updated); sessionStorage.setItem("currentWorkflow", JSON.stringify(updated)); }} /></div>
-    <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-5"><p className="text-sm text-slate-500">Generate a conventional blueprint or agent-first redesign for flagged steps.</p><div className="flex gap-3"><Link to={`/report/${workflow.workflow_id}`} className="rounded-lg bg-[#f2c14e] px-4 py-2 text-sm font-semibold text-[#102a2c]">View executive report</Link><Link to="/" className="rounded-lg bg-[#102a2c] px-4 py-2 text-sm font-semibold text-white">Analyze another workflow</Link></div></div>
-  </section>;
+     <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-5"><p className="text-sm text-slate-500">Generate a conventional blueprint or agent-first redesign for flagged steps.</p><div className="flex gap-3"><Link to={`/report/${workflow.workflow_id}`} className="rounded-lg bg-[#f2c14e] px-4 py-2 text-sm font-semibold text-[#102a2c]">View executive report</Link><Link to="/" className="rounded-lg bg-[#102a2c] px-4 py-2 text-sm font-semibold text-white">Analyze another workflow</Link></div></div><ScreenChat context={screenContext(workflow)} />
+   </section>;
 }
 
 function StepCard({ step, score, onGenerate }: { step: Workflow["steps"][number]; score?: StepScore; onGenerate: () => void }) {

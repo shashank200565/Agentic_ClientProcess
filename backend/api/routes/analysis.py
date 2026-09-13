@@ -16,6 +16,7 @@ try:
     from backend.pipeline.automation_blueprint import generate_automation_blueprint
     from backend.pipeline.redesign import generate_redesign
     from backend.pipeline.orchestration import run_orchestration
+    from backend.pipeline.screen_assistant import answer_screen_question
     from backend.pipeline.llm_client import LLMClientError
     from backend.pipeline.schemas import AutomationBlueprint, RedesignProposal, Workflow
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
@@ -25,6 +26,7 @@ except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
     from pipeline.automation_blueprint import generate_automation_blueprint
     from pipeline.redesign import generate_redesign
     from pipeline.orchestration import run_orchestration
+    from pipeline.screen_assistant import answer_screen_question
     from pipeline.llm_client import LLMClientError
     from pipeline.schemas import AutomationBlueprint, RedesignProposal, Workflow
 
@@ -52,9 +54,26 @@ class OrchestrationRequest(BaseModel):
     workflow_id: str = Field(min_length=1)
 
 
+class ScreenChatRequest(BaseModel):
+    question: str = Field(min_length=1, max_length=2000)
+    context: dict = Field(default_factory=dict)
+
+
+class ScreenChatResponse(BaseModel):
+    answer: str
+
+
 @router.get("/workflows", response_model=list[Workflow])
 def list_analyzed_workflows() -> list[Workflow]:
     return get_analyzed_workflows()
+
+
+@router.post("/screen-chat", response_model=ScreenChatResponse)
+def screen_chat(payload: ScreenChatRequest) -> ScreenChatResponse:
+    try:
+        return ScreenChatResponse(answer=answer_screen_question(payload.question, payload.context))
+    except LLMClientError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
 
 
 def _safe_name(value: str) -> str:

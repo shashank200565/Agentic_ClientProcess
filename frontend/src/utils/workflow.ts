@@ -1,4 +1,4 @@
-import type { StepScore } from "../types/workflow";
+import type { StepScore, Workflow } from "../types/workflow";
 
 export function riskScore(score: StepScore): number {
   return Number((score.scores.compliance_sensitivity * 0.6 + score.scores.judgment_need * 0.4).toFixed(1));
@@ -29,4 +29,27 @@ export function textBullets(text: string): string[] {
   if (parts.length <= 6) return parts;
   const size = Math.ceil(parts.length / 6);
   return Array.from({ length: 6 }, (_, index) => parts.slice(index * size, (index + 1) * size).join(" ")).filter(Boolean);
+}
+
+export function screenContext(workflow: Workflow, focusedStepId?: string, generated?: unknown): Record<string, unknown> {
+  return {
+    workflow_id: workflow.workflow_id,
+    workflow_name: workflow.name,
+    focused_step_id: focusedStepId,
+    steps: workflow.steps.map((step) => {
+      const score = workflow.scores.find((item) => item.step_id === step.step_id);
+      return { ...step, score, risk_score: score ? riskScore(score) : undefined, risk_explanation: score ? riskExplanation(score) : undefined };
+    }),
+    automation_blueprints: workflow.automation_blueprints ?? [],
+    redesign_proposals: workflow.redesign_proposals ?? [],
+    focused_generated_content: generated,
+  };
+}
+
+export function storedScreenContext(workflowId: string | undefined, stepId: string | undefined, generated: unknown): Record<string, unknown> {
+  if (typeof window === "undefined") return { workflow_id: workflowId, focused_step_id: stepId, focused_generated_content: generated };
+  const stored = sessionStorage.getItem("currentWorkflow");
+  if (!stored) return { workflow_id: workflowId, focused_step_id: stepId, focused_generated_content: generated };
+  try { return screenContext(JSON.parse(stored) as Workflow, stepId, generated); }
+  catch { return { workflow_id: workflowId, focused_step_id: stepId, focused_generated_content: generated }; }
 }

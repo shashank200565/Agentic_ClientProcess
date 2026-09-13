@@ -82,3 +82,17 @@ export async function getAnalyzedWorkflows(): Promise<Workflow[]> {
   }
   return response.json() as Promise<Workflow[]>;
 }
+
+export async function askScreenChat(question: string, context: Record<string, unknown>): Promise<string> {
+  const response = await fetch("/analyze/screen-chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, context }),
+  });
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || `Screen assistant failed with status ${response.status}`);
+  }
+  const payload = await response.json() as { answer: string };
+  return payload.answer;
+}
