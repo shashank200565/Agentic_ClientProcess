@@ -26,7 +26,12 @@ SCHEMA_PATH = Path(__file__).with_name("schema.sql")
 
 def get_database_path() -> Path:
     configured_path = os.getenv("DATABASE_PATH")
-    return Path(configured_path) if configured_path else DEFAULT_DATABASE_PATH
+    if not configured_path:
+        return DEFAULT_DATABASE_PATH
+    path = Path(configured_path)
+    if not path.is_absolute():
+        path = Path(__file__).resolve().parents[2] / path
+    return path.resolve()
 
 
 def get_connection(database_path: str | Path | None = None) -> sqlite3.Connection:
