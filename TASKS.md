@@ -53,8 +53,8 @@
 - [x] Automation Blueprint view shell → placeholder until the Automation Blueprint Generator and route exist
 - [x] Redesign view shell → placeholder until the Redesign Generator and route exist
 - [x] Session-resume UI shell → placeholder until `WorkflowSession` persistence and API support exist
-- [x] Portfolio Dashboard shell → placeholder until analyzed workflow aggregation exists
-- [ ] Wire all pages to real backend API (no mock data once backend routes exist)
+- [x] Portfolio Dashboard → live analyzed-workflow aggregation with complexity/exception scatter grid and risk rollups
+- [x] Wire all pages to real backend API (no mock data once backend routes exist)
 
 ## Phase 6 — Executive Report
 

@@ -71,3 +71,12 @@ export async function getExecutiveReport(workflowId: string): Promise<ExecutiveR
   }
   return response.json() as Promise<ExecutiveReport>;
 }
+
+export async function getAnalyzedWorkflows(): Promise<Workflow[]> {
+  const response = await fetch("/analyze/workflows");
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || `Portfolio data failed with status ${response.status}`);
+  }
+  return response.json() as Promise<Workflow[]>;
+}

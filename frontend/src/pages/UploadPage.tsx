@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { extractWorkflow } from "../api/workflows";
+import { extractWorkflow, scoreWorkflow } from "../api/workflows";
 
 export function UploadPage() {
   const navigate = useNavigate();
@@ -19,9 +19,10 @@ export function UploadPage() {
     setError("");
     setIsLoading(true);
     try {
-      const workflow = file
+      const extractedWorkflow = file
         ? await extractWorkflow(file)
         : await extractWorkflow({ text, name: name || "Pasted workflow" });
+      const workflow = await scoreWorkflow(extractedWorkflow.workflow_id);
       sessionStorage.setItem("currentWorkflow", JSON.stringify(workflow));
       navigate(`/review/${workflow.workflow_id}`);
     } catch (requestError) {
@@ -54,7 +55,7 @@ export function UploadPage() {
           <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Workflow name (optional)" className="mb-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-teal-600 transition placeholder:text-slate-400 focus:ring-2" />
           <textarea value={text} onChange={(event) => { setText(event.target.value); setFile(null); }} placeholder="Paste a workflow description..." rows={4} className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 outline-none ring-teal-600 transition placeholder:text-slate-400 focus:ring-2" />
           {error && <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs leading-5 text-red-700">{error}</p>}
-          <button type="button" onClick={handleSubmit} disabled={isLoading} className="mt-4 w-full rounded-xl bg-[#f2c14e] px-5 py-3.5 text-sm font-bold text-[#102a2c] transition hover:bg-[#f6cf6d] disabled:cursor-wait disabled:opacity-60">{isLoading ? "Extracting workflow..." : "Extract and review steps"}</button>
+          <button type="button" onClick={handleSubmit} disabled={isLoading} className="mt-4 w-full rounded-xl bg-[#f2c14e] px-5 py-3.5 text-sm font-bold text-[#102a2c] transition hover:bg-[#f6cf6d] disabled:cursor-wait disabled:opacity-60">{isLoading ? "Extracting and scoring..." : "Extract and score workflow"}</button>
         </div>
       </div>
       <div className="mt-16 grid gap-4 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:grid-cols-3">

@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, ValidationError
 from pypdf import PdfReader
 
 try:
-    from backend.db.db import get_workflow, save_workflow
+    from backend.db.db import get_analyzed_workflows, get_workflow, save_workflow
     from backend.pipeline.extraction import extract_steps
     from backend.pipeline.decision_engine import score_step
     from backend.pipeline.automation_blueprint import generate_automation_blueprint
@@ -19,7 +19,7 @@ try:
     from backend.pipeline.llm_client import LLMClientError
     from backend.pipeline.schemas import AutomationBlueprint, RedesignProposal, Workflow
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
-    from db.db import get_workflow, save_workflow
+    from db.db import get_analyzed_workflows, get_workflow, save_workflow
     from pipeline.extraction import extract_steps
     from pipeline.decision_engine import score_step
     from pipeline.automation_blueprint import generate_automation_blueprint
@@ -49,6 +49,11 @@ class GeneratorRequest(BaseModel):
 
 class OrchestrationRequest(BaseModel):
     workflow_id: str = Field(min_length=1)
+
+
+@router.get("/workflows", response_model=list[Workflow])
+def list_analyzed_workflows() -> list[Workflow]:
+    return get_analyzed_workflows()
 
 
 def _safe_name(value: str) -> str:

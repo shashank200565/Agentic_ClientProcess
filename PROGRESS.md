@@ -26,9 +26,10 @@ successfully extracted through a live OpenCode Go call.
 - [x] Phase 3 frontend integration with live scoring, generator actions, result views, and read-only diagrams
 - [x] Phase 6 executive report endpoint and formatted frontend view with print-to-PDF support
 - [x] Phase 4 LangGraph orchestration, LangSmith tracing hooks, and resumable WorkflowSession API
+- [x] Portfolio dashboard aggregation endpoint, Recharts complexity/exception grid, derived step risk scoring, and bulletized text-heavy views
 
 ## Currently Working On
-Phase 3 generator review is complete; configured GPT 5.6 Luna
+Portfolio dashboard and risk presentation are complete; configured GPT 5.6 Luna
 provider calls currently return an upstream internal error, so the first route test
 used a temporary supported `glm-5.3` override
 

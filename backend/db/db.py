@@ -246,6 +246,22 @@ def get_workflow(
             connection.close()
 
 
+def get_analyzed_workflows(
+    connection: sqlite3.Connection | None = None,
+) -> list[Workflow]:
+    owns_connection = connection is None
+    connection = connection or get_connection()
+    try:
+        initialize_database(connection)
+        workflow_ids = connection.execute(
+            "SELECT workflow_id FROM workflows WHERE status = 'analyzed' ORDER BY created_at DESC"
+        ).fetchall()
+        return [workflow for row in workflow_ids if (workflow := get_workflow(row["workflow_id"], connection)) is not None]
+    finally:
+        if owns_connection:
+            connection.close()
+
+
 def save_session(session: WorkflowSession) -> None:
     connection = get_connection()
     try:
