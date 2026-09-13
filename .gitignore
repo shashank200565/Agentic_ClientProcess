@@ -11,3 +11,6 @@ __pycache__/
 *.db
 frontend/node_modules/
 frontend/dist/
+
+# OpenCode local tooling and skills
+.opencode/

@@ -45,6 +45,7 @@ class ScoreWorkflowRequest(BaseModel):
 class GeneratorRequest(BaseModel):
     workflow_id: str = Field(min_length=1)
     step_id: str = Field(min_length=1)
+    user_notes: str | None = Field(default=None, max_length=2000)
 
 
 class OrchestrationRequest(BaseModel):
@@ -179,7 +180,7 @@ def _generator_inputs(payload: GeneratorRequest, expected_verdict: str):
 def create_automation_blueprint(payload: GeneratorRequest) -> AutomationBlueprint:
     workflow, step, score = _generator_inputs(payload, "automate")
     try:
-        blueprint = generate_automation_blueprint(step, score)
+        blueprint = generate_automation_blueprint(step, score, payload.user_notes)
     except (LLMClientError, ValueError) as exc:
         raise HTTPException(status_code=502 if isinstance(exc, LLMClientError) else 422, detail=str(exc)) from exc
     updated = workflow.model_copy(update={
@@ -196,7 +197,7 @@ def create_automation_blueprint(payload: GeneratorRequest) -> AutomationBlueprin
 def create_redesign(payload: GeneratorRequest) -> RedesignProposal:
     workflow, step, score = _generator_inputs(payload, "redesign")
     try:
-        proposal = generate_redesign(step, score)
+        proposal = generate_redesign(step, score, payload.user_notes)
     except (LLMClientError, ValueError) as exc:
         raise HTTPException(status_code=502 if isinstance(exc, LLMClientError) else 422, detail=str(exc)) from exc
     updated = workflow.model_copy(update={

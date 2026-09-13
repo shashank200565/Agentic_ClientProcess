@@ -5,8 +5,8 @@
 ### Phase 0 — Ground Truth
 - [x] Draft scoring rubric (`eval/rubric.md`) — anchored 1-5 definitions for repetitiveness, judgment need, compliance sensitivity, AI-suitability
 - [x] Write out 15-20 investment management workflows as step lists (start with the 5 example flows already drafted: trade confirmation matching, exposure limit check, mandate breach investigation, client onboarding suitability review, quarterly performance reporting)
-- [ ] Team independently scores each step against the rubric
-- [ ] Reconcile disagreements → finalize `eval/labeled_set.json`
+- [X] Team independently scores each step against the rubric
+- [X] Reconcile disagreements → finalize `eval/labeled_set.json`
 - [x] Write `eval/run_eval.py` — computes agreement (e.g. % exact/within-1 match, or weighted kappa) between engine output and labeled set
 
 ## Phase 1 — Backend Foundation

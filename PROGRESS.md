@@ -27,6 +27,11 @@ successfully extracted through a live OpenCode Go call.
 - [x] Phase 6 executive report endpoint and formatted frontend view with print-to-PDF support
 - [x] Phase 4 LangGraph orchestration, LangSmith tracing hooks, and resumable WorkflowSession API
 - [x] Portfolio dashboard aggregation endpoint, Recharts complexity/exception grid, derived step risk scoring, and bulletized text-heavy views
+- [x] Interactive React Flow workflow map with fixed step nodes, click-to-inspect details, and note-aware scoped regeneration
+- [x] Deterministic risk explanations added alongside every displayed risk score and label
+- [x] Dagre-directed workflow map layout with fixed spacing, numbered nodes, capped summaries, and fit-to-view startup
+- [x] Workflow map step navigation with animated centering, Previous/Next controls, and active-step highlighting
+- [x] Decision Engine repetitiveness calibration rule evaluated across all 44 labeled steps; v3 verdict agreement reached 86.36%
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete; configured GPT 5.6 Luna

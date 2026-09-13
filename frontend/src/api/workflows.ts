@@ -49,17 +49,19 @@ export function scoreWorkflow(workflowId: string): Promise<Workflow> {
   return postJson<Workflow>("/analyze/score", { workflow_id: workflowId });
 }
 
-export function getAutomationBlueprint(workflowId: string, stepId: string): Promise<AutomationBlueprint> {
+export function getAutomationBlueprint(workflowId: string, stepId: string, userNotes?: string): Promise<AutomationBlueprint> {
   return postJson<AutomationBlueprint>("/analyze/automation-blueprint", {
     workflow_id: workflowId,
     step_id: stepId,
+    user_notes: userNotes || undefined,
   });
 }
 
-export function getRedesignProposal(workflowId: string, stepId: string): Promise<RedesignProposal> {
+export function getRedesignProposal(workflowId: string, stepId: string, userNotes?: string): Promise<RedesignProposal> {
   return postJson<RedesignProposal>("/analyze/redesign", {
     workflow_id: workflowId,
     step_id: stepId,
+    user_notes: userNotes || undefined,
   });
 }
 

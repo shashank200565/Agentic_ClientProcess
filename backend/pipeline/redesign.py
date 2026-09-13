@@ -32,11 +32,12 @@ class RedesignDraft(BaseModel):
         ]
 
 
-def generate_redesign(step: WorkflowStep, score: StepScore) -> RedesignProposal:
+def generate_redesign(step: WorkflowStep, score: StepScore, user_notes: str | None = None) -> RedesignProposal:
     """Generate an agent-first redesign with explicit human control points."""
     if score.verdict != "redesign":
         raise ValueError("Redesign proposals require verdict='redesign'")
 
+    notes = f"\nAdditional user instructions for this regeneration:\n{user_notes.strip()}\n" if user_notes and user_notes.strip() else ""
     prompt = f"""Redesign this investment-management workflow step around a bounded AI agent workflow.
 Be specific to the actual step content, not generic. Describe the problem, proposed design,
 agent responsibilities, human controls, and measurable expected benefits.
@@ -49,6 +50,7 @@ Step name: {step.name}
 Step description: {step.description}
 Scores: {score.scores.model_dump_json()}
 Decision reasoning: {score.reasoning}
+{notes}
 """
     draft = call_llm(
         prompt,

@@ -1,29 +1,70 @@
-import type { StaticWorkflowDiagram } from "../types/workflow";
+import { useMemo, useState, type ReactNode } from "react";
+import dagre from "@dagrejs/dagre";
+import { Background, Controls, Handle, Position, ReactFlow, ReactFlowProvider, useReactFlow, type Node, type NodeProps, type Edge } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { getAutomationBlueprint, getRedesignProposal } from "../api/workflows";
+import { riskExplanation, riskLabel, riskScore, textBullets } from "../utils/workflow";
+import type { AutomationBlueprint, RedesignProposal, StaticWorkflowDiagram, StepScore, Verdict, Workflow } from "../types/workflow";
 
-export function WorkflowDiagram({ diagram }: { diagram: StaticWorkflowDiagram }) {
-  const width = 900;
-  const height = Math.max(180, diagram.nodes.length * 78);
-  const positions = new Map(diagram.nodes.map((node, index) => [node.id, { x: 70, y: 35 + index * 70 }]));
-  return <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-[#f8faf7] p-4">
-    <svg viewBox={`0 0 ${width} ${height}`} className="min-w-[650px]" role="img" aria-label="Static workflow diagram">
-      {diagram.edges.map((edge) => {
-        const from = positions.get(edge.source);
-        const to = positions.get(edge.target);
-        if (!from || !to) return null;
-        return <g key={`${edge.source}-${edge.target}`}>
-          <line x1={from.x + 230} y1={from.y + 25} x2={to.x} y2={to.y + 25} stroke="#8ba8a1" strokeWidth="2" markerEnd="url(#arrow)" />
-          {edge.label && <text x={from.x + 250} y={(from.y + to.y) / 2 + 22} fill="#64748b" fontSize="11">{edge.label}</text>}
-        </g>;
-      })}
-      <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#8ba8a1" /></marker></defs>
-      {diagram.nodes.map((node) => {
-        const position = positions.get(node.id)!;
-        return <g key={node.id}>
-          <rect x={position.x} y={position.y} width="230" height="50" rx="12" fill={node.node_type === "human_checkpoint" ? "#fff4cf" : "#e4eee9"} stroke="#8ba8a1" />
-          <text x={position.x + 14} y={position.y + 20} fill="#102a2c" fontSize="10" fontWeight="700">{node.node_type.replaceAll("_", " ").toUpperCase()}</text>
-          <foreignObject x={position.x + 14} y={position.y + 25} width="202" height="22"><div style={{ fontSize: 11, color: "#334155", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{node.label}</div></foreignObject>
-        </g>;
-      })}
-    </svg>
-  </div>;
+type StepNodeData = { step: Workflow["steps"][number]; score?: StepScore; stepNumber: number };
+type StepNode = Node<StepNodeData, "workflowStep">;
+const NODE_WIDTH = 300;
+const NODE_HEIGHT = 170;
+
+export function WorkflowDiagram(props: { workflow: Workflow; onWorkflowChange: (workflow: Workflow) => void } | { diagram: StaticWorkflowDiagram }) {
+  if ("diagram" in props) return <GeneratedDiagram diagram={props.diagram} />;
+  return <InteractiveWorkflowDiagram workflow={props.workflow} onWorkflowChange={props.onWorkflowChange} />;
 }
+
+function InteractiveWorkflowDiagram({ workflow, onWorkflowChange }: { workflow: Workflow; onWorkflowChange: (workflow: Workflow) => void }) {
+  const [selectedStepId, setSelectedStepId] = useState<string | null>(workflow.steps[0]?.step_id ?? null);
+  const [notes, setNotes] = useState("");
+  const [isRegenerating, setIsRegenerating] = useState(false);
+  const [error, setError] = useState("");
+  const selectedStep = workflow.steps.find((step) => step.step_id === selectedStepId);
+  const selectedScore = workflow.scores.find((score) => score.step_id === selectedStepId);
+  const { nodes, edges } = useMemo(() => layoutWorkflow(workflow), [workflow]);
+  const selectedOutput = selectedScore?.verdict === "automate" ? workflow.automation_blueprints?.find((item) => item.step_id === selectedScore.step_id) : workflow.redesign_proposals?.find((item) => item.step_id === selectedScore?.step_id);
+
+  async function regenerate() {
+    if (!selectedStep || !selectedScore || !notes.trim()) return;
+    setIsRegenerating(true); setError("");
+    try {
+      if (selectedScore.verdict === "automate") {
+        const blueprint = await getAutomationBlueprint(workflow.workflow_id, selectedStep.step_id, notes);
+        onWorkflowChange({ ...workflow, automation_blueprints: [...(workflow.automation_blueprints ?? []).filter((item) => item.step_id !== selectedStep.step_id), blueprint] });
+      } else if (selectedScore.verdict === "redesign") {
+        const proposal = await getRedesignProposal(workflow.workflow_id, selectedStep.step_id, notes);
+        onWorkflowChange({ ...workflow, redesign_proposals: [...(workflow.redesign_proposals ?? []).filter((item) => item.step_id !== selectedStep.step_id), proposal] });
+      }
+      setNotes("");
+    } catch (requestError) { setError(requestError instanceof Error ? requestError.message : "Regeneration failed."); }
+    finally { setIsRegenerating(false); }
+  }
+
+  return <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_350px]"><StepCanvas nodes={nodes} edges={edges} activeStepId={selectedStepId} onSelect={(stepId) => { setSelectedStepId(stepId); setError(""); }} /><StepPanel step={selectedStep} score={selectedScore} output={selectedOutput} notes={notes} error={error} isRegenerating={isRegenerating} onNotesChange={setNotes} onRegenerate={regenerate} /></div>;
+}
+
+function StepCanvas(props: { nodes: StepNode[]; edges: Edge[]; activeStepId: string | null; onSelect: (stepId: string) => void }) { return <ReactFlowProvider><StepCanvasInner {...props} /></ReactFlowProvider>; }
+
+function StepCanvasInner({ nodes, edges, activeStepId, onSelect }: { nodes: StepNode[]; edges: Edge[]; activeStepId: string | null; onSelect: (stepId: string) => void }) {
+  const { setCenter } = useReactFlow();
+  const activeIndex = Math.max(0, nodes.findIndex((node) => node.id === activeStepId));
+  const centerNode = (node: StepNode) => { onSelect(node.id); setCenter(node.position.x + NODE_WIDTH / 2, node.position.y + NODE_HEIGHT / 2, { zoom: 1.05, duration: 450 }); };
+  const move = (offset: number) => { const node = nodes[Math.min(nodes.length - 1, Math.max(0, activeIndex + offset))]; if (node) centerNode(node); };
+  return <div><div className="h-[680px] overflow-hidden rounded-2xl border border-slate-200 bg-[#f8faf7]"><ReactFlow nodes={nodes} edges={edges} nodeTypes={{ workflowStep: WorkflowStepNode }} fitView fitViewOptions={{ padding: 0.2, minZoom: 0.45, maxZoom: 1 }} minZoom={0.35} maxZoom={1.5} onNodeClick={(_, node) => { const selected = nodes.find((item) => item.id === node.id); if (selected) centerNode(selected); }} nodesConnectable={false} nodesDraggable={false} elementsSelectable><Background color="#cbd5e1" gap={24} /><Controls showInteractive={false} /></ReactFlow></div><div className="mt-3 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-3"><button type="button" onClick={() => move(-1)} disabled={activeIndex === 0} aria-label="Previous step" className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-teal-300 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-40">← Previous</button>{nodes.map((node, index) => <button type="button" key={node.id} onClick={() => centerNode(node)} aria-label={`Center step ${index + 1}`} aria-current={node.id === activeStepId ? "step" : undefined} className={`grid h-9 w-9 place-items-center rounded-full text-sm font-bold transition ${node.id === activeStepId ? "bg-[#102a2c] text-white shadow" : "border border-slate-200 bg-white text-slate-500 hover:border-teal-300 hover:text-teal-700"}`}>{index + 1}</button>)}<button type="button" onClick={() => move(1)} disabled={activeIndex === nodes.length - 1} aria-label="Next step" className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-teal-300 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-40">Next →</button></div></div>;
+}
+
+function GeneratedDiagram({ diagram }: { diagram: StaticWorkflowDiagram }) { const nodes = diagram.nodes.map((node, index) => ({ id: node.id, position: { x: 80, y: index * 115 }, data: { label: node.label }, style: { width: 270, borderRadius: 14, border: "1px solid #8ba8a1", background: node.node_type === "human_checkpoint" ? "#fff4cf" : "#e4eee9", color: "#102a2c", fontWeight: 600, padding: 14 } })); const edges = diagram.edges.map((edge) => ({ ...edge, id: `${edge.source}-${edge.target}`, animated: false, style: { stroke: "#8ba8a1", strokeWidth: 2 } })); return <div className="h-[360px] overflow-hidden rounded-2xl border border-slate-200 bg-[#f8faf7]"><ReactFlow nodes={nodes} edges={edges} fitView nodesConnectable={false} nodesDraggable={false}><Background color="#cbd5e1" gap={24} /><Controls showInteractive={false} /></ReactFlow></div>; }
+
+function layoutWorkflow(workflow: Workflow): { nodes: StepNode[]; edges: Edge[] } { const graph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({})); graph.setGraph({ rankdir: "TB", nodesep: 70, ranksep: 110, marginx: 50, marginy: 40 }); workflow.steps.forEach((step) => graph.setNode(step.step_id, { width: NODE_WIDTH, height: NODE_HEIGHT })); workflow.steps.slice(1).forEach((step, index) => graph.setEdge(workflow.steps[index].step_id, step.step_id)); dagre.layout(graph); const nodes = workflow.steps.map((step, index) => { const position = graph.node(step.step_id); return { id: step.step_id, type: "workflowStep" as const, position: { x: position.x - NODE_WIDTH / 2, y: position.y - NODE_HEIGHT / 2 }, data: { step, score: workflow.scores.find((score) => score.step_id === step.step_id), stepNumber: index + 1 }, draggable: false, selectable: true }; }); const edges = workflow.steps.slice(1).map((step, index) => ({ id: `${workflow.steps[index].step_id}-${step.step_id}`, source: workflow.steps[index].step_id, target: step.step_id, type: "smoothstep", animated: false, style: { stroke: "#8ba8a1", strokeWidth: 2 } })); return { nodes, edges }; }
+
+function WorkflowStepNode({ data }: NodeProps<StepNode>) { const { step, score } = data; const bullets = textBullets(step.description); return <div className="relative min-h-[170px] w-[300px] rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_8px_25px_rgba(16,42,44,0.08)]"><Handle type="target" position={Position.Top} className="!border-teal-700 !bg-teal-100" /><span className="absolute -left-3 -top-3 grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-[#102a2c] font-display text-sm font-bold text-white shadow">{data.stepNumber}</span><div className="mb-3 flex items-start justify-between gap-2 pl-3"><p className="font-display text-sm font-semibold leading-5 text-[#102a2c]">{step.name}</p>{score && <VerdictBadge verdict={score.verdict} />}</div><ul className="space-y-1 text-xs leading-4 text-slate-500">{bullets.slice(0, 3).map((item, index) => <li key={`${step.step_id}-${index}`} className="flex gap-2"><span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal-600" />{String(item)}</li>)}{bullets.length > 3 && <li className="pl-3 font-semibold text-teal-700">... more in details</li>}</ul><Handle type="source" position={Position.Bottom} className="!border-teal-700 !bg-teal-100" /></div>; }
+
+function StepPanel({ step, score, output, notes, error, isRegenerating, onNotesChange, onRegenerate }: { step?: Workflow["steps"][number]; score?: StepScore; output?: AutomationBlueprint | RedesignProposal; notes: string; error: string; isRegenerating: boolean; onNotesChange: (value: string) => void; onRegenerate: () => void }) { if (!step || !score) return <aside className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">Select a step to inspect its details.</aside>; const risk = riskScore(score); return <aside className="overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6"><div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-teal-700">Selected step</p><h2 className="mt-2 font-display text-xl font-semibold text-[#102a2c]">{step.name}</h2></div><VerdictBadge verdict={score.verdict} /></div><div className="mt-5 grid grid-cols-2 gap-2">{Object.entries(score.scores).map(([key, value]) => <Metric key={key} label={key.replaceAll("_", " ")} value={`${value}/5`} />)}<Metric label="risk if unaddressed" value={`${risk}/5 · ${riskLabel(risk)}`} /></div><p className="mt-3 text-xs leading-5 text-slate-600">{riskExplanation(score)}</p><PanelSection title="Description"><BulletList text={step.description} /></PanelSection><PanelSection title="Reasoning"><BulletList text={score.reasoning} /></PanelSection>{output && <PanelSection title={score.verdict === "automate" ? "Automation blueprint" : "Redesign proposal"}><OutputSummary output={output} verdict={score.verdict} /></PanelSection>}{score.verdict !== "leave_as_is" && <div className="mt-6 border-t border-slate-200 pt-5"><p className="font-display font-semibold text-[#102a2c]">Regenerate with notes</p><p className="mt-1 text-xs leading-5 text-slate-500">The instruction is appended to the existing generator prompt and replaces this step's saved output.</p><textarea value={notes} onChange={(event) => onNotesChange(event.target.value)} rows={4} placeholder="e.g. keep a human review step" className="mt-3 w-full resize-none rounded-xl border border-slate-200 px-3 py-2 text-sm leading-5 outline-none focus:ring-2 focus:ring-teal-600" /><button type="button" disabled={isRegenerating || !notes.trim()} onClick={onRegenerate} className="mt-3 w-full rounded-xl bg-[#102a2c] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{isRegenerating ? "Regenerating..." : "Regenerate with notes"}</button>{error && <p className="mt-3 rounded-lg bg-red-50 p-3 text-xs leading-5 text-red-700">{error}</p>}</div>}</aside>; }
+
+function PanelSection({ title, children }: { title: string; children: ReactNode }) { return <section className="mt-6 border-t border-slate-200 pt-5"><p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">{title}</p>{children}</section>; }
+function BulletList({ text }: { text: string }) { return <ul className="space-y-2 text-sm leading-6 text-slate-600">{textBullets(text).map((item, index) => <li key={`${item}-${index}`} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-600" />{String(item)}</li>)}</ul>; }
+function OutputSummary({ output, verdict }: { output: any; verdict: Verdict }) { const values = verdict === "automate" ? [output.trigger_condition, output.rationale] : [output.problem_statement, output.proposed_design, ...output.agent_responsibilities, ...output.human_controls, ...output.expected_benefits]; return <BulletList text={values.filter(Boolean).join(". ")} />; }
+function Metric({ label, value }: { label: string; value: string }) { return <div className="rounded-xl bg-slate-50 p-3"><p className="text-[10px] uppercase leading-4 tracking-wide text-slate-400">{label}</p><p className="mt-1 text-sm font-semibold text-[#102a2c]">{String(value)}</p></div>; }
+function VerdictBadge({ verdict }: { verdict: Verdict }) { const styles = { automate: "bg-emerald-100 text-emerald-800", redesign: "bg-amber-100 text-amber-800", leave_as_is: "bg-slate-100 text-slate-700" }; return <span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide ${styles[verdict]}`}>{verdict.replaceAll("_", " ")}</span>; }

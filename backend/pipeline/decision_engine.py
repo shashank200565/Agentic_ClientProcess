@@ -24,6 +24,14 @@ Score each dimension independently. The score is 1 to 5, where 5 means high:
 
 Repetitiveness: how frequently the step repeats the same or very similar work
 across cases.
+Strong rule: repetitiveness measures whether the judgment and interpretive content
+of a step is the same every time it is performed, not whether the step's name or
+procedural slot recurs in every workflow instance. A step that occurs in 100% of
+cases but requires different evidence-weighing or contextual interpretation each
+time (for example, reviewing case-specific documents or assessing evidence against
+policy) MUST score repetitiveness 1-2, not 4-5. Only steps with identical mechanical
+actions regardless of case specifics (for example, field matching, threshold
+comparisons, or template insertion) warrant repetitiveness 4-5.
 Score the repeatability of the interpretive work itself, not merely whether the
 step's high-level procedural pattern appears in every case. Evidence-gathering
 and analytical steps such as reviewing transaction history to determine cause

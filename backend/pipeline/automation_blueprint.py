@@ -23,12 +23,13 @@ class AutomationDraft(BaseModel):
 
 
 def generate_automation_blueprint(
-    step: WorkflowStep, score: StepScore
+    step: WorkflowStep, score: StepScore, user_notes: str | None = None
 ) -> AutomationBlueprint:
     """Generate a small, conventional automation proposal for one automate step."""
     if score.verdict != "automate":
         raise ValueError("Automation blueprints require verdict='automate'")
 
+    notes = f"\nAdditional user instructions for this regeneration:\n{user_notes.strip()}\n" if user_notes and user_notes.strip() else ""
     prompt = f"""Create a concise conventional automation blueprint for this investment-management workflow step.
 Do not propose an AI agent, autonomous reasoning, branching, or creative redesign.
 Choose one mechanism_type: rules_engine, rpa, scheduled_job, or existing_stp_extension.
@@ -42,6 +43,7 @@ with node_type values input, mechanism, and output.
 Step name: {step.name}
 Step description: {step.description}
 Scores: {score.scores.model_dump_json()}
+{notes}
 """
     draft = call_llm(
         prompt,
