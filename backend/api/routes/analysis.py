@@ -57,6 +57,7 @@ class OrchestrationRequest(BaseModel):
 class ScreenChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     context: dict = Field(default_factory=dict)
+    history: list[dict[str, str]] = Field(default_factory=list, max_length=20)
 
 
 class ScreenChatResponse(BaseModel):
@@ -68,10 +69,18 @@ def list_analyzed_workflows() -> list[Workflow]:
     return get_analyzed_workflows()
 
 
+@router.get("/workflows/{workflow_id}", response_model=Workflow)
+def get_analyzed_workflow(workflow_id: str) -> Workflow:
+    workflow = get_workflow(workflow_id)
+    if workflow is None:
+        raise HTTPException(status_code=404, detail="Workflow not found")
+    return workflow
+
+
 @router.post("/screen-chat", response_model=ScreenChatResponse)
 def screen_chat(payload: ScreenChatRequest) -> ScreenChatResponse:
     try:
-        return ScreenChatResponse(answer=answer_screen_question(payload.question, payload.context))
+        return ScreenChatResponse(answer=answer_screen_question(payload.question, payload.context, payload.history))
     except LLMClientError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 

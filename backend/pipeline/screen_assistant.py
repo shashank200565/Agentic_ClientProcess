@@ -33,11 +33,13 @@ answer.
 """
 
 
-def answer_screen_question(question: str, context: dict[str, Any]) -> str:
+def answer_screen_question(question: str, context: dict[str, Any], history: list[dict[str, str]] | None = None) -> str:
     """Answer a grounded screen question without creating a write path."""
     prompt = (
         "SCREEN CONTEXT (authoritative JSON):\n"
         f"{json.dumps(context, ensure_ascii=True, default=str)}\n\n"
+        "CONVERSATION HISTORY (oldest first; use it to resolve follow-up references):\n"
+        f"{json.dumps(history or [], ensure_ascii=True)}\n\n"
         f"USER QUESTION:\n{question.strip()}"
     )
     result = call_llm(

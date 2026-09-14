@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { scoreWorkflow } from "../api/workflows";
+import { getWorkflow } from "../api/workflows";
 import { VerdictBadge } from "../components/VerdictBadge";
 import { WorkflowDiagram } from "../components/WorkflowDiagram";
 import { ScreenChat } from "../components/ScreenChat";
@@ -12,24 +12,20 @@ export function StepReviewPage() {
   const navigate = useNavigate();
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
   const [error, setError] = useState("");
-  const [isScoring, setIsScoring] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("currentWorkflow");
-    if (!stored || !workflowId) return;
-    const extracted = JSON.parse(stored) as Workflow;
-    if (extracted.workflow_id !== workflowId) return;
-    setWorkflow(extracted);
-    setIsScoring(true);
-    scoreWorkflow(workflowId).then((scored) => {
-      setWorkflow(scored);
-      sessionStorage.setItem("currentWorkflow", JSON.stringify(scored));
-    }).catch((requestError) => setError(requestError instanceof Error ? requestError.message : "Scoring failed.")).finally(() => setIsScoring(false));
+    if (!workflowId) return;
+    setIsLoading(true);
+    getWorkflow(workflowId).then((loaded) => {
+      setWorkflow(loaded);
+      sessionStorage.setItem("currentWorkflow", JSON.stringify(loaded));
+    }).catch((requestError) => setError(requestError instanceof Error ? requestError.message : "Workflow load failed.")).finally(() => setIsLoading(false));
   }, [workflowId]);
 
   if (!workflow || workflow.workflow_id !== workflowId) return <EmptyReview />;
   return <section className="mx-auto max-w-6xl">
-    <div className="mb-10 flex flex-col justify-between gap-5 border-b border-slate-200 pb-8 sm:flex-row sm:items-end"><div><p className="mb-3 text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">02 / Step review</p><h1 className="font-display text-4xl font-semibold tracking-tight text-[#102a2c]">{workflow.name}</h1><p className="mt-3 text-slate-500">{workflow.steps.length} extracted steps · scores from the Decision Engine</p></div><span className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-800">{isScoring ? "Scoring..." : "Live scores"}</span></div>
+     <div className="mb-10 flex flex-col justify-between gap-5 border-b border-slate-200 pb-8 sm:flex-row sm:items-end"><div><p className="mb-3 text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">02 / Step review</p><h1 className="font-display text-4xl font-semibold tracking-tight text-[#102a2c]">{workflow.name}</h1><p className="mt-3 text-slate-500">{workflow.steps.length} extracted steps · scores from the Decision Engine</p></div><span className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-800">{isLoading ? "Loading saved analysis..." : "Live scores"}</span></div>
     {error && <p className="mb-5 rounded-lg bg-red-50 px-3 py-2 text-xs leading-5 text-red-700">{error}</p>}
      <div className="space-y-4">{workflow.steps.map((step) => { const score = workflow.scores.find((item) => item.step_id === step.step_id); return <StepCard key={step.step_id} step={step} score={score} onGenerate={() => score?.verdict === "automate" ? navigate(`/automation/${workflow.workflow_id}/${step.step_id}`) : navigate(`/redesign/${workflow.workflow_id}/${step.step_id}`)} />; })}</div>
      <div className="mt-10"><div className="mb-4"><h2 className="font-display text-2xl font-semibold text-[#102a2c]">Workflow map</h2><p className="mt-1 text-sm text-slate-500">Pan and zoom the fixed step sequence. Select a node to inspect scores or regenerate its generated output.</p></div><WorkflowDiagram workflow={workflow} onWorkflowChange={(updated) => { setWorkflow(updated); sessionStorage.setItem("currentWorkflow", JSON.stringify(updated)); }} /></div>

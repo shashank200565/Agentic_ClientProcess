@@ -83,11 +83,22 @@ export async function getAnalyzedWorkflows(): Promise<Workflow[]> {
   return response.json() as Promise<Workflow[]>;
 }
 
-export async function askScreenChat(question: string, context: Record<string, unknown>): Promise<string> {
+export async function getWorkflow(workflowId: string): Promise<Workflow> {
+  const response = await fetch(`/analyze/workflows/${workflowId}`);
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || `Workflow load failed with status ${response.status}`);
+  }
+  return response.json() as Promise<Workflow>;
+}
+
+export type ScreenChatMessage = { role: "user" | "assistant"; content: string };
+
+export async function askScreenChat(question: string, context: Record<string, unknown>, history: ScreenChatMessage[] = []): Promise<string> {
   const response = await fetch("/analyze/screen-chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question, context }),
+    body: JSON.stringify({ question, context, history }),
   });
   if (!response.ok) {
     const detail = await response.text();

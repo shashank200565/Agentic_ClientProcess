@@ -33,6 +33,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Workflow map step navigation with animated centering, Previous/Next controls, and active-step highlighting
 - [x] Decision Engine repetitiveness calibration rule evaluated across all 44 labeled steps; v3 verdict agreement reached 86.36%
 - [x] Grounded screen assistant widget and `/analyze/screen-chat` explanation route tested with both model tiers
+- [x] Before/after generated-output comparisons and in-session multi-turn screen-chat history
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete; configured GPT 5.6 Luna
