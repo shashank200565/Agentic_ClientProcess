@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
+from uuid import uuid4
 from pathlib import Path
 from typing import Iterator
 
@@ -296,5 +297,41 @@ def get_session(session_id: str) -> WorkflowSession | None:
             completed_step_ids=json.loads(row["completed_step_ids_json"]),
             workflow=json.loads(row["workflow_json"]),
         )
+    finally:
+        connection.close()
+
+
+def save_workflow_session(workflow: Workflow, current_stage: str) -> WorkflowSession:
+    connection = get_connection()
+    try:
+        initialize_database(connection)
+        row = connection.execute(
+            "SELECT session_id, completed_step_ids_json FROM workflow_sessions WHERE workflow_id = ? ORDER BY updated_at DESC LIMIT 1",
+            (workflow.workflow_id,),
+        ).fetchone()
+        completed = set(json.loads(row["completed_step_ids_json"])) if row else set()
+        completed.update(score.step_id for score in workflow.scores)
+        completed.update(item.step_id for item in workflow.automation_blueprints)
+        completed.update(item.step_id for item in workflow.redesign_proposals)
+        session = WorkflowSession(
+            session_id=row["session_id"] if row else uuid4().hex,
+            workflow_id=workflow.workflow_id,
+            current_stage=current_stage,
+            completed_step_ids=sorted(completed),
+            workflow=workflow,
+        )
+        save_session(session)
+        return session
+    finally:
+        connection.close()
+
+
+def get_sessions(limit: int = 50) -> list[WorkflowSession]:
+    connection = get_connection()
+    try:
+        initialize_database(connection)
+        rows = connection.execute("SELECT session_id FROM workflow_sessions ORDER BY updated_at DESC LIMIT ?", (limit,)).fetchall()
+        sessions = [get_session(row["session_id"]) for row in rows]
+        return [session for session in sessions if session is not None]
     finally:
         connection.close()

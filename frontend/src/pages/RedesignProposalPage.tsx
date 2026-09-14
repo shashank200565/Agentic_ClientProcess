@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getRedesignProposal } from "../api/workflows";
+import { getRedesignProposal, getWorkflow } from "../api/workflows";
 import { WorkflowDiagram } from "../components/WorkflowDiagram";
 import type { RedesignProposal } from "../types/workflow";
 import { textBullets } from "../utils/workflow";
@@ -11,7 +11,7 @@ export function RedesignProposalPage() {
   const { workflowId, stepId } = useParams();
   const [proposal, setProposal] = useState<RedesignProposal | null>(null);
   const [error, setError] = useState("");
-  useEffect(() => { if (workflowId && stepId) getRedesignProposal(workflowId, stepId).then(setProposal).catch((requestError) => setError(requestError instanceof Error ? requestError.message : "Generation failed.")); }, [workflowId, stepId]);
+  useEffect(() => { if (!workflowId || !stepId) return; getWorkflow(workflowId).then((workflow) => { const saved = workflow.redesign_proposals?.find((item) => item.step_id === stepId); if (saved) return setProposal(saved); return getRedesignProposal(workflowId, stepId).then(setProposal); }).catch((requestError) => setError(requestError instanceof Error ? requestError.message : "Redesign load failed.")); }, [workflowId, stepId]);
   if (error) return <p className="rounded-2xl bg-red-50 p-6 text-red-700">{error}</p>;
   if (!proposal) return <p className="rounded-3xl border border-slate-200 bg-white p-10 text-center text-slate-500">Generating agent-first redesign...</p>;
   return <><section className="mx-auto max-w-6xl"><Link to={`/review/${workflowId}`} className="text-sm font-semibold text-teal-700">← Back to step review</Link><p className="mt-8 text-sm font-semibold uppercase tracking-[0.22em] text-teal-700">03 / Redesign proposal</p><h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold tracking-tight text-[#102a2c]">{proposal.current_step.name}</h1><div className="mt-8 grid gap-4 rounded-3xl border border-slate-200 bg-white p-6 lg:grid-cols-2"><ComparisonColumn label="Before" title={proposal.current_step.name} text={proposal.current_step.description} /><ComparisonColumn label="After · agent-first redesign" title="Proposed design" text={[proposal.proposed_design, ...proposal.agent_responsibilities, ...proposal.human_controls].join(". ")} /></div><div className="mt-8 space-y-4"><CopyCard title="Problem statement" text={proposal.problem_statement} /><CopyCard title="Proposed design" text={proposal.proposed_design} /><ListCard title="Agent responsibilities" items={proposal.agent_responsibilities} /><ListCard title="Human controls" items={proposal.human_controls} /><ListCard title="Expected benefits" items={proposal.expected_benefits} /></div><div className="mt-8"><WorkflowDiagram diagram={proposal.diagram} /></div></section><ScreenChat context={storedScreenContext(workflowId, stepId, proposal)} /></>;

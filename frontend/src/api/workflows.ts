@@ -1,4 +1,4 @@
-import type { AutomationBlueprint, ExecutiveReport, RedesignProposal, Workflow } from "../types/workflow";
+import type { AutomationBlueprint, ExecutiveReport, RedesignProposal, Workflow, WorkflowSession } from "../types/workflow";
 
 interface TextExtractionInput {
   text: string;
@@ -90,6 +90,15 @@ export async function getWorkflow(workflowId: string): Promise<Workflow> {
     throw new Error(detail || `Workflow load failed with status ${response.status}`);
   }
   return response.json() as Promise<Workflow>;
+}
+
+export async function getWorkflowSessions(): Promise<WorkflowSession[]> {
+  const response = await fetch("/sessions");
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || `Session list failed with status ${response.status}`);
+  }
+  return response.json() as Promise<WorkflowSession[]>;
 }
 
 export type ScreenChatMessage = { role: "user" | "assistant"; content: string };

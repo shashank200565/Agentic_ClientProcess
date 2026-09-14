@@ -97,3 +97,11 @@ export interface ExecutiveReport {
   key_recommendations: string[];
   step_summaries: ReportStepSummary[];
 }
+
+export interface WorkflowSession {
+  session_id: string;
+  workflow_id: string;
+  current_stage: string;
+  completed_step_ids: string[];
+  workflow: Workflow;
+}

@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, ValidationError
 from pypdf import PdfReader
 
 try:
-    from backend.db.db import get_analyzed_workflows, get_workflow, save_workflow
+    from backend.db.db import get_analyzed_workflows, get_workflow, save_workflow, save_workflow_session
     from backend.pipeline.extraction import extract_steps
     from backend.pipeline.decision_engine import score_step
     from backend.pipeline.automation_blueprint import generate_automation_blueprint
@@ -20,7 +20,7 @@ try:
     from backend.pipeline.llm_client import LLMClientError
     from backend.pipeline.schemas import AutomationBlueprint, RedesignProposal, Workflow
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
-    from db.db import get_analyzed_workflows, get_workflow, save_workflow
+    from db.db import get_analyzed_workflows, get_workflow, save_workflow, save_workflow_session
     from pipeline.extraction import extract_steps
     from pipeline.decision_engine import score_step
     from pipeline.automation_blueprint import generate_automation_blueprint
@@ -157,6 +157,7 @@ async def extract_workflow(request: Request) -> Workflow:
         steps=steps,
     )
     save_workflow(workflow)
+    save_workflow_session(workflow, "extracted")
     return workflow
 
 
@@ -185,6 +186,7 @@ def score_workflow(payload: ScoreWorkflowRequest) -> Workflow:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     analyzed_workflow = workflow.model_copy(update={"scores": scores, "status": "analyzed"})
     save_workflow(analyzed_workflow)
+    save_workflow_session(analyzed_workflow, "scored")
     return analyzed_workflow
 
 
@@ -218,6 +220,7 @@ def create_automation_blueprint(payload: GeneratorRequest) -> AutomationBlueprin
         ] + [blueprint]
     })
     save_workflow(updated)
+    save_workflow_session(updated, "generation_complete")
     return blueprint
 
 
@@ -235,6 +238,7 @@ def create_redesign(payload: GeneratorRequest) -> RedesignProposal:
         ] + [proposal]
     })
     save_workflow(updated)
+    save_workflow_session(updated, "generation_complete")
     return proposal
 
 
@@ -250,4 +254,5 @@ def orchestrate_workflow(payload: OrchestrationRequest) -> Workflow:
     except (LLMClientError, ValueError) as exc:
         raise HTTPException(status_code=502 if isinstance(exc, LLMClientError) else 422, detail=str(exc)) from exc
     save_workflow(completed)
+    save_workflow_session(completed, "generation_complete")
     return completed

@@ -1,0 +1,536 @@
+[
+  {
+    "run": 1,
+    "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+    "scores": [
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "1",
+        "scores": {
+          "repetitiveness": 5,
+          "judgment_need": 1,
+          "compliance_sensitivity": 2,
+          "ai_suitability": 2
+        },
+        "reasoning": "Case Initiation repeats the same mechanical actions for each exposure alert: opening a case and recording portfolio, security or issuer, reported exposure, threshold, and alert time. Treating the alert as a trigger rather than determining a breach requires little judgment; although the record supports an auditable mandate investigation, errors are generally procedural at this stage. Structured field capture is better handled by deterministic workflow automation, so AI adds limited incremental value.",
+        "verdict": "leave_as_is"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "2",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "Although mandate retrieval recurs early in this root-cause investigation, each portfolio may involve different narrative provisions, schedules, definitions, and supporting documents requiring contextual interpretation of the restriction linked to the alert. Misidentifying the governing mandate or applicable restriction could affect a potential mandate-breach assessment, so compliance sensitivity is significant. AI can assist with document retrieval, clause extraction, and cross-referencing, but ambiguous language and scope require controlled review and human approval.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "3",
+        "scores": {
+          "repetitiveness": 3,
+          "judgment_need": 2,
+          "compliance_sensitivity": 3,
+          "ai_suitability": 2
+        },
+        "reasoning": "Position Evidence follows a recurring retrieval-and-verification pattern, but relevant timestamps and intraday holdings vary by mandate-breach case. It requires limited interpretation to establish exposure at those points, while its evidence supports a compliance investigation. Structured snapshots, position data, and value checks are better handled by deterministic systems, leaving limited incremental value for AI reasoning.",
+        "verdict": "automate"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "4",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "Transaction history varies materially by security, issuer, activity type, and timing, so the evidence review is not mechanically identical across cases. Determining whether exposure changed through an active decision or another event requires weighing transaction records against exposure timestamps and handling incomplete or ambiguous chronology. Because the analysis supports a mandate-breach investigation, errors can affect compliance conclusions and auditability. AI could assist with chronology reconstruction and evidence synthesis, but structured controls, source traceability, and mandatory human review remain necessary.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "5",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 3,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "The search recurs within mandate-breach investigations, but each case requires reviewing different permissions, confirming approval validity, and interpreting effective periods against the alert date. Errors could incorrectly classify an apparent breach, creating mandate, audit, and compliance consequences. AI could retrieve relevant waiver records and compare dates, but ambiguous documentation and approval scope require controlled human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "6",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "This step requires reviewing variable corporate-action, market-movement, and event evidence to determine whether exposure changed without active investment, making interpretation materially different across mandate-breach cases. It informs the subsequent root-cause assessment and genuine-breach classification, so errors may affect compliance conclusions; AI could assist evidence synthesis, but constrained analysis and human oversight are necessary.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "7",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "Root-Cause Assessment synthesizes case-specific position, transaction, waiver, and corporate-action evidence; determining whether active investment, passive drift, operational error, or another circumstance caused the exception requires substantial expert judgment. Conflicting or incomplete evidence creates mandate, audit, and escalation risks, while AI could assist with evidence synthesis and uncertainty identification only under constrained scope and mandatory human oversight.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "8",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 5,
+          "compliance_sensitivity": 5,
+          "ai_suitability": 3
+        },
+        "reasoning": "This classification varies materially by case because it weighs mandate language, position data, transaction history, allowable circumstances, data issues, and applicable approvals. Determining genuine breach versus false positive is an expert control decision with serious mandate, fiduciary, audit, and client consequences; AI could synthesize evidence and identify inconsistencies, but constrained use and mandatory human oversight are necessary.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "9",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "The write-up recurs for each mandate-breach investigation, but its evidence, root cause, exceptions, classification, and recommended action vary materially. It requires expert synthesis and framing of potentially ambiguous findings, with significant audit, mandate, and compliance consequences. AI can organize evidence and draft a controlled summary, but human review remains necessary for conclusions and recommendations.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-1-d8803116d625435eb080fb71e3ac9c56",
+        "step_id": "10",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 5,
+          "ai_suitability": 2
+        },
+        "reasoning": "Escalation occurs within each mandate-breach investigation, but deciding which material, uncertain, or incomplete-evidence cases require compliance or investment oversight varies substantially by context. It requires expert interpretation of ambiguity and governance requirements, carries critical compliance consequences because final determinations remain under established governance, and offers limited AI suitability beyond rule-based triage and evidence summarization with mandatory human control.",
+        "verdict": "leave_as_is"
+      }
+    ],
+    "steps": [
+      {
+        "step_id": "1",
+        "name": "Case Initiation",
+        "description": "Open an investigation case when an exposure exception is received; record the portfolio, security or issuer, reported exposure, applicable threshold, and alert generation time. Treat the alert as a trigger, not a final breach determination."
+      },
+      {
+        "step_id": "2",
+        "name": "Mandate Retrieval",
+        "description": "Retrieve the investment mandate governing the portfolio and identify the restriction associated with the alert, reviewing narrative provisions, schedules, definitions, and supporting documents in context."
+      },
+      {
+        "step_id": "3",
+        "name": "Position Evidence",
+        "description": "Obtain the holdings snapshot used to generate the alert and, where necessary, retrieve intraday position information to establish the portfolio's exposure at relevant points in time and verify the reported value."
+      },
+      {
+        "step_id": "4",
+        "name": "Transaction History Review",
+        "description": "Review historical transactions (purchases, sales, transfers, other activity) affecting the security or issuer to determine whether the exposure changed due to an active decision or another event, comparing transaction timestamps with the exposure change where available."
+      },
+      {
+        "step_id": "5",
+        "name": "Exception and Waiver Search",
+        "description": "Check for pre-approved exceptions, temporary waivers, or other documented permissions that may have applied at the time of the alert, verifying the validity and effective period of any approval identified."
+      },
+      {
+        "step_id": "6",
+        "name": "Corporate Actions and Passive Movement Analysis",
+        "description": "Assess whether a corporate action, market movement, or other event could have changed the exposure without an active investment decision, comparing available evidence."
+      },
+      {
+        "step_id": "7",
+        "name": "Root-Cause Assessment",
+        "description": "Synthesize the evidence to determine the most plausible cause (active investment decision, passive market drift, corporate action, operational issue, or other documented circumstance); record uncertainty and escalate where evidence is conflicting or incomplete."
+      },
+      {
+        "step_id": "8",
+        "name": "Genuine Breach or False Positive Classification",
+        "description": "Classify the alert as a genuine breach (mandate restriction actually violated) or a false positive (allowable circumstance, data issue, or other condition) based on mandate language, position data, transaction history, and applicable approvals."
+      },
+      {
+        "step_id": "9",
+        "name": "Compliance Write-Up",
+        "description": "Prepare a written investigation summary covering the original alert, relevant mandate provisions, evidence reviewed, root-cause assessment, applicable exceptions or approvals, final classification, and recommended action."
+      },
+      {
+        "step_id": "10",
+        "name": "Escalation and Human Oversight",
+        "description": "Escalate material cases, uncertain interpretations, and incomplete-evidence situations to compliance or investment oversight personnel; the final compliance determination remains subject to the firm's established governance process."
+      }
+    ]
+  },
+  {
+    "run": 2,
+    "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+    "scores": [
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "1",
+        "scores": {
+          "repetitiveness": 5,
+          "judgment_need": 1,
+          "compliance_sensitivity": 2,
+          "ai_suitability": 1
+        },
+        "reasoning": "Case Initiation repeats the same mechanical intake whenever an exposure exception arrives: open a case and record portfolio, security or issuer, reported exposure, threshold, and alert time. Treating the alert as a trigger rather than a breach determination requires no substantive interpretation; the activity is a low-impact, auditable setup control, and deterministic workflow automation is more suitable than incremental AI reasoning.",
+        "verdict": "leave_as_is"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "2",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "Although mandate retrieval recurs for each alert, the analyst must interpret case-specific narrative provisions, schedules, definitions, and supporting documents to identify applicable restrictions and qualifications; this requires specialist judgment, carries mandate and audit consequences, and supports AI-assisted review only with strong controls and human oversight.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "3",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "This step retrieves case-specific holdings and intraday positions, aligns exposure to breach timing, and assesses whether reported values accurately reflect reality; evidence gaps and timing discrepancies require specialist interpretation in a mandate-breach investigation, while AI could assist evidence retrieval and reconciliation under human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "4",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 3,
+          "ai_suitability": 3
+        },
+        "reasoning": "This step reviews case-specific purchases, sales, transfers, and other activity, then interprets timestamps against exposure changes to distinguish active portfolio decisions from other events. The evidence and causal interpretation vary materially by security and issuer, requiring specialist judgment; it supports a mandate-breach investigation and therefore has material control sensitivity. AI can assist with transaction retrieval, timeline construction, and evidence synthesis, but conflicting or incomplete records require controlled scope and human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "5",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 3,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "The step recurs within mandate-breach investigations but requires variable searches across separate documents and case-management records, interpreting whether each exception or waiver applied to the alert date. Verifying approval validity and effective periods is materially compliance-sensitive because it can change the subsequent genuine-breach classification, root-cause assessment, and compliance write-up; AI could assist with retrieval and date comparison, but human review is needed for applicability and authenticity.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "6",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "This step requires reviewing case-specific corporate actions, market movements, and exposure evidence to distinguish passive threshold changes from active investment decisions. Evidence varies materially across cases, requiring specialist interpretation with significant mandate and audit consequences, while AI could assist evidence synthesis under mandatory human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "7",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "This root-cause step varies materially with each mandate exception because it synthesizes conflicting position, transaction, waiver, and corporate-action evidence. Determining whether the cause was an active decision, market drift, corporate action, or operational issue requires specialist interpretation, while documenting uncertainty and following escalation creates significant mandate, audit, and compliance sensitivity. AI could assist with evidence synthesis and structured cause classification, but incomplete or conflicting records require controlled human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "8",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 5,
+          "ai_suitability": 3
+        },
+        "reasoning": "This classification weighs mandate language, position data, transaction history, and approvals to distinguish an actual restriction violation from an allowable circumstance or data issue. Evidence and circumstances vary materially across mandate-breach cases, requiring specialist interpretation and creating significant fiduciary, regulatory, audit, and client-protection consequences. AI could synthesize evidence and propose a classification, but explainability, controls, and mandatory human oversight are necessary.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "9",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "The write-up repeats a reporting structure, but its content varies materially with the alert, mandate provisions, evidence, root-cause assessment, exceptions, approvals, and breach classification. It requires substantial judgment to synthesize conflicting investigation results and recommend action. Because it documents a mandate-related conclusion for reviewer and potential compliance use, errors carry significant audit, regulatory, and client consequences. AI can assist with evidence-grounded drafting and completeness checks, but human review is essential for interpretation, classification, and recommendations.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-2-aa8d15535b174ebf90309716ce29fd62",
+        "step_id": "10",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 5,
+          "ai_suitability": 3
+        },
+        "reasoning": "In this mandate-breach root-cause investigation, escalation depends on materiality, uncertainty, incomplete evidence, and selecting appropriate compliance or investment oversight personnel. Governance and authorized approval make errors highly compliance-sensitive, while AI could support triage and evidence completeness checks but should not replace final human determination.",
+        "verdict": "leave_as_is"
+      }
+    ],
+    "steps": [
+      {
+        "step_id": "1",
+        "name": "Case Initiation",
+        "description": "Open a new investigation case when an exposure exception is received. Record the portfolio, security or issuer involved, the reported exposure, the applicable threshold, and the time the alert was generated. Treat the initial alert as an investigation trigger rather than a final breach determination."
+      },
+      {
+        "step_id": "2",
+        "name": "Mandate Retrieval",
+        "description": "Retrieve the investment mandate governing the portfolio and identify the restriction associated with the alert. Review relevant language in narrative provisions, schedules, definitions, or supporting documents in context, since a numerical alert may not capture every qualification affecting how the mandate applies."
+      },
+      {
+        "step_id": "3",
+        "name": "Position Evidence",
+        "description": "Obtain the holdings snapshot used to generate the alert and, where necessary, retrieve intraday position information surrounding the reported breach. Establish the portfolio's exposure at relevant points in time and determine whether the reported value accurately reflects the position during the period under investigation."
+      },
+      {
+        "step_id": "4",
+        "name": "Transaction History Review",
+        "description": "Review historical transactions affecting the relevant security or issuer, including purchases, sales, transfers, and other recorded activity, to determine whether the exposure changed due to an active portfolio decision or another event. Compare transaction timestamps with the timing of the exposure change where available."
+      },
+      {
+        "step_id": "5",
+        "name": "Exception and Waiver Search",
+        "description": "Check for pre-approved exceptions, temporary waivers, or other documented permissions that may have applied at the time of the alert. These records may be maintained separately from portfolio data in documents or case-management records. Verify the validity and effective period of any approval identified."
+      },
+      {
+        "step_id": "6",
+        "name": "Corporate Actions and Passive Movement Analysis",
+        "description": "Consider whether a corporate action, market movement, or other event could have changed the exposure without a corresponding active investment decision, such as a market-value change pushing an exposure percentage above a threshold without a new purchase. Compare the available evidence before reaching a conclusion."
+      },
+      {
+        "step_id": "7",
+        "name": "Root-Cause Assessment",
+        "description": "Synthesize the evidence to determine the most plausible cause of the exception, classifying it as an active investment decision, passive market drift, corporate action, operational issue, or another documented circumstance. Where evidence is conflicting or incomplete, record the uncertainty and follow the applicable escalation procedure rather than treating an assumption as fact."
+      },
+      {
+        "step_id": "8",
+        "name": "Genuine Breach or False Positive Classification",
+        "description": "After considering the mandate language, position data, transaction history, and applicable approvals, classify the alert. Record a genuine breach where evidence supports that the mandate restriction was actually violated; record a false positive where the alert resulted from an allowable circumstance, data issue, or other condition meaning the apparent breach is not a reportable violation."
+      },
+      {
+        "step_id": "9",
+        "name": "Compliance Write-Up",
+        "description": "Prepare a written investigation summary describing the original alert, relevant mandate provisions, evidence reviewed, root-cause assessment, applicable exceptions or approvals, final classification, and recommended action, so another reviewer can understand how the conclusion was reached without reconstructing the investigation from source systems."
+      },
+      {
+        "step_id": "10",
+        "name": "Escalation and Human Oversight",
+        "description": "Escalate material cases, uncertain interpretations, and situations involving incomplete evidence to the appropriate compliance or investment oversight personnel. The final regulatory or compliance determination remains subject to the firm's established governance process, and authorized personnel retain responsibility for approving sensitive conclusions."
+      }
+    ]
+  },
+  {
+    "run": 3,
+    "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+    "scores": [
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "1",
+        "scores": {
+          "repetitiveness": 5,
+          "judgment_need": 1,
+          "compliance_sensitivity": 2,
+          "ai_suitability": 2
+        },
+        "reasoning": "Case Initiation repeats standardized intake for each exposure alert, recording portfolio, security or issuer, reported exposure, threshold, and alert time. It explicitly treats the alert as a trigger rather than deciding whether a mandate breach occurred, so judgment and compliance sensitivity are limited. Structured extraction and case creation are better handled by deterministic workflow automation than incremental AI reasoning.",
+        "verdict": "leave_as_is"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "2",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "Although mandate retrieval recurs for each alert, the work varies materially because reviewers must interpret narrative provisions, schedules, definitions, and supporting documents in context. Identifying which restriction governs a numerical alert requires specialist judgment and is mandate- and audit-sensitive. AI could assist with document retrieval and contextual clause synthesis, but ambiguous qualifications require controlled human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "3",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 3,
+          "compliance_sensitivity": 3,
+          "ai_suitability": 3
+        },
+        "reasoning": "The step recurs in each mandate-breach investigation, but holdings snapshots, intraday timing, portfolio exposures, and reported-value discrepancies vary materially. It requires interpreting time-specific position evidence, while errors could affect breach analysis and auditability; structured retrieval and reconciliation support AI assistance with controlled human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "4",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 3,
+          "ai_suitability": 3
+        },
+        "reasoning": "This review recurs within mandate-breach investigations, but transaction types, timestamps, securities, issuers, and exposure-change explanations vary materially by case. Determining whether purchases, sales, transfers, or other events caused the change requires weighing incomplete or conflicting historical evidence and temporal relationships. Because the findings support a potentially material mandate investigation, errors require evidence and review, though this step does not itself classify a breach. AI could assist with transaction retrieval, chronology construction, and evidence synthesis, but ambiguous causation and auditability require constrained use and human oversight.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "5",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 3,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "The search recurs for mandate-alert cases, but waiver records may be scattered across documents and case-management systems. Determining whether an approval was valid and effective at the alert time requires interpreting dates, scope, and documentation quality. Errors could misclassify a potential mandate breach, so compliance sensitivity is high. AI could assist with retrieval, date matching, and permission extraction, but variable records and material consequences require controlled workflows and human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "6",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 3,
+          "ai_suitability": 3
+        },
+        "reasoning": "The analysis varies materially by case because investigators must examine corporate actions, market movements, and other events, then compare available evidence to explain threshold changes without active purchases. It requires specialist causal interpretation, while remaining an investigative input rather than the final breach classification; AI could assist evidence synthesis and event matching, but human review is necessary.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "7",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "Root-Cause Assessment recurs within mandate-breach investigations, but each case requires weighing position evidence, transaction history, waivers, corporate actions, and passive market movement. Determining whether an exception reflects an active investment decision, operational issue, or documented circumstance involves specialist interpretation, uncertainty handling, and escalation, creating significant compliance and audit consequences. AI could assist by synthesizing evidence and identifying plausible causes, but conflicting or incomplete records require explainable outputs and mandatory human oversight.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "8",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 5,
+          "ai_suitability": 3
+        },
+        "reasoning": "This classification weighs mandate language, position data, transaction history, and approvals, with materially different evidence across cases. Determining genuine violation versus allowable circumstance or data issue requires specialist interpretation and directly affects reportable breach status, making compliance sensitivity critical. AI could synthesize evidence and propose classifications, but high consequences require explainable controls and mandatory human review.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "9",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 4,
+          "ai_suitability": 3
+        },
+        "reasoning": "Although every investigation requires a write-up, the content varies materially with the original alert, mandate provisions, evidence, root cause, exceptions, classification, and recommended action. It must synthesize and accurately explain the investigative conclusion for another reviewer, requiring substantial judgment and audit-sensitive controls. AI could assist with evidence-grounded drafting and completeness checks, but mandatory human review is needed because errors could misstate a mandate breach or recommended escalation.",
+        "verdict": "redesign"
+      },
+      {
+        "workflow_id": "nondeterminism-3-3fead305459d4e93aae74db79c5dbb75",
+        "step_id": "10",
+        "scores": {
+          "repetitiveness": 2,
+          "judgment_need": 4,
+          "compliance_sensitivity": 5,
+          "ai_suitability": 2
+        },
+        "reasoning": "Escalation occurs only for material cases, uncertain interpretations, or incomplete evidence, so the work varies substantially by facts and requires contextual judgment about appropriate compliance or investment oversight routing. Errors can affect sensitive regulatory conclusions and governance approvals, making compliance sensitivity critical. AI could assist with triage and evidence-completeness checks, but authorized personnel must retain approval responsibility.",
+        "verdict": "leave_as_is"
+      }
+    ],
+    "steps": [
+      {
+        "step_id": "1",
+        "name": "Case Initiation",
+        "description": "Open a new investigation case when an exposure exception is received. Record the portfolio, security or issuer involved, the reported exposure, the applicable threshold, and the time the alert was generated. Treat the initial alert as an investigation trigger rather than a final breach determination."
+      },
+      {
+        "step_id": "2",
+        "name": "Mandate Retrieval",
+        "description": "Retrieve the investment mandate governing the portfolio and identify the restriction associated with the alert. Review relevant language in narrative provisions, schedules, definitions, or supporting documents in context, since a numerical alert may not capture every qualification affecting how the mandate applies."
+      },
+      {
+        "step_id": "3",
+        "name": "Position Evidence",
+        "description": "Obtain the holdings snapshot used to generate the alert and, where necessary, retrieve intraday position information surrounding the reported breach. Establish the portfolio's exposure at relevant points in time and determine whether the reported value accurately reflects the position during the period under investigation."
+      },
+      {
+        "step_id": "4",
+        "name": "Transaction History Review",
+        "description": "Review historical transactions affecting the relevant security or issuer, including purchases, sales, transfers, and other recorded activity, to determine whether the exposure changed due to an active portfolio decision or another event. Compare transaction timestamps with the timing of the exposure change where available."
+      },
+      {
+        "step_id": "5",
+        "name": "Exception and Waiver Search",
+        "description": "Check for pre-approved exceptions, temporary waivers, or other documented permissions that may have applied at the time of the alert. These records may be maintained separately from portfolio data in documents or case-management records. Verify the validity and effective period of any approval identified."
+      },
+      {
+        "step_id": "6",
+        "name": "Corporate Actions and Passive Movement Analysis",
+        "description": "Consider whether a corporate action, market movement, or other event could have changed the exposure without a corresponding active investment decision, such as a market value change pushing an exposure percentage above a threshold without new purchases. Compare available evidence before reaching a conclusion."
+      },
+      {
+        "step_id": "7",
+        "name": "Root-Cause Assessment",
+        "description": "Synthesize the evidence to determine the most plausible cause of the exception, classifying it as an active investment decision, passive market drift, corporate action, operational issue, or another documented circumstance. Where evidence is conflicting or incomplete, record the uncertainty and follow the applicable escalation procedure rather than treating an assumption as fact."
+      },
+      {
+        "step_id": "8",
+        "name": "Genuine Breach or False Positive Classification",
+        "description": "After considering the mandate language, position data, transaction history, and applicable approvals, classify the alert. Record a genuine breach where evidence supports that the mandate restriction was actually violated; record a false positive where the alert resulted from an allowable circumstance, data issue, or other condition meaning the apparent breach is not a reportable violation."
+      },
+      {
+        "step_id": "9",
+        "name": "Compliance Write-Up",
+        "description": "Prepare a written investigation summary describing the original alert, relevant mandate provisions, evidence reviewed, root-cause assessment, applicable exceptions or approvals, final classification, and recommended action, so another reviewer can understand how the conclusion was reached without reconstructing the investigation from source systems."
+      },
+      {
+        "step_id": "10",
+        "name": "Escalation and Human Oversight",
+        "description": "Escalate material cases, uncertain interpretations, and situations involving incomplete evidence to the appropriate compliance or investment oversight personnel. The final regulatory or compliance determination remains subject to the firm's established governance process, with authorized personnel responsible for approving sensitive conclusions."
+      }
+    ]
+  }
+]

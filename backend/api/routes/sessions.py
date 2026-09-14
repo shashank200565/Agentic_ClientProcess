@@ -3,13 +3,18 @@ from uuid import uuid4
 from fastapi import APIRouter, HTTPException
 
 try:
-    from backend.db.db import get_session, get_workflow, save_session
+    from backend.db.db import get_session, get_sessions, get_workflow, save_session
     from backend.pipeline.schemas import WorkflowSession
 except ModuleNotFoundError:
-    from db.db import get_session, get_workflow, save_session
+    from db.db import get_session, get_sessions, get_workflow, save_session
     from pipeline.schemas import WorkflowSession
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
+
+
+@router.get("", response_model=list[WorkflowSession])
+def list_workflow_sessions() -> list[WorkflowSession]:
+    return get_sessions()
 
 
 @router.post("/{workflow_id}", response_model=WorkflowSession)

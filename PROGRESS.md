@@ -34,6 +34,10 @@ successfully extracted through a live OpenCode Go call.
 - [x] Decision Engine repetitiveness calibration rule evaluated across all 44 labeled steps; v3 verdict agreement reached 86.36%
 - [x] Grounded screen assistant widget and `/analyze/screen-chat` explanation route tested with both model tiers
 - [x] Before/after generated-output comparisons and in-session multi-turn screen-chat history
+- [x] Custom hover tooltips added for all four step score dimensions in Step Review and workflow-map side panel
+- [x] Persisted generator hydration and workflow-level Redesigned Flow browser view
+- [x] Real resume-session listing with stage-aware continuation and deterministic automation copy
+- [x] Automatic session upserts across extraction, scoring, and generation-complete transitions
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete; configured GPT 5.6 Luna
