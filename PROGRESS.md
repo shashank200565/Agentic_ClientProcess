@@ -38,6 +38,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Persisted generator hydration and workflow-level Redesigned Flow browser view
 - [x] Real resume-session listing with stage-aware continuation and deterministic automation copy
 - [x] Automatic session upserts across extraction, scoring, and generation-complete transitions
+- [x] Six-fix UI and Decision Engine polish batch, including stable boundary handling for mandate-breach step 3
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete; configured GPT 5.6 Luna

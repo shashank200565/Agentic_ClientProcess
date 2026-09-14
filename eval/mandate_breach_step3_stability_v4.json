@@ -1,0 +1,38 @@
+[
+  {
+    "workflow_id": "mandate_breach_investigation",
+    "step_id": "3",
+    "scores": {
+      "repetitiveness": 2,
+      "judgment_need": 2,
+      "compliance_sensitivity": 3,
+      "ai_suitability": 2
+    },
+    "reasoning": "This step repeatedly retrieves holdings data, but the relevant timestamps, intraday movements, and reported-alert accuracy vary by investigation. Establishing exposure during the breach period requires contextual evidence interpretation, creating material mandate and audit sensitivity, while AI could assist with time-aligned retrieval and discrepancy synthesis under human review.",
+    "verdict": "redesign"
+  },
+  {
+    "workflow_id": "mandate_breach_investigation",
+    "step_id": "3",
+    "scores": {
+      "repetitiveness": 2,
+      "judgment_need": 2,
+      "compliance_sensitivity": 3,
+      "ai_suitability": 2
+    },
+    "reasoning": "The step recurs for each mandate-breach case, but the relevant holdings dates, intraday points, data availability, and position discrepancies vary materially. It requires interpreting whether snapshots accurately represent exposure during the reported breach, making judgment beyond simple retrieval. Because the evidence supports a potential mandate-breach investigation, errors could affect client protection, auditability, and escalation, although the step does not itself classify the breach. AI could assist with retrieving time-aligned holdings, reconciling snapshots, and flagging gaps, but variable evidence and control sensitivity require human review.",
+    "verdict": "redesign"
+  },
+  {
+    "workflow_id": "mandate_breach_investigation",
+    "step_id": "3",
+    "scores": {
+      "repetitiveness": 2,
+      "judgment_need": 3,
+      "compliance_sensitivity": 3,
+      "ai_suitability": 3
+    },
+    "reasoning": "The step recurs in mandate-breach investigations, but each case requires retrieving different holdings snapshots and potentially intraday positions at relevant times. Establishing exposure and verifying whether the reported value accurately reflects the position involves material evidence reconciliation, though it does not itself determine root cause or breach status. Structured position data supports controlled AI-assisted retrieval and comparison, but timing, completeness, and accuracy require human review.",
+    "verdict": "redesign"
+  }
+]

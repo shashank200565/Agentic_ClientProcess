@@ -7,10 +7,10 @@ from pydantic import ValidationError
 
 try:
     from backend.pipeline.llm_client import LLMClientError, call_llm, get_reasoning_model
-    from backend.pipeline.schemas import StepScore, WorkflowStep
+    from backend.pipeline.schemas import StepScore, StepScores, WorkflowStep
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
     from pipeline.llm_client import LLMClientError, call_llm, get_reasoning_model
-    from pipeline.schemas import StepScore, WorkflowStep
+    from pipeline.schemas import StepScore, StepScores, WorkflowStep
 
 
 DECISION_SYSTEM_PROMPT = """You are the Decision Engine for an investment-management workflow diagnostic.
@@ -155,6 +155,8 @@ def _verdict_for(step: WorkflowStep, score: StepScore) -> str:
         and _is_governance_action(step)
     ):
         return "leave_as_is"
+    if scores.repetitiveness <= 3 and scores.judgment_need in (2, 3) and scores.ai_suitability in (2, 3):
+        return "redesign"
     if scores.repetitiveness >= 4 and scores.judgment_need <= 2:
         return "leave_as_is" if scores.ai_suitability <= 2 else "automate"
     if scores.judgment_need >= 3 and scores.ai_suitability >= 3:
@@ -165,33 +167,48 @@ def _verdict_for(step: WorkflowStep, score: StepScore) -> str:
 def score_step(step: WorkflowStep, workflow_context: str) -> StepScore:
     """Score one step with the reasoning model and apply the fixed verdict rule."""
 
-    result = call_llm(
-        prompt=(
+    prompt = (
             "Score this workflow step using the rubric in your system instructions. "
             "Return the nested `scores` object and a specific reasoning string.\n\n"
             f"WORKFLOW CONTEXT:\n{workflow_context}\n\n"
             f"STEP:\nname: {step.name}\ndescription: {step.description}"
-        ),
-        model=get_reasoning_model(),
-        system_prompt=DECISION_SYSTEM_PROMPT,
-        temperature=0.0,
-    )
-    if not isinstance(result, dict):
-        raise LLMClientError("Decision Engine returned an unexpected response type")
+        )
 
+    def request_score(temperature: float) -> dict[str, Any]:
+        result = call_llm(
+            prompt=prompt,
+            model=get_reasoning_model(),
+            system_prompt=DECISION_SYSTEM_PROMPT,
+            temperature=temperature,
+        )
+        if not isinstance(result, dict):
+            raise LLMClientError("Decision Engine returned an unexpected response type")
+        return result
+
+    result = request_score(0.0)
     reasoning = result.get("reasoning")
     if not isinstance(reasoning, str) or len(reasoning.split()) < 20:
         raise LLMClientError("Decision Engine reasoning must contain at least 20 words")
 
-    payload: dict[str, Any] = {
-        **result,
-        "workflow_id": _workflow_id_from_context(workflow_context),
-        "step_id": step.step_id,
-        "verdict": "leave_as_is",
-    }
-    try:
-        validated = StepScore.model_validate(payload)
-    except ValidationError as exc:
-        raise LLMClientError(f"Decision Engine response did not match StepScore: {exc}") from exc
+    def validate_result(raw_result: dict[str, Any]) -> StepScore:
+        payload: dict[str, Any] = {
+            **raw_result,
+            "workflow_id": _workflow_id_from_context(workflow_context),
+            "step_id": step.step_id,
+            "verdict": "leave_as_is",
+        }
+        try:
+            return StepScore.model_validate(payload)
+        except ValidationError as exc:
+            raise LLMClientError(f"Decision Engine response did not match StepScore: {exc}") from exc
+
+    validated = validate_result(result)
+    if validated.scores.judgment_need in (2, 3) and validated.scores.ai_suitability in (2, 3):
+        second = validate_result(request_score(0.1))
+        averaged_scores = StepScores(**{
+            dimension: round((getattr(validated.scores, dimension) + getattr(second.scores, dimension)) / 2)
+            for dimension in ("repetitiveness", "judgment_need", "compliance_sensitivity", "ai_suitability")
+        })
+        validated = validated.model_copy(update={"scores": averaged_scores})
 
     return validated.model_copy(update={"verdict": _verdict_for(step, validated)})

@@ -28,8 +28,8 @@ verdict rule routes to redesign rather than automate. Never change a verdict, sa
 or claim that you regenerated anything. Tell the user they can use the existing "Regenerate with
 notes" action in the workflow map side panel if they want to explore an alternative design.
 
-Keep answers concise and practical, normally 2-5 sentences. Return JSON with exactly one field:
-answer.
+Keep answers concise and practical: return 2-4 short bullet points, one sentence per bullet.
+Use Markdown bullets beginning with '-'. Return JSON with exactly one field: answer.
 """
 
 

@@ -11,14 +11,12 @@ export function riskLabel(value: number): "Low" | "Medium" | "High" {
 }
 
 export function riskExplanation(score: StepScore): string {
-  const { repetitiveness, judgment_need, compliance_sensitivity, ai_suitability } = score.scores;
   const label = riskLabel(riskScore(score));
-  if (label === "High") {
-    if (score.verdict === "leave_as_is") return `High risk: significant compliance exposure (${compliance_sensitivity}/5) and professional judgment (${judgment_need}/5) make this a high-stakes step; leave_as_is preserves accountable human control.`;
-    return `High risk: significant compliance exposure (${compliance_sensitivity}/5) and professional judgment (${judgment_need}/5) require strong controls before pursuing the ${score.verdict} path.`;
-  }
-  if (label === "Low") return `Low risk: this step is highly repetitive (${repetitiveness}/5), has limited professional judgment (${judgment_need}/5), and carries modest compliance exposure (${compliance_sensitivity}/5); its AI suitability is ${ai_suitability}/5.`;
-  return `Medium risk: compliance exposure is ${compliance_sensitivity}/5 and professional judgment is ${judgment_need}/5; the ${score.verdict.replaceAll("_", " ")} verdict balances control with a measured next step.`;
+  if (label === "High" && score.verdict === "leave_as_is") return "An error here could let a real compliance violation or client-protection failure go undetected, which is why this step keeps an accountable human decision-maker even where AI can help with groundwork.";
+  if (label === "High" && score.verdict === "redesign") return "This step combines consequential evidence interpretation with material control exposure; an agent can organize the work, but the redesigned flow must preserve review, traceability, and an explicit human decision point.";
+  if (label === "Low" && score.verdict === "automate") return "The main downside is operational inconsistency rather than expert judgment, so a deterministic automation can remove manual effort while keeping outputs auditable and easy to correct.";
+  if (label === "Low" && score.verdict === "leave_as_is") return "The work is low consequence but already simple and reliable; leaving it alone avoids adding system complexity where automation would create little practical benefit.";
+  return score.verdict === "automate" ? "A controlled automation is reasonable here, but exceptions should remain visible so a human can intervene when the normal path does not fit." : "The step has enough ambiguity or consequence to warrant a measured design with explicit controls rather than an unreviewed shortcut.";
 }
 
 export function textBullets(text: string): string[] {
