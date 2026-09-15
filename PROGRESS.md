@@ -34,21 +34,26 @@ successfully extracted through a live OpenCode Go call.
 - [x] Decision Engine repetitiveness calibration rule evaluated across all 44 labeled steps; v3 verdict agreement reached 86.36%
 - [x] Grounded screen assistant widget and `/analyze/screen-chat` explanation route tested with both model tiers
 - [x] Before/after generated-output comparisons and in-session multi-turn screen-chat history
+- [x] Screen assistant markdown rendering for bold, italics, inline code, and bullet responses
 - [x] Custom hover tooltips added for all four step score dimensions in Step Review and workflow-map side panel
 - [x] Persisted generator hydration and workflow-level Redesigned Flow browser view
 - [x] Reworked frontend visual system around reusable blue gradient theme, verdict-first portfolio cards, focused step review, executive report hierarchy, and floating screen assistant
+- [x] Frozen final extraction snapshot for all five demo workflows (`eval/final_extraction_snapshot.json`), aligned labeled descriptions, and completed the final 44-step eval at 81.82% verdict agreement (36/44)
 - [x] Real resume-session listing with stage-aware continuation and deterministic automation copy
 - [x] Automatic session upserts across extraction, scoring, and generation-complete transitions
 - [x] Six-fix UI and Decision Engine polish batch, including stable boundary handling for mandate-breach step 3
 - [x] Trade-confirmation extraction investigation: explicit extraction temperature=0.0 produced stable 7-step boundaries across three runs; fixed-step scoring still showed one verdict drift in three runs, and redesign generation reproduced successfully
 
 ## Currently Working On
-Portfolio dashboard and risk presentation are complete; configured GPT 5.6 Luna
-provider calls currently return an upstream internal error, so the first route test
-used a temporary supported `glm-5.3` override
+Portfolio dashboard and risk presentation are complete. The five demo extraction
+outputs are now frozen and must not be re-extracted; the aligned final evaluation
+is 81.82% verdict agreement (36/44).
 
 ## Blocked
-None. The API key is configured locally in `backend/.env` and is ignored by Git.
+The API key is configured locally in `backend/.env` and is ignored by Git. Three
+label-fit concerns remain flagged for review: trade-confirmation step 7,
+onboarding steps 1-2 and 7, and quarterly data-review wording versus the original
+labels. No labels were silently changed; descriptions were aligned word-for-word.
 
 ## Last OpenCode Report
 Phase 2 Decision Engine implemented with fixed post-processing verdict logic; the

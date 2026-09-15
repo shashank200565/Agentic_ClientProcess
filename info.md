@@ -605,20 +605,26 @@ eval/decision_engine_quarterly_judgment_compliance_calibration.json
 - Real frontend upload flow.
 - Real frontend scoring flow.
 - Real step review page.
+- Automation Blueprint Generator with persisted structured output and diagrams.
+- Redesign Generator with persisted structured output, diagram normalization, and human-control fields.
+- LangGraph verdict-conditional orchestration.
+- LangSmith tracing hooks for pipeline LLM calls.
+- Portfolio dashboard with Recharts visualizations and workflow risk summaries.
+- Executive report generation and print-to-PDF view.
+- Workflow session persistence and resume API.
+- Grounded screen assistant with persisted workflow context.
+- Determinism investigations for extraction and scoring across the five demo workflows.
+- Explicit extraction `temperature=0.0` and narrow judgment/AI boundary averaging with median-of-3 calls.
+- Final demo pipeline run with generated outputs persisted for all flagged steps.
+- Blue fintech visual system across the frontend, horizontal React Flow diagrams, reduced-density generator pages, and removal of the Resume Session UI route.
 
 ## 17. Not Yet Complete
 
-- Automation Blueprint Generator.
-- Redesign Generator.
-- LangGraph orchestration.
-- LangSmith tracing.
-- Portfolio dashboard data integration.
-- Executive report generation.
-- Session-resume persistence.
 - Deployment.
-- Full end-to-end flow beyond extraction and scoring.
-
-The frontend still contains placeholder shells for those future sections.
+- Final frozen extraction snapshot is saved at `eval/final_extraction_snapshot.json` with 7/6/10/10/11 steps across the five demo PDFs.
+- `eval/labeled_set.json` descriptions are aligned word-for-word to that snapshot. The final aligned current-pipeline evaluation is 81.82% verdict agreement (36/44).
+- Do not re-extract the five demo PDFs again; the snapshot is the permanent evaluation reference.
+- The Chat Assistant remains a scoped screen assistant; open-ended master routing is intentionally deferred.
 
 ## 18. Interview Questions and Answers
 

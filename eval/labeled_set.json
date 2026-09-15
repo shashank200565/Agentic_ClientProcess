@@ -3,10 +3,19 @@
     "source": "pdf_sop",
     "scoring_method": "AI-drafted (initial pass + reasoning-checked revision), team-reviewed and validated",
     "rubric_version": "eval/rubric.md",
-    "dimensions": ["repetitiveness", "judgment_need", "compliance_sensitivity", "ai_suitability"],
+    "dimensions": [
+      "repetitiveness",
+      "judgment_need",
+      "compliance_sensitivity",
+      "ai_suitability"
+    ],
     "scale": "1-5, 5 = high",
-    "verdict_values": ["leave_as_is", "automate", "redesign"],
-    "status": "finalized"
+    "verdict_values": [
+      "leave_as_is",
+      "automate",
+      "redesign"
+    ],
+    "status": "final_validated_comparison"
   },
   "workflows": [
     {
@@ -14,13 +23,90 @@
       "name": "Trade Confirmation Matching",
       "source_file": "01_trade_confirmation_matching.pdf",
       "steps": [
-        {"step_id": "1", "name": "Receive & validate confirmation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Identify internal record", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "3", "name": "Field-level reconciliation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "4", "name": "Update status on match", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "5", "name": "Record mismatch, route to queue", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "6", "name": "Operational review of exceptions", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 3, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "7", "name": "Escalate unresolved", "scores": {"repetitiveness": 2, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 2}, "verdict": "leave_as_is"}
+        {
+          "step_id": "1",
+          "name": "Receive & validate confirmation",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 2,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "Broker confirmations are received electronically during the trading day and placed into the reconciliation workflow. The system validates that required fields identifying the transaction and its economic terms are present. Incomplete or technically malformed records are retained in the existing exception process rather than treated as successful matches."
+        },
+        {
+          "step_id": "2",
+          "name": "Identify internal record",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 2,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "The reconciliation service searches the internal order and trade records for the corresponding transaction using trade identifiers and other available reference information. If multiple candidate records are returned, the item remains unresolved for operational review rather than being selected based on subjective interpretation."
+        },
+        {
+          "step_id": "3",
+          "name": "Field-level reconciliation",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "For a candidate match, the service compares the security ticker, executed quantity, execution price, and contractual settlement date against the internal record using the configured matching rules. The successful path requires the relevant fields to agree exactly; no natural-language or economic-similarity interpretation is used."
+        },
+        {
+          "step_id": "4",
+          "name": "Update status on match",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 2,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "When all required fields satisfy the configured matching criteria, the confirmation is considered reconciled. The system updates the trade's reconciliation status, allowing the existing settlement workflow to proceed. Matched records remain available in the audit trail so operations personnel can trace the status update back to the original confirmation and internal trade record."
+        },
+        {
+          "step_id": "5",
+          "name": "Record mismatch, route to queue",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "If the quantity, price, settlement date, or other required value differs, the trade is not marked as settled through the automatic path. The system records the mismatch and places the item in the operational exception queue without attempting to infer the cause of the discrepancy."
+        },
+        {
+          "step_id": "6",
+          "name": "Operational review of exceptions",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 4,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "An operations analyst reviews exception items using the existing records and procedures. Depending on the circumstances, the analyst may compare the broker confirmation with the order history, contact the relevant operations or trading team, or obtain a corrected confirmation. Items that cannot be resolved using available trade records are escalated according to the existing settlement operations procedure."
+        },
+        {
+          "step_id": "7",
+          "name": "Escalate unresolved",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "verdict": "leave_as_is",
+          "description": "Once a discrepancy has been resolved, the trade is processed through the established correction and reconciliation procedure. The system does not modify a trade's economic fields simply to achieve a match, and successful matches and unresolved exceptions are recorded separately for auditability."
+        }
       ]
     },
     {
@@ -28,12 +114,78 @@
       "name": "Passive Exposure Limit Check",
       "source_file": "02_passive_exposure_limit_check.pdf",
       "steps": [
-        {"step_id": "1", "name": "Portfolio snapshot load", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Exposure % calculation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "3", "name": "Mandate limit lookup", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "4", "name": "Threshold comparison", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "5", "name": "Exception record creation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 4, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "6", "name": "Handoff to investigation", "scores": {"repetitiveness": 2, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 2}, "verdict": "leave_as_is"}
+        {
+          "step_id": "1",
+          "name": "Portfolio snapshot load",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 2,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "Load the latest available NAV and holdings snapshot for the relevant valuation point into the control process. Run data-quality checks to confirm required values are present; unavailable source values are handled through the existing data-quality process rather than substituted with estimates."
+        },
+        {
+          "step_id": "2",
+          "name": "Exposure % calculation",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "For each relevant holding or issuer grouping, calculate the percentage weight relative to portfolio NAV using the firm's configured methodology, representing the portion of the portfolio attributable to the security or issuer at the measurement point."
+        },
+        {
+          "step_id": "3",
+          "name": "Mandate limit lookup",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "Retrieve the applicable mandate limits maintained as configured control values (e.g., a single-issuer restriction of no more than five percent of NAV) to serve as the thresholds for evaluation."
+        },
+        {
+          "step_id": "4",
+          "name": "Threshold comparison",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "Compare each calculated exposure with its applicable configured limit. Holdings at or below the threshold remain within the normal limit; holdings above the threshold generate an exception, applied consistently across the portfolio."
+        },
+        {
+          "step_id": "5",
+          "name": "Exception record creation",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "For each exceeded threshold, create an exception record containing the portfolio, relevant holding or issuer, measured exposure, permitted limit, and observed variance. Make exceptions available to the monitoring or compliance team through the established reporting process."
+        },
+        {
+          "step_id": "6",
+          "name": "Handoff to investigation",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 2
+          },
+          "verdict": "leave_as_is",
+          "description": "For flagged positions, the relevant team follows the firm's breach investigation procedure, which may consider additional information outside the numerical monitoring process to determine root cause and whether the exception is a reportable breach."
+        }
       ]
     },
     {
@@ -41,16 +193,126 @@
       "name": "Mandate Breach Root-Cause Investigation",
       "source_file": "03_mandate_breach_root_cause_investigation.pdf",
       "steps": [
-        {"step_id": "1", "name": "Case initiation", "scores": {"repetitiveness": 3, "judgment_need": 2, "compliance_sensitivity": 3, "ai_suitability": 3}, "verdict": "automate"},
-        {"step_id": "2", "name": "Mandate retrieval", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "3", "name": "Position evidence gathering", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "4", "name": "Transaction history review", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "5", "name": "Exception/waiver search", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "6", "name": "Corporate action / passive movement check", "scores": {"repetitiveness": 1, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "7", "name": "Root-cause assessment (synthesis)", "scores": {"repetitiveness": 1, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 5}, "verdict": "redesign"},
-        {"step_id": "8", "name": "Genuine breach vs false positive", "scores": {"repetitiveness": 1, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "9", "name": "Compliance write-up", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "10", "name": "Escalation", "scores": {"repetitiveness": 2, "judgment_need": 2, "compliance_sensitivity": 5, "ai_suitability": 2}, "verdict": "leave_as_is"}
+        {
+          "step_id": "1",
+          "name": "Case initiation",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 2,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 3
+          },
+          "verdict": "automate",
+          "description": "Open a new investigation case when an exposure exception is received. Record the portfolio, security or issuer involved, the reported exposure, the applicable threshold, and the time the alert was generated. Treat the initial alert as an investigation trigger rather than a final breach determination."
+        },
+        {
+          "step_id": "2",
+          "name": "Mandate retrieval",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "Retrieve the investment mandate governing the portfolio and identify the restriction associated with the alert. Review relevant language in narrative provisions, schedules, definitions, or supporting documents in context, since a numerical alert may not capture every qualification affecting how the mandate applies."
+        },
+        {
+          "step_id": "3",
+          "name": "Position evidence gathering",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "Obtain the holdings snapshot used to generate the alert and, where necessary, retrieve intraday position information surrounding the reported breach. Establish the portfolio's exposure at relevant points in time and determine whether the reported value accurately reflects the position during the period under investigation."
+        },
+        {
+          "step_id": "4",
+          "name": "Transaction history review",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "Review historical transactions affecting the relevant security or issuer, including purchases, sales, transfers, and other recorded activity, to determine whether the exposure changed due to an active portfolio decision or another event. Compare transaction timestamps with the timing of the exposure change where available."
+        },
+        {
+          "step_id": "5",
+          "name": "Exception/waiver search",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "Check for pre-approved exceptions, temporary waivers, or other documented permissions that may have applied at the time of the alert. These records may be maintained separately from portfolio data in documents or case-management records. Verify the validity and effective period of any approval identified."
+        },
+        {
+          "step_id": "6",
+          "name": "Corporate action / passive movement check",
+          "scores": {
+            "repetitiveness": 1,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "Consider whether a corporate action, market movement, or other event could have changed the exposure without a corresponding active investment decision, such as a market-value change pushing an exposure percentage above a threshold without a new purchase. Compare the available evidence before reaching a conclusion."
+        },
+        {
+          "step_id": "7",
+          "name": "Root-cause assessment (synthesis)",
+          "scores": {
+            "repetitiveness": 1,
+            "judgment_need": 5,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 5
+          },
+          "verdict": "redesign",
+          "description": "Synthesize the evidence to determine the most plausible cause of the exception, classifying it as an active investment decision, passive market drift, corporate action, operational issue, or another documented circumstance. Where evidence is conflicting or incomplete, record the uncertainty and follow the applicable escalation procedure rather than treating an assumption as fact."
+        },
+        {
+          "step_id": "8",
+          "name": "Genuine breach vs false positive",
+          "scores": {
+            "repetitiveness": 1,
+            "judgment_need": 5,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "After considering the mandate language, position data, transaction history, and applicable approvals, classify the alert. Record a genuine breach where evidence supports that the mandate restriction was actually violated; record a false positive where the alert resulted from an allowable circumstance, data issue, or other condition meaning the apparent breach is not a reportable violation."
+        },
+        {
+          "step_id": "9",
+          "name": "Compliance write-up",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "Prepare a written investigation summary describing the original alert, relevant mandate provisions, evidence reviewed, root-cause assessment, applicable exceptions or approvals, final classification, and recommended action, so another reviewer can understand how the conclusion was reached without reconstructing the investigation from source systems."
+        },
+        {
+          "step_id": "10",
+          "name": "Escalation",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 2,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 2
+          },
+          "verdict": "leave_as_is",
+          "description": "Escalate material cases, uncertain interpretations, and situations involving incomplete evidence to the appropriate compliance or investment oversight personnel. The final regulatory or compliance determination remains subject to the firm's established governance process, and authorized personnel retain responsibility for approving sensitive conclusions."
+        }
       ]
     },
     {
@@ -58,16 +320,126 @@
       "name": "New Client Onboarding — Suitability Review",
       "source_file": "04_new_client_onboarding_suitability_review.pdf",
       "steps": [
-        {"step_id": "1", "name": "Client submission intake", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Completeness review", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 2}, "verdict": "automate"},
-        {"step_id": "3", "name": "Investment objective assessment", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 4, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "4", "name": "Risk tolerance assessment", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "5", "name": "Regulatory/internal constraints check", "scores": {"repetitiveness": 3, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "6", "name": "Inconsistency identification", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "7", "name": "Clarification & evidence gathering", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 4, "ai_suitability": 3}, "verdict": "leave_as_is"},
-        {"step_id": "8", "name": "Suitability determination", "scores": {"repetitiveness": 1, "judgment_need": 5, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "9", "name": "Determination memo", "scores": {"repetitiveness": 2, "judgment_need": 4, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "10", "name": "Approval & record retention", "scores": {"repetitiveness": 3, "judgment_need": 1, "compliance_sensitivity": 5, "ai_suitability": 1}, "verdict": "leave_as_is"}
+        {
+          "step_id": "1",
+          "name": "Client submission intake",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "The client provides a completed risk and suitability questionnaire with information requested by the onboarding process, including structured selections and free-text explanations of investment objectives, experience, preferences and circumstances. The onboarding team associates the submission with the correct client record and makes the information accessible to the reviewing function."
+        },
+        {
+          "step_id": "2",
+          "name": "Completeness review",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 2
+          },
+          "verdict": "automate",
+          "description": "The reviewer checks whether required information has been provided, identifying missing responses, unclear answers or unavailable supporting documents before the suitability assessment is finalized. Where clarification is necessary, the reviewer follows the firm's established process for requesting additional information from the client or onboarding team."
+        },
+        {
+          "step_id": "3",
+          "name": "Investment objective assessment",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "The reviewer considers the client's stated objectives and requested investment approach, assessing the information in combination rather than as isolated questionnaire fields, and evaluates whether the requested strategy appears consistent with the objectives and circumstances recorded in the onboarding materials."
+        },
+        {
+          "step_id": "4",
+          "name": "Risk tolerance assessment",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "The reviewer reviews the client's stated risk tolerance against the characteristics of the requested investment products or strategies, considering the interaction between the client's responses and the requested exposure. Mismatches, such as a conservative risk profile combined with a request for substantial leverage, may require additional investigation rather than automatic approval or rejection."
+        },
+        {
+          "step_id": "5",
+          "name": "Regulatory/internal constraints check",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 3,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "The reviewer checks applicable regulatory and internal eligibility requirements, which may include investor classification, accreditation or other eligibility conditions depending on the product. Because these requirements may be maintained across policy documents, product rules and onboarding procedures, the reviewer identifies the provisions applicable to the specific case."
+        },
+        {
+          "step_id": "6",
+          "name": "Inconsistency identification",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "The reviewer examines responses for contradictions or combinations requiring further attention, such as inconsistencies between risk tolerance and requested leverage, between stated objectives and requested products, or between client information and supporting documentation. An inconsistency does not automatically establish unsuitability; it creates an issue that must be evaluated and, where appropriate, clarified."
+        },
+        {
+          "step_id": "7",
+          "name": "Clarification & evidence gathering",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "verdict": "leave_as_is",
+          "description": "Where information is ambiguous or contradictory, the reviewer may request clarification or supporting evidence. New information is added to the onboarding record and considered alongside the original responses, while the reviewer maintains a clear distinction between information supplied by the client and conclusions reached during the review."
+        },
+        {
+          "step_id": "8",
+          "name": "Suitability determination",
+          "scores": {
+            "repetitiveness": 1,
+            "judgment_need": 5,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "After reviewing the available information, the reviewer reaches a suitability determination in accordance with the firm's policies, based on the applicable requirements and the evidence available in the case. Situations that fall outside standard guidance are escalated to the appropriate compliance or supervisory function."
+        },
+        {
+          "step_id": "9",
+          "name": "Determination memo",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 4,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "The reviewer prepares a suitability determination memo describing the client's relevant objectives and risk information, the requested strategy, material constraints or inconsistencies, additional information obtained and the reasoning supporting the conclusion, written so that a subsequent reviewer can understand the basis of the determination."
+        },
+        {
+          "step_id": "10",
+          "name": "Approval & record retention",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 1,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "The completed review is submitted for any required human approval or sign-off. Once approved, the determination and supporting information are retained with the onboarding record under the firm's record-management requirements. Material changes to the client's circumstances may require a future suitability review under the applicable process."
+        }
       ]
     },
     {
@@ -75,17 +447,138 @@
       "name": "Quarterly Performance Report Generation",
       "source_file": "05_quarterly_performance_report_generation.pdf",
       "steps": [
-        {"step_id": "1", "name": "Data source identification", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "2", "name": "Data availability check", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 2}, "verdict": "automate"},
-        {"step_id": "3", "name": "Performance calculation", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "4", "name": "Data review / anomaly check", "scores": {"repetitiveness": 3, "judgment_need": 2, "compliance_sensitivity": 4, "ai_suitability": 3}, "verdict": "automate"},
-        {"step_id": "5", "name": "Controlled disclosure insertion", "scores": {"repetitiveness": 5, "judgment_need": 1, "compliance_sensitivity": 5, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "6", "name": "Portfolio activity review", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 3, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "7", "name": "Narrative commentary", "scores": {"repetitiveness": 1, "judgment_need": 4, "compliance_sensitivity": 4, "ai_suitability": 5}, "verdict": "redesign"},
-        {"step_id": "8", "name": "Report assembly", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 2, "ai_suitability": 2}, "verdict": "automate"},
-        {"step_id": "9", "name": "Quality review", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 4}, "verdict": "redesign"},
-        {"step_id": "10", "name": "PM sign-off", "scores": {"repetitiveness": 2, "judgment_need": 3, "compliance_sensitivity": 5, "ai_suitability": 1}, "verdict": "leave_as_is"},
-        {"step_id": "11", "name": "Distribution & record", "scores": {"repetitiveness": 4, "judgment_need": 1, "compliance_sensitivity": 3, "ai_suitability": 1}, "verdict": "leave_as_is"}
+        {
+          "step_id": "1",
+          "name": "Data source identification",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 2,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "At the close of each reporting quarter, the reporting team establishes the applicable reporting period and identifies the approved data sources. Portfolio returns are obtained from the custodian or designated performance system, and benchmark information is retrieved for the same period and checked against the benchmark applicable to the portfolio."
+        },
+        {
+          "step_id": "2",
+          "name": "Data availability check",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 2
+          },
+          "verdict": "automate",
+          "description": "The reporting analyst checks that the required portfolio and benchmark information is available. Missing or inconsistent records are investigated using the established data-quality process; the report is not finalized using an unverified value merely because a deadline is approaching."
+        },
+        {
+          "step_id": "3",
+          "name": "Performance calculation",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "Portfolio performance is calculated using the firm's established reporting methodology. The resulting return is compared with the applicable benchmark return for the same period. Where additional standard metrics are required by the reporting template, they are calculated using the approved methodology and stored with the reporting data."
+        },
+        {
+          "step_id": "4",
+          "name": "Data review / anomaly check",
+          "scores": {
+            "repetitiveness": 3,
+            "judgment_need": 2,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 3
+          },
+          "verdict": "automate",
+          "description": "The calculated figures are reviewed for unexpected changes, missing values or inconsistencies with the source data. Any issue identified is resolved before the figures are incorporated into the final client report, ensuring the numerical information presented to the client is traceable to the approved source."
+        },
+        {
+          "step_id": "5",
+          "name": "Controlled disclosure insertion",
+          "scores": {
+            "repetitiveness": 5,
+            "judgment_need": 1,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "The reporting team retrieves the current controlled version of the relevant template or disclosure library and inserts the approved risk disclosures and other approved boilerplate wording into the appropriate sections without discretionary rewriting, since changes to controlled disclosure language may require a separate review and approval process."
+        },
+        {
+          "step_id": "6",
+          "name": "Portfolio activity review",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "The reporting analyst or portfolio manager reviews material portfolio activity during the quarter, considering relevant purchases, sales, allocation changes and other events together with significant market developments that affected portfolio results, in order to identify the factors genuinely useful for explaining the quarter to the client."
+        },
+        {
+          "step_id": "7",
+          "name": "Narrative commentary",
+          "scores": {
+            "repetitiveness": 1,
+            "judgment_need": 4,
+            "compliance_sensitivity": 4,
+            "ai_suitability": 5
+          },
+          "verdict": "redesign",
+          "description": "A written narrative is prepared to explain the principal drivers of performance in plain language, connecting several sources of information, distinguishing material drivers from incidental events, and presenting the explanation in a manner appropriate for the client. The reviewer checks that the narrative is consistent with the reported figures and portfolio activity."
+        },
+        {
+          "step_id": "8",
+          "name": "Report assembly",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 2,
+            "ai_suitability": 2
+          },
+          "verdict": "automate",
+          "description": "The report combines the calculated performance figures, benchmark comparison, approved disclosure language and narrative commentary. Each component is placed into the appropriate section of the standard client-facing template, formatting checks are performed, and the document is converted to its final PDF form."
+        },
+        {
+          "step_id": "9",
+          "name": "Quality review",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 4
+          },
+          "verdict": "redesign",
+          "description": "The completed report is reviewed for numerical consistency, correct benchmark information, completeness of disclosures and consistency between the narrative and the underlying portfolio activity. Errors identified during the review are corrected before the report proceeds to final approval."
+        },
+        {
+          "step_id": "10",
+          "name": "PM sign-off",
+          "scores": {
+            "repetitiveness": 2,
+            "judgment_need": 3,
+            "compliance_sensitivity": 5,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "The final report is submitted to the portfolio manager for review and sign-off. The manager considers the overall presentation, performance commentary and material client-facing statements. If changes are requested, the report is returned to the reporting team for revision and another review cycle."
+        },
+        {
+          "step_id": "11",
+          "name": "Distribution & record",
+          "scores": {
+            "repetitiveness": 4,
+            "judgment_need": 1,
+            "compliance_sensitivity": 3,
+            "ai_suitability": 1
+          },
+          "verdict": "leave_as_is",
+          "description": "After approval, the report is released through the established client distribution process. The approved version is retained with the relevant reporting records, and the reporting team maintains the source information and final report so that client-facing figures and commentary can be traced to the reporting period and underlying evidence."
+        }
       ]
     }
   ]
