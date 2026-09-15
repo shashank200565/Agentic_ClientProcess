@@ -55,6 +55,7 @@
 - [x] Session-resume UI shell → placeholder until `WorkflowSession` persistence and API support exist
 - [x] Portfolio Dashboard → live analyzed-workflow aggregation with complexity/exception scatter grid and risk rollups
 - [x] Wire all pages to real backend API (no mock data once backend routes exist)
+- [x] Render common markdown in screen assistant responses, including bold, italics, and inline code
 
 ## Phase 6 — Executive Report
 
