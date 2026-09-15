@@ -39,6 +39,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Real resume-session listing with stage-aware continuation and deterministic automation copy
 - [x] Automatic session upserts across extraction, scoring, and generation-complete transitions
 - [x] Six-fix UI and Decision Engine polish batch, including stable boundary handling for mandate-breach step 3
+- [x] Trade-confirmation extraction investigation: explicit extraction temperature=0.0 produced stable 7-step boundaries across three runs; fixed-step scoring still showed one verdict drift in three runs, and redesign generation reproduced successfully
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete; configured GPT 5.6 Luna

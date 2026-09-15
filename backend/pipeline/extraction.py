@@ -31,6 +31,7 @@ def extract_steps(raw_document_text: str) -> list[WorkflowStep]:
         model=get_extraction_model(),
         system_prompt=EXTRACTION_SYSTEM_PROMPT,
         response_schema=ExtractedSteps,
+        temperature=0.0,
     )
     if not isinstance(result, ExtractedSteps):
         raise TypeError("Extraction client returned an unexpected response type")

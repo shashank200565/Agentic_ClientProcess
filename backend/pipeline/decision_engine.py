@@ -203,12 +203,19 @@ def score_step(step: WorkflowStep, workflow_context: str) -> StepScore:
             raise LLMClientError(f"Decision Engine response did not match StepScore: {exc}") from exc
 
     validated = validate_result(result)
-    if validated.scores.judgment_need in (2, 3) and validated.scores.ai_suitability in (2, 3):
-        second = validate_result(request_score(0.1))
-        averaged_scores = StepScores(**{
-            dimension: round((getattr(validated.scores, dimension) + getattr(second.scores, dimension)) / 2)
+    if any(
+        getattr(validated.scores, dimension) in (2, 3)
+        for dimension in ("repetitiveness", "judgment_need", "compliance_sensitivity", "ai_suitability")
+    ):
+        additional_scores = [
+            validate_result(request_score(0.1)).scores
+            for _ in range(2)
+        ]
+        all_scores = [validated.scores, *additional_scores]
+        median_scores = StepScores(**{
+            dimension: sorted(getattr(scores, dimension) for scores in all_scores)[1]
             for dimension in ("repetitiveness", "judgment_need", "compliance_sensitivity", "ai_suitability")
         })
-        validated = validated.model_copy(update={"scores": averaged_scores})
+        validated = validated.model_copy(update={"scores": median_scores})
 
     return validated.model_copy(update={"verdict": _verdict_for(step, validated)})
