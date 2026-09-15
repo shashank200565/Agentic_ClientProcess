@@ -19,6 +19,13 @@ class RedesignDraft(BaseModel):
     expected_benefits: list[str]
     diagram: StaticWorkflowDiagram
 
+    @field_validator("problem_statement", "proposed_design", mode="before")
+    @classmethod
+    def normalize_narrative(cls, value):
+        if isinstance(value, dict):
+            return " ".join(str(item) for item in value.values())
+        return value
+
     @field_validator(
         "agent_responsibilities", "human_controls", "expected_benefits", mode="before"
     )
@@ -30,6 +37,22 @@ class RedesignDraft(BaseModel):
             )
             for item in value
         ]
+
+    @field_validator("diagram", mode="before")
+    @classmethod
+    def normalize_diagram(cls, value):
+        if isinstance(value, list):
+            nodes = value
+            edges = [
+                {"source": nodes[index]["id"], "target": nodes[index + 1]["id"]}
+                for index in range(len(nodes) - 1)
+                if isinstance(nodes[index], dict)
+                and isinstance(nodes[index + 1], dict)
+                and "id" in nodes[index]
+                and "id" in nodes[index + 1]
+            ]
+            return {"nodes": nodes, "edges": edges or [{"source": nodes[0]["id"], "target": nodes[0]["id"]}]}
+        return value
 
 
 def generate_redesign(step: WorkflowStep, score: StepScore, user_notes: str | None = None) -> RedesignProposal:

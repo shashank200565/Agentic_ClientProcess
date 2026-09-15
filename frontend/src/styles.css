@@ -1,10 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 @import "tailwindcss";
 
+@theme {
+  --color-ink: #0d1834;
+  --color-brand: #1e5fff;
+  --color-brand-deep: #0b3fde;
+  --color-brand-soft: #a8d0ff;
+  --color-cloud: #f4f7fc;
+  --background-image-brand-gradient: linear-gradient(135deg, #0b3fde 0%, #4a90f5 52%, #a8d0ff 100%);
+  --background-image-brand-radial: radial-gradient(circle at 15% 10%, #4a90f5 0%, #0b3fde 48%, #071c72 100%);
+  --shadow-card: 0 18px 50px rgba(22, 57, 131, 0.1);
+  --shadow-float: 0 24px 70px rgba(13, 39, 105, 0.2);
+}
+
 :root {
   font-family: "DM Sans", sans-serif;
-  color: #102a2c;
-  background: #f6f7f2;
+  color: #0d1834;
+  background: #f4f7fc;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }

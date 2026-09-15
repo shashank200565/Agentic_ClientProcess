@@ -36,6 +36,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Before/after generated-output comparisons and in-session multi-turn screen-chat history
 - [x] Custom hover tooltips added for all four step score dimensions in Step Review and workflow-map side panel
 - [x] Persisted generator hydration and workflow-level Redesigned Flow browser view
+- [x] Reworked frontend visual system around reusable blue gradient theme, verdict-first portfolio cards, focused step review, executive report hierarchy, and floating screen assistant
 - [x] Real resume-session listing with stage-aware continuation and deterministic automation copy
 - [x] Automatic session upserts across extraction, scoring, and generation-complete transitions
 - [x] Six-fix UI and Decision Engine polish batch, including stable boundary handling for mandate-breach step 3
