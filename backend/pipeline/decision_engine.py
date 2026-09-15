@@ -203,10 +203,7 @@ def score_step(step: WorkflowStep, workflow_context: str) -> StepScore:
             raise LLMClientError(f"Decision Engine response did not match StepScore: {exc}") from exc
 
     validated = validate_result(result)
-    if any(
-        getattr(validated.scores, dimension) in (2, 3)
-        for dimension in ("repetitiveness", "judgment_need", "compliance_sensitivity", "ai_suitability")
-    ):
+    if validated.scores.judgment_need in (2, 3) and validated.scores.ai_suitability in (2, 3):
         additional_scores = [
             validate_result(request_score(0.1)).scores
             for _ in range(2)

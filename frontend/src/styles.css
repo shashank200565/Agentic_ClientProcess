@@ -24,3 +24,7 @@
 body { margin: 0; min-width: 320px; }
 button, textarea, input { font: inherit; }
 .font-display { font-family: "Space Grotesk", sans-serif; }
+
+.react-flow__controls { overflow: hidden; border: 1px solid var(--color-brand-soft); border-radius: 14px; box-shadow: var(--shadow-card); }
+.react-flow__controls-button { border-bottom-color: var(--color-brand-soft); background: white; color: var(--color-brand); }
+.react-flow__controls-button:hover { background: #eff6ff; }

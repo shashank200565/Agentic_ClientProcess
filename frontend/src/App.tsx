@@ -6,7 +6,6 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { RedesignProposalPage } from "./pages/RedesignProposalPage";
 import { ReportPage } from "./pages/ReportPage";
 import { RedesignedFlowPage } from "./pages/RedesignedFlowPage";
-import { ResumeSessionPage } from "./pages/ResumeSessionPage";
 import { StepReviewPage } from "./pages/StepReviewPage";
 import { UploadPage } from "./pages/UploadPage";
 
@@ -19,6 +18,5 @@ export function App() {
     <Route path="/report/:workflowId" element={<ReportPage />} />
     <Route path="/redesigned-flow/:workflowId" element={<RedesignedFlowPage />} />
     <Route path="/dashboard" element={<DashboardPage />} />
-    <Route path="/resume" element={<ResumeSessionPage />} />
   </Route></Routes></BrowserRouter>;
 }

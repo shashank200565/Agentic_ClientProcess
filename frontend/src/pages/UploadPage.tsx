@@ -38,7 +38,7 @@ export function UploadPage() {
 
   return (
     <section className="mx-auto max-w-6xl">
-      <div className="grid gap-10 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">
+      <div className="grid gap-8 pt-1 xl:grid-cols-[1.05fr_0.95fr] xl:items-start xl:gap-14">
         <div>
           <p className="mb-5 inline-flex rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-brand">01 / Bring in the work</p>
           <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.03] tracking-tight text-ink sm:text-6xl">Every workflow has a shape. Let&apos;s make it visible.</h1>
