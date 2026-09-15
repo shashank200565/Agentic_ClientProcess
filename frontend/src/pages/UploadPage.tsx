@@ -10,6 +10,7 @@ export function UploadPage() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingPhase, setLoadingPhase] = useState<"extracting" | "scoring" | null>(null);
 
   async function handleSubmit() {
     if (!file && !text.trim()) {
@@ -19,9 +20,11 @@ export function UploadPage() {
     setError("");
     setIsLoading(true);
     try {
+      setLoadingPhase("extracting");
       const extractedWorkflow = file
         ? await extractWorkflow(file)
         : await extractWorkflow({ text, name: name || "Pasted workflow" });
+      setLoadingPhase("scoring");
       const workflow = await scoreWorkflow(extractedWorkflow.workflow_id);
       sessionStorage.setItem("currentWorkflow", JSON.stringify(workflow));
       navigate(`/review/${workflow.workflow_id}`);
@@ -29,6 +32,7 @@ export function UploadPage() {
       setError(requestError instanceof Error ? requestError.message : "Extraction failed.");
     } finally {
       setIsLoading(false);
+      setLoadingPhase(null);
     }
   }
 
@@ -55,7 +59,11 @@ export function UploadPage() {
           <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Workflow name (optional)" className="mb-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-teal-600 transition placeholder:text-slate-400 focus:ring-2" />
           <textarea value={text} onChange={(event) => { setText(event.target.value); setFile(null); }} placeholder="Paste a workflow description..." rows={4} className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 outline-none ring-teal-600 transition placeholder:text-slate-400 focus:ring-2" />
           {error && <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs leading-5 text-red-700">{error}</p>}
-          <button type="button" onClick={handleSubmit} disabled={isLoading} className="mt-4 w-full rounded-xl bg-[#f2c14e] px-5 py-3.5 text-sm font-bold text-[#102a2c] transition hover:bg-[#f6cf6d] disabled:cursor-wait disabled:opacity-60">{isLoading ? "Extracting and scoring..." : "Extract and score workflow"}</button>
+          <button type="button" onClick={handleSubmit} disabled={isLoading} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#f2c14e] px-5 py-3.5 text-sm font-bold text-[#102a2c] transition hover:bg-[#f6cf6d] disabled:cursor-wait disabled:opacity-60">
+            {isLoading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-[#102a2c]/30 border-t-[#102a2c]" />}
+            {loadingPhase === "extracting" ? "Extracting workflow steps..." : loadingPhase === "scoring" ? "Scoring workflow steps..." : "Extract and score workflow"}
+          </button>
+          {isLoading && <p className="mt-3 text-center text-xs leading-5 text-slate-500" aria-live="polite">{loadingPhase === "extracting" ? "Reading the document and organizing its current-state steps." : "Applying the Decision Engine to each step. This can take a little while for a live model call."}</p>}
         </div>
       </div>
       <div className="mt-16 grid gap-4 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:grid-cols-3">

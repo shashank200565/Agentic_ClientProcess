@@ -1,5 +1,0 @@
-PyMuPDF
-requests
-python-dotenv
-transformers
-torch
