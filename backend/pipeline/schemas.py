@@ -101,6 +101,7 @@ class AutomationBlueprint(BaseModel):
 
     workflow_id: str = Field(min_length=1)
     step_id: str = Field(min_length=1)
+    agent_name: str = Field(default="Workflow Automation Agent", min_length=1)
     current_step: WorkflowStep
     mechanism_type: Literal["rules_engine", "rpa", "scheduled_job", "existing_stp_extension"]
     trigger_condition: str = Field(min_length=1)

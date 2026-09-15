@@ -20,7 +20,7 @@ export function DashboardPage() {
   if (!workflows.length) return <EmptyDashboard />;
   return <section className="mx-auto max-w-7xl">
     <div className="relative overflow-hidden rounded-[28px] bg-brand-radial px-7 py-8 text-white shadow-float sm:px-10 sm:py-10">
-      <div className="relative z-10 max-w-2xl"><Eyebrow light>Portfolio command center</Eyebrow><h1 className="mt-5 font-display text-4xl font-semibold tracking-tight sm:text-5xl">See where the book carries friction.</h1><p className="mt-4 max-w-xl text-sm leading-6 text-blue-100 sm:text-base">A decision view for the workflows that deserve attention, conventional automation, or a safer redesign.</p></div>
+      <div className="relative z-10 max-w-2xl"><Eyebrow light>Portfolio command center</Eyebrow><h1 className="mt-5 font-display text-4xl font-semibold tracking-tight sm:text-5xl">Portfolio Overview</h1><p className="mt-4 max-w-xl text-sm leading-6 text-blue-100 sm:text-base">A decision view for the workflows that deserve attention, conventional automation, or a safer redesign.</p></div>
       <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-brand-soft/30 blur-3xl" />
       <div className="relative z-10 mt-8 flex flex-wrap items-center gap-3"><span className="rounded-full bg-white/15 px-4 py-2 text-xs font-semibold text-white backdrop-blur">{workflows.length} workflows live</span><span className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-brand">Decision engine synced</span></div>
     </div>

@@ -53,6 +53,7 @@ export interface StaticWorkflowDiagram {
 export interface AutomationBlueprint {
   workflow_id: string;
   step_id: string;
+  agent_name?: string;
   current_step: WorkflowStep;
   mechanism_type: "rules_engine" | "rpa" | "scheduled_job" | "existing_stp_extension";
   trigger_condition: string;

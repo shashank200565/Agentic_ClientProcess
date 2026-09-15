@@ -6,7 +6,7 @@ try:
 except ModuleNotFoundError:
     from pipeline.llm_client import call_llm, get_extraction_model
     from pipeline.schemas import AutomationBlueprint, StaticWorkflowDiagram, StepScore, WorkflowStep
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class AutomationDraft(BaseModel):
@@ -17,6 +17,11 @@ class AutomationDraft(BaseModel):
     trigger: str | None = None
     rationale: str
     diagram: StaticWorkflowDiagram | None = None
+
+    @field_validator("diagram", mode="before")
+    @classmethod
+    def ignore_malformed_diagram(cls, value):
+        return value if isinstance(value, dict) else None
 
     def trigger_text(self) -> str:
         return self.trigger_condition or self.trigger or "When the workflow step is ready to run."
@@ -53,6 +58,7 @@ Scores: {score.scores.model_dump_json()}
     blueprint = AutomationBlueprint(
         workflow_id=score.workflow_id,
         step_id=score.step_id,
+        agent_name=_agent_name_for_step(step, draft.mechanism_type),
         current_step=step,
         mechanism_type=draft.mechanism_type,
         trigger_condition=draft.trigger_text(),
@@ -67,3 +73,22 @@ Scores: {score.scores.model_dump_json()}
         ),
     )
     return blueprint
+
+
+def _agent_name_for_step(step: WorkflowStep, mechanism_type: str) -> str:
+    text = f"{step.name} {step.description}".lower()
+    if any(term in text for term in ("reconcil", "match", "confirmation")):
+        return "Reconciliation Bot"
+    if any(term in text for term in ("exception", "escalat", "handoff", "route")):
+        return "Routing Agent"
+    if any(term in text for term in ("complete", "validat", "required", "quality")):
+        return "Validation Bot"
+    if any(term in text for term in ("threshold", "limit", "compare", "calculate")):
+        return "Control Rules Agent"
+    if any(term in text for term in ("report", "assemble", "template")):
+        return "Reporting Automation Bot"
+    return {
+        "rpa": "Robotic Process Automation (RPA) Bot",
+        "scheduled_job": "Scheduled Workflow Runner",
+        "existing_stp_extension": "Straight-Through Processing Agent",
+    }.get(mechanism_type, "Workflow Automation Agent")

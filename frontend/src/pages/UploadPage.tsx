@@ -66,11 +66,6 @@ export function UploadPage() {
           {isLoading && <p className="mt-3 text-center text-xs leading-5 text-slate-500" aria-live="polite">{loadingPhase === "extracting" ? "Reading the document and organizing its current-state steps." : "Applying the Decision Engine to each step. This can take a little while for a live model call."}</p>}
         </div>
       </div>
-      <div className="mt-16 grid gap-4 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:grid-cols-3">
-        <div><span className="font-display text-2xl font-semibold text-brand">01</span><p className="mt-2">Extract the current state</p></div>
-        <div><span className="font-display text-2xl font-semibold text-brand">02</span><p className="mt-2">Review every step</p></div>
-        <div><span className="font-display text-2xl font-semibold text-brand">03</span><p className="mt-2">Make the next move defensible</p></div>
-      </div>
     </section>
   );
 }

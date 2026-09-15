@@ -39,6 +39,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Persisted generator hydration and workflow-level Redesigned Flow browser view
 - [x] Reworked frontend visual system around reusable blue gradient theme, verdict-first portfolio cards, focused step review, executive report hierarchy, and floating screen assistant
 - [x] Frozen final extraction snapshot for all five demo workflows (`eval/final_extraction_snapshot.json`), aligned labeled descriptions, and completed the final 44-step eval at 81.82% verdict agreement (36/44)
+- [x] Applied eleven UI refinements across redesign/blueprint summaries, Step Review scoring hierarchy, diagram labels/tooltips, contextual automation agents, and upload/generated-flow density
 - [x] Real resume-session listing with stage-aware continuation and deterministic automation copy
 - [x] Automatic session upserts across extraction, scoring, and generation-complete transitions
 - [x] Six-fix UI and Decision Engine polish batch, including stable boundary handling for mandate-breach step 3
