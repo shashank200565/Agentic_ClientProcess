@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import dagre from "@dagrejs/dagre";
 import { Background, Controls, Handle, Position, ReactFlow, ReactFlowProvider, useReactFlow, type Node, type NodeProps, type Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -12,13 +12,14 @@ type StepNode = Node<StepNodeData, "workflowStep">;
 const NODE_WIDTH = 300;
 const NODE_HEIGHT = 170;
 
-export function WorkflowDiagram(props: { workflow: Workflow; onWorkflowChange: (workflow: Workflow) => void } | { diagram: StaticWorkflowDiagram }) {
+export function WorkflowDiagram(props: { workflow: Workflow; onWorkflowChange: (workflow: Workflow) => void; selectedStepId?: string; onStepSelect?: (stepId: string) => void } | { diagram: StaticWorkflowDiagram }) {
   if ("diagram" in props) return <GeneratedDiagram diagram={props.diagram} />;
-  return <InteractiveWorkflowDiagram workflow={props.workflow} onWorkflowChange={props.onWorkflowChange} />;
+  return <InteractiveWorkflowDiagram workflow={props.workflow} onWorkflowChange={props.onWorkflowChange} selectedStepId={props.selectedStepId} onStepSelect={props.onStepSelect} />;
 }
 
-function InteractiveWorkflowDiagram({ workflow, onWorkflowChange }: { workflow: Workflow; onWorkflowChange: (workflow: Workflow) => void }) {
-  const [selectedStepId, setSelectedStepId] = useState<string | null>(workflow.steps[0]?.step_id ?? null);
+function InteractiveWorkflowDiagram({ workflow, onWorkflowChange, selectedStepId: selectedStepIdProp, onStepSelect }: { workflow: Workflow; onWorkflowChange: (workflow: Workflow) => void; selectedStepId?: string; onStepSelect?: (stepId: string) => void }) {
+  const [internalSelectedStepId, setInternalSelectedStepId] = useState<string | null>(workflow.steps[0]?.step_id ?? null);
+  const selectedStepId = selectedStepIdProp ?? internalSelectedStepId;
   const [notes, setNotes] = useState("");
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +44,8 @@ function InteractiveWorkflowDiagram({ workflow, onWorkflowChange }: { workflow: 
     finally { setIsRegenerating(false); }
   }
 
-  return <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_350px]"><StepCanvas nodes={nodes} edges={edges} activeStepId={selectedStepId} onSelect={(stepId) => { setSelectedStepId(stepId); setError(""); }} /><StepPanel step={selectedStep} score={selectedScore} output={selectedOutput} notes={notes} error={error} isRegenerating={isRegenerating} onNotesChange={setNotes} onRegenerate={regenerate} /></div>;
+  function selectStep(stepId: string) { setInternalSelectedStepId(stepId); onStepSelect?.(stepId); setError(""); }
+  return <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_350px]"><StepCanvas nodes={nodes} edges={edges} activeStepId={selectedStepId} onSelect={selectStep} /><StepPanel step={selectedStep} score={selectedScore} output={selectedOutput} notes={notes} error={error} isRegenerating={isRegenerating} onNotesChange={setNotes} onRegenerate={regenerate} /></div>;
 }
 
 function StepCanvas(props: { nodes: StepNode[]; edges: Edge[]; activeStepId: string | null; onSelect: (stepId: string) => void }) { return <ReactFlowProvider><StepCanvasInner {...props} /></ReactFlowProvider>; }
@@ -52,6 +54,7 @@ function StepCanvasInner({ nodes, edges, activeStepId, onSelect }: { nodes: Step
   const { setCenter } = useReactFlow();
   const activeIndex = Math.max(0, nodes.findIndex((node) => node.id === activeStepId));
   const centerNode = (node: StepNode) => { onSelect(node.id); setCenter(node.position.x + NODE_WIDTH / 2, node.position.y + NODE_HEIGHT / 2, { zoom: 1.05, duration: 450 }); };
+  useEffect(() => { const node = nodes.find((item) => item.id === activeStepId); if (node) setCenter(node.position.x + NODE_WIDTH / 2, node.position.y + NODE_HEIGHT / 2, { zoom: 0.9, duration: 0 }); }, [activeStepId, nodes, setCenter]);
   const move = (offset: number) => { const node = nodes[Math.min(nodes.length - 1, Math.max(0, activeIndex + offset))]; if (node) centerNode(node); };
   return <div><div className="h-[500px] overflow-hidden rounded-[24px] border border-blue-100 bg-cloud shadow-card"><ReactFlow nodes={nodes} edges={edges} nodeTypes={{ workflowStep: WorkflowStepNode }} fitView fitViewOptions={{ padding: 0.2, minZoom: 0.45, maxZoom: 1 }} minZoom={0.35} maxZoom={1.5} onNodeClick={(_, node) => { const selected = nodes.find((item) => item.id === node.id); if (selected) centerNode(selected); }} nodesConnectable={false} nodesDraggable={false} elementsSelectable><Background color="var(--color-brand-soft)" gap={24} /><Controls showInteractive={false} /></ReactFlow></div><div className="mt-3 flex flex-wrap items-center justify-center gap-2 rounded-[20px] border border-blue-100 bg-white p-3 shadow-card"><button type="button" onClick={() => move(-1)} disabled={activeIndex === 0} aria-label="Previous step" className="rounded-full border border-blue-100 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40">← Previous</button>{nodes.map((node, index) => <button type="button" key={node.id} onClick={() => centerNode(node)} aria-label={`Center step ${index + 1}`} aria-current={node.id === activeStepId ? "step" : undefined} className={`grid h-9 w-9 place-items-center rounded-full text-sm font-bold transition ${node.id === activeStepId ? "bg-brand text-white shadow" : "border border-blue-100 bg-white text-slate-500 hover:border-brand hover:text-brand"}`}>{index + 1}</button>)}<button type="button" onClick={() => move(1)} disabled={activeIndex === nodes.length - 1} aria-label="Next step" className="rounded-full border border-blue-100 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:opacity-40">Next →</button></div></div>;
 }
