@@ -127,3 +127,29 @@ Python 3.14 is fine as-is, no downgrade needed
 Use raw sqlite3, not SQLModel
 Frontend dev server proxies /api to localhost:8000 (no extra tooling)
 Deployment deferred — local demo is the fallback plan for now
+
+---
+
+## Final Demo Dataset & Evaluation
+
+Decision: Lock the following five database records as the permanent demo dataset and
+fully process them before submission:
+
+- Trade confirmation: `f95bc907d25d476ab8630fa9f04582e0`
+- Exposure check: `aea506e2e55b40e4b71bf1c2e138bff6`
+- Mandate breach: `aced6e2c3f1d4fcd8b5df040a260dc6b`
+- Client onboarding: `ed9f1ab4783e456fb6b9fecbab407d84`
+- Quarterly report: `ad0740a6af9e4028b865bd0d88b62e50`
+
+These exact records were scored and had all automate/redesign outputs generated. The
+Dashboard now contains exactly these five records with no duplicate workflow rows.
+
+Final verdict agreement is **84.09% (37/44)** against the extraction-aligned labeled
+set. This is the authoritative submission number because it was measured against the
+same records that are live in the demo database.
+
+The immediately preceding run against the same frozen extraction text measured
+81.82% (36/44). This is the expected small run-to-run scoring variance from live LLM
+calls. Boundary averaging mitigates the variance but does not eliminate it.
+
+Status: Accepted and locked for submission
