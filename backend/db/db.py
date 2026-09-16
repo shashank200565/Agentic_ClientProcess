@@ -27,9 +27,9 @@ SCHEMA_PATH = Path(__file__).with_name("schema.sql")
 
 def get_database_path() -> Path:
     configured_path = os.getenv("DATABASE_PATH")
+    if os.getenv("VERCEL") and (not configured_path or not Path(configured_path).is_absolute()):
+        return Path("/tmp/app.db")
     if not configured_path:
-        if os.getenv("VERCEL"):
-            return Path("/tmp/app.db")
         return DEFAULT_DATABASE_PATH
     path = Path(configured_path)
     if not path.is_absolute():
