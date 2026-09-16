@@ -1,3 +1,4 @@
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const navigation = [
@@ -33,7 +34,20 @@ export function AppShell() {
             <span className="grid h-7 w-7 place-items-center rounded-full bg-white/20 text-xs font-bold text-white">IM</span>
             <div><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-blue-100">Investment management</p><p className="text-xs text-white/75">Depth over generic advice</p></div>
           </div>
-          <span className="ml-auto rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand sm:ml-0">Demo workspace</span>
+          <div className="ml-auto flex items-center gap-2 sm:ml-0">
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button type="button" className="rounded-full border border-white/30 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/15">Sign in</button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button type="button" className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-blue-50">Create account</button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+            <span className="hidden rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand sm:inline-flex">Demo workspace</span>
+          </div>
         </div>
       </header>
       <main className="min-h-screen">
