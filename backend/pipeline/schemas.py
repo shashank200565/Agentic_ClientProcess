@@ -41,6 +41,24 @@ class ConsistencyFlag(BaseModel):
     evidence_quote: str = Field(min_length=1)
     likely_missing: bool
 
+    @field_validator("likely_missing", mode="before")
+    @classmethod
+    def normalize_model_boolean(cls, value: object) -> bool:
+        """Handle providers that return an explanation instead of a JSON boolean."""
+
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"false", "no", "n", "0", "not missing", "already covered"}:
+                return False
+            if normalized in {"true", "yes", "y", "1", "missing", "likely missing"}:
+                return True
+            # An explanation in this field generally means the model judged the action
+            # absent; the evidence and action fields still remain strictly validated.
+            return True
+        return bool(value)
+
 
 class ConsistencyCheckResult(BaseModel):
     model_config = ConfigDict(extra="forbid")

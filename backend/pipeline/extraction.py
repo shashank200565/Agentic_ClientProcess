@@ -60,7 +60,9 @@ def check_extraction_consistency(
         prompt=(
             "Review the full source document against the extracted steps below. Return a "
             "JSON object with a `flags` array. Each flag must contain `referenced_action`, "
-            "`evidence_quote`, and `likely_missing`.\n\nSOURCE DOCUMENT:\n"
+            "`evidence_quote`, and `likely_missing`. `likely_missing` must be a JSON "
+            "boolean (`true` or `false`) only, with no explanation in that field.\n\n"
+            "SOURCE DOCUMENT:\n"
             f"{raw_document_text}\n\nEXTRACTED STEPS:\n"
             + "\n".join(f"{step.step_id}. {step.name}: {step.description}" for step in steps)
         ),
