@@ -32,6 +32,22 @@ class ExtractedSteps(BaseModel):
     steps: list[WorkflowStep] = Field(min_length=1)
 
 
+class ConsistencyFlag(BaseModel):
+    """A source-grounded action that may be missing from the extracted steps."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    referenced_action: str = Field(min_length=1)
+    evidence_quote: str = Field(min_length=1)
+    likely_missing: bool
+
+
+class ConsistencyCheckResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    flags: list[ConsistencyFlag] = Field(default_factory=list)
+
+
 class StepScores(BaseModel):
     """The four ordinal dimensions used by the Phase 0 rubric."""
 
@@ -89,6 +105,7 @@ class Workflow(BaseModel):
     status: WorkflowStatus = "uploaded"
     raw_text: str | None = None
     steps: list[WorkflowStep] = Field(default_factory=list)
+    consistency_flags: list[ConsistencyFlag] = Field(default_factory=list)
     scores: list[StepScore] = Field(default_factory=list)
     automation_blueprints: list["AutomationBlueprint"] = Field(default_factory=list)
     redesign_proposals: list["RedesignProposal"] = Field(default_factory=list)

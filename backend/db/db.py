@@ -10,6 +10,7 @@ from typing import Iterator
 try:
     from backend.pipeline.schemas import (
         AutomationBlueprint,
+        ConsistencyFlag,
         RedesignProposal,
         StaticWorkflowDiagram,
         StepScore,
@@ -18,7 +19,7 @@ try:
         WorkflowStep,
     )
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
-    from pipeline.schemas import AutomationBlueprint, RedesignProposal, StaticWorkflowDiagram, StepScore, Workflow, WorkflowSession, WorkflowStep
+    from pipeline.schemas import AutomationBlueprint, ConsistencyFlag, RedesignProposal, StaticWorkflowDiagram, StepScore, Workflow, WorkflowSession, WorkflowStep
 
 
 DEFAULT_DATABASE_PATH = Path(__file__).resolve().parent.parent / "data" / "app.db"
@@ -55,6 +56,11 @@ def initialize_database(connection: sqlite3.Connection) -> None:
     except sqlite3.OperationalError as exc:
         if "duplicate column name" not in str(exc):
             raise
+    try:
+        connection.execute("ALTER TABLE workflows ADD COLUMN consistency_flags_json TEXT NOT NULL DEFAULT '[]'")
+    except sqlite3.OperationalError as exc:
+        if "duplicate column name" not in str(exc):
+            raise
     connection.commit()
 
 
@@ -68,13 +74,14 @@ def save_workflow(
         initialize_database(connection)
         connection.execute(
             """
-            INSERT INTO workflows (workflow_id, name, source_type, status, raw_text)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO workflows (workflow_id, name, source_type, status, raw_text, consistency_flags_json)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(workflow_id) DO UPDATE SET
                 name = excluded.name,
                 source_type = excluded.source_type,
                 status = excluded.status,
                 raw_text = excluded.raw_text
+                , consistency_flags_json = excluded.consistency_flags_json
             """,
             (
                 workflow.workflow_id,
@@ -82,6 +89,7 @@ def save_workflow(
                 workflow.source_type,
                 workflow.status,
                 workflow.raw_text,
+                json.dumps([flag.model_dump() for flag in workflow.consistency_flags]),
             ),
         )
         connection.execute(
@@ -244,6 +252,10 @@ def get_workflow(
             source_type=workflow_row["source_type"],
             status=workflow_row["status"],
             raw_text=workflow_row["raw_text"],
+            consistency_flags=[
+                ConsistencyFlag.model_validate(flag)
+                for flag in json.loads(workflow_row["consistency_flags_json"] or "[]")
+            ],
             steps=[WorkflowStep(**dict(row)) for row in step_rows],
             scores=score_models,
             automation_blueprints=blueprint_models,

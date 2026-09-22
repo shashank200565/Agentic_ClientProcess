@@ -44,6 +44,9 @@ successfully extracted through a live OpenCode Go call.
 - [x] Automatic session upserts across extraction, scoring, and generation-complete transitions
 - [x] Six-fix UI and Decision Engine polish batch, including stable boundary handling for mandate-breach step 3
 - [x] Trade-confirmation extraction investigation: explicit extraction temperature=0.0 produced stable 7-step boundaries across three runs; fixed-step scoring still showed one verdict drift in three runs, and redesign generation reproduced successfully
+- [x] Rebranded frontend app header and browser title to Re:Flow with Team Mastikhors subtitle
+- [x] Replaced the Re:Flow header lettermark with a reusable two-node inline SVG logo mark
+- [x] Added source-grounded extraction consistency flags with persisted advisory review UI
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete. The five demo extraction
@@ -55,6 +58,9 @@ The API key is configured locally in `backend/.env` and is ignored by Git. Three
 label-fit concerns remain flagged for review: trade-confirmation step 7,
 onboarding steps 1-2 and 7, and quarterly data-review wording versus the original
 labels. No labels were silently changed; descriptions were aligned word-for-word.
+The consistency-check validation against the mandate-breach PDF is currently blocked
+because the configured OpenCode Go credential returns HTTP 403 when Go model access
+requires an active subscription.
 
 ## Last OpenCode Report
 Phase 2 Decision Engine implemented with fixed post-processing verdict logic; the

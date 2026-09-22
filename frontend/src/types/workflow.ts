@@ -6,6 +6,12 @@ export interface WorkflowStep {
   description: string;
 }
 
+export interface ConsistencyFlag {
+  referenced_action: string;
+  evidence_quote: string;
+  likely_missing: boolean;
+}
+
 export interface StepScores {
   repetitiveness: number;
   judgment_need: number;
@@ -28,6 +34,7 @@ export interface Workflow {
   status: "uploaded" | "extracted" | "analyzed";
   raw_text?: string | null;
   steps: WorkflowStep[];
+  consistency_flags: ConsistencyFlag[];
   scores: StepScore[];
   automation_blueprints?: AutomationBlueprint[];
   redesign_proposals?: RedesignProposal[];

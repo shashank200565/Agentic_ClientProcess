@@ -1,5 +1,6 @@
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
 import { NavLink, Outlet } from "react-router-dom";
+import { LogoMark } from "./LogoMark";
 
 const navigation = [
   { to: "/", label: "Upload", end: true },
@@ -12,10 +13,10 @@ export function AppShell() {
       <header className="sticky top-0 z-40 border-b border-white/20 bg-brand-radial text-white shadow-[0_10px_30px_rgba(13,63,222,0.16)]">
         <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-4 px-5 py-4 lg:px-10">
           <div className="flex min-w-fit items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-white font-display text-xl font-bold text-brand ring-4 ring-white/20">M</span>
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-white ring-4 ring-white/20"><LogoMark /></span>
             <div>
-              <p className="font-display text-lg font-semibold tracking-tight">Mastikhors</p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-blue-100">Workflow studio</p>
+              <p className="font-display text-lg font-semibold tracking-tight">Re:Flow</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-blue-100">TEAM MASTIKHORS</p>
             </div>
           </div>
           <nav className="order-3 flex w-full gap-2 overflow-x-auto lg:order-none lg:ml-8 lg:w-auto">
