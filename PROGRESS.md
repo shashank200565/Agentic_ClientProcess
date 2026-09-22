@@ -47,6 +47,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Rebranded frontend app header and browser title to Re:Flow with Team Mastikhors subtitle
 - [x] Replaced the Re:Flow header lettermark with a reusable two-node inline SVG logo mark
 - [x] Added source-grounded extraction consistency flags with persisted advisory review UI
+- [x] Added the Re:Flow SVG favicon and wired the browser title metadata
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete. The five demo extraction
