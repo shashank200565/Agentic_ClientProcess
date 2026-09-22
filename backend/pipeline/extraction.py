@@ -2,10 +2,10 @@ from __future__ import annotations
 
 try:
     from backend.pipeline.llm_client import call_llm, get_extraction_model
-    from backend.pipeline.schemas import ConsistencyCheckResult, ConsistencyFlag, ExtractedSteps, WorkflowStep
+    from backend.pipeline.schemas import ConsistencyCheckResult, ConsistencyFlag, DomainRelevanceResult, ExtractedSteps, WorkflowStep
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
     from pipeline.llm_client import call_llm, get_extraction_model
-    from pipeline.schemas import ConsistencyCheckResult, ConsistencyFlag, ExtractedSteps, WorkflowStep
+    from pipeline.schemas import ConsistencyCheckResult, ConsistencyFlag, DomainRelevanceResult, ExtractedSteps, WorkflowStep
 
 
 EXTRACTION_SYSTEM_PROMPT = """You extract current-state investment-management workflows.
@@ -74,3 +74,34 @@ def check_extraction_consistency(
     if not isinstance(result, ConsistencyCheckResult):
         raise TypeError("Consistency client returned an unexpected response type")
     return [flag for flag in result.flags if flag.likely_missing]
+
+
+DOMAIN_RELEVANCE_SYSTEM_PROMPT = """You classify document domain relevance for an investment-management workflow tool.
+Return only JSON matching the requested schema. `is_relevant` is true when the document
+describes an investment management, financial services, or compliance-related business
+process, even if it is not an investment workflow specifically. Use high confidence only
+when the evidence is clear. This is advisory classification, not a reason to reject a
+document.
+"""
+
+
+def check_domain_relevance(raw_document_text: str) -> bool:
+    """Return true only when a confident negative domain classification is made."""
+
+    if not raw_document_text.strip():
+        raise ValueError("Raw document text cannot be empty")
+    result = call_llm(
+        prompt=(
+            "Classify whether this document describes an investment management, financial "
+            "services, or compliance-related business process. Return `is_relevant` as a "
+            "JSON boolean and `confidence` as exactly `low`, `medium`, or `high`.\n\n"
+            f"DOCUMENT:\n{raw_document_text}"
+        ),
+        model=get_extraction_model(),
+        system_prompt=DOMAIN_RELEVANCE_SYSTEM_PROMPT,
+        response_schema=DomainRelevanceResult,
+        temperature=0.0,
+    )
+    if not isinstance(result, DomainRelevanceResult):
+        raise TypeError("Domain relevance client returned an unexpected response type")
+    return not result.is_relevant and result.confidence == "high"

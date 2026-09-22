@@ -48,6 +48,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Replaced the Re:Flow header lettermark with a reusable two-node inline SVG logo mark
 - [x] Added source-grounded extraction consistency flags with persisted advisory review UI
 - [x] Added the Re:Flow SVG favicon and wired the browser title metadata
+- [x] Added advisory domain-relevance classification after extraction with Step Review warning UI
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete. The five demo extraction
@@ -62,6 +63,9 @@ labels. No labels were silently changed; descriptions were aligned word-for-word
 The consistency-check validation against the mandate-breach PDF is currently blocked
 because the configured OpenCode Go credential returns HTTP 403 when Go model access
 requires an active subscription.
+The domain-relevance control test against `03_mandate_breach_root_cause_investigation.pdf`
+returned no warning. The ACM paper referenced for the negative test was not present in
+the repository workspace, so its exact warning result remains pending that file.
 
 ## Last OpenCode Report
 Phase 2 Decision Engine implemented with fixed post-processing verdict logic; the

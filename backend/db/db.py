@@ -61,6 +61,11 @@ def initialize_database(connection: sqlite3.Connection) -> None:
     except sqlite3.OperationalError as exc:
         if "duplicate column name" not in str(exc):
             raise
+    try:
+        connection.execute("ALTER TABLE workflows ADD COLUMN domain_relevance_warning INTEGER NOT NULL DEFAULT 0")
+    except sqlite3.OperationalError as exc:
+        if "duplicate column name" not in str(exc):
+            raise
     connection.commit()
 
 
@@ -74,14 +79,15 @@ def save_workflow(
         initialize_database(connection)
         connection.execute(
             """
-            INSERT INTO workflows (workflow_id, name, source_type, status, raw_text, consistency_flags_json)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO workflows (workflow_id, name, source_type, status, raw_text, consistency_flags_json, domain_relevance_warning)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(workflow_id) DO UPDATE SET
                 name = excluded.name,
                 source_type = excluded.source_type,
                 status = excluded.status,
                 raw_text = excluded.raw_text
                 , consistency_flags_json = excluded.consistency_flags_json
+                , domain_relevance_warning = excluded.domain_relevance_warning
             """,
             (
                 workflow.workflow_id,
@@ -90,6 +96,7 @@ def save_workflow(
                 workflow.status,
                 workflow.raw_text,
                 json.dumps([flag.model_dump() for flag in workflow.consistency_flags]),
+                int(workflow.domain_relevance_warning),
             ),
         )
         connection.execute(
@@ -256,6 +263,7 @@ def get_workflow(
                 ConsistencyFlag.model_validate(flag)
                 for flag in json.loads(workflow_row["consistency_flags_json"] or "[]")
             ],
+            domain_relevance_warning=bool(workflow_row["domain_relevance_warning"]),
             steps=[WorkflowStep(**dict(row)) for row in step_rows],
             scores=score_models,
             automation_blueprints=blueprint_models,

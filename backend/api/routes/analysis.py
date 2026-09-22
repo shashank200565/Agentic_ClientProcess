@@ -11,7 +11,7 @@ from pypdf import PdfReader
 
 try:
     from backend.db.db import get_analyzed_workflows, get_workflow, save_workflow, save_workflow_session
-    from backend.pipeline.extraction import check_extraction_consistency, extract_steps
+    from backend.pipeline.extraction import check_domain_relevance, check_extraction_consistency, extract_steps
     from backend.pipeline.decision_engine import score_step
     from backend.pipeline.automation_blueprint import generate_automation_blueprint
     from backend.pipeline.redesign import generate_redesign
@@ -21,7 +21,7 @@ try:
     from backend.pipeline.schemas import AutomationBlueprint, RedesignProposal, Workflow
 except ModuleNotFoundError:  # Supports the documented `cd backend` launch.
     from db.db import get_analyzed_workflows, get_workflow, save_workflow, save_workflow_session
-    from pipeline.extraction import check_extraction_consistency, extract_steps
+    from pipeline.extraction import check_domain_relevance, check_extraction_consistency, extract_steps
     from pipeline.decision_engine import score_step
     from pipeline.automation_blueprint import generate_automation_blueprint
     from pipeline.redesign import generate_redesign
@@ -145,6 +145,7 @@ async def extract_workflow(request: Request) -> Workflow:
     try:
         steps = extract_steps(raw_text)
         consistency_flags = check_extraction_consistency(raw_text, steps)
+        domain_relevance_warning = check_domain_relevance(raw_text)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except LLMClientError as exc:
@@ -157,6 +158,7 @@ async def extract_workflow(request: Request) -> Workflow:
         raw_text=raw_text,
         steps=steps,
         consistency_flags=consistency_flags,
+        domain_relevance_warning=domain_relevance_warning,
     )
     save_workflow(workflow)
     save_workflow_session(workflow, "extracted")

@@ -66,6 +66,15 @@ class ConsistencyCheckResult(BaseModel):
     flags: list[ConsistencyFlag] = Field(default_factory=list)
 
 
+class DomainRelevanceResult(BaseModel):
+    """Cheap advisory classification of the source document's business domain."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    is_relevant: bool
+    confidence: Literal["low", "medium", "high"]
+
+
 class StepScores(BaseModel):
     """The four ordinal dimensions used by the Phase 0 rubric."""
 
@@ -124,6 +133,7 @@ class Workflow(BaseModel):
     raw_text: str | None = None
     steps: list[WorkflowStep] = Field(default_factory=list)
     consistency_flags: list[ConsistencyFlag] = Field(default_factory=list)
+    domain_relevance_warning: bool = False
     scores: list[StepScore] = Field(default_factory=list)
     automation_blueprints: list["AutomationBlueprint"] = Field(default_factory=list)
     redesign_proposals: list["RedesignProposal"] = Field(default_factory=list)

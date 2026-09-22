@@ -35,6 +35,7 @@ export interface Workflow {
   raw_text?: string | null;
   steps: WorkflowStep[];
   consistency_flags: ConsistencyFlag[];
+  domain_relevance_warning: boolean;
   scores: StepScore[];
   automation_blueprints?: AutomationBlueprint[];
   redesign_proposals?: RedesignProposal[];

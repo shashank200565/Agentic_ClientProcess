@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS workflows (
     status TEXT NOT NULL CHECK (status IN ('uploaded', 'extracted', 'analyzed')),
     raw_text TEXT,
     consistency_flags_json TEXT NOT NULL DEFAULT '[]',
+    domain_relevance_warning INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
