@@ -45,8 +45,8 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export function scoreWorkflow(workflowId: string): Promise<Workflow> {
-  return postJson<Workflow>("/analyze/score", { workflow_id: workflowId });
+export function scoreWorkflow(workflow: Workflow): Promise<Workflow> {
+  return postJson<Workflow>("/analyze/score", { workflow_id: workflow.workflow_id, workflow });
 }
 
 export function getAutomationBlueprint(workflowId: string, stepId: string, userNotes?: string): Promise<AutomationBlueprint> {

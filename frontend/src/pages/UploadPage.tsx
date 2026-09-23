@@ -25,7 +25,7 @@ export function UploadPage() {
         ? await extractWorkflow(file)
         : await extractWorkflow({ text, name: name || "Pasted workflow" });
       setLoadingPhase("scoring");
-      const workflow = await scoreWorkflow(extractedWorkflow.workflow_id);
+      const workflow = await scoreWorkflow(extractedWorkflow);
       sessionStorage.setItem("currentWorkflow", JSON.stringify(workflow));
       navigate(`/review/${workflow.workflow_id}`);
     } catch (requestError) {

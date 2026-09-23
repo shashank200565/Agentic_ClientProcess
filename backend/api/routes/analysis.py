@@ -42,6 +42,7 @@ class TextExtractionRequest(BaseModel):
 
 class ScoreWorkflowRequest(BaseModel):
     workflow_id: str = Field(min_length=1)
+    workflow: Workflow | None = None
 
 
 class GeneratorRequest(BaseModel):
@@ -168,6 +169,10 @@ async def extract_workflow(request: Request) -> Workflow:
 @router.post("/score", response_model=Workflow)
 def score_workflow(payload: ScoreWorkflowRequest) -> Workflow:
     workflow = get_workflow(payload.workflow_id)
+    if workflow is None and payload.workflow is not None:
+        if payload.workflow.workflow_id != payload.workflow_id:
+            raise HTTPException(status_code=422, detail="Workflow payload ID does not match workflow_id")
+        workflow = payload.workflow
     if workflow is None:
         raise HTTPException(status_code=404, detail="Workflow not found")
     if not workflow.steps:

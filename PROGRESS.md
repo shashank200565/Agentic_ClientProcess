@@ -49,6 +49,7 @@ successfully extracted through a live OpenCode Go call.
 - [x] Added source-grounded extraction consistency flags with persisted advisory review UI
 - [x] Added the Re:Flow SVG favicon and wired the browser title metadata
 - [x] Added advisory domain-relevance classification after extraction with Step Review warning UI
+- [x] Added stateless upload-to-review fallback for Vercel serverless instance changes
 
 ## Currently Working On
 Portfolio dashboard and risk presentation are complete. The five demo extraction
